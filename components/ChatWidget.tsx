@@ -185,17 +185,17 @@ export default function ChatWidget() {
                     <input
                       type="text"
                       placeholder="Your Name"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-purple"
+                      className="w-full px-3 text-black py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-purple"
                     />
                     <input
                       type="email"
                       placeholder="Email Address"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-purple"
+                      className="w-full px-3 py-2  text-black border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-purple"
                     />
                     <input
                       type="tel"
                       placeholder="Phone Number"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-purple"
+                      className="w-full px-3 py-2 text-black border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-purple"
                     />
                     <button className="w-full bg-gradient-to-r from-primary-purple to-primary-purple-light text-white py-2 rounded-lg font-semibold hover:shadow-lg transition-shadow">
                       Submit
@@ -214,7 +214,7 @@ export default function ChatWidget() {
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                   placeholder="Type your message..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary-purple"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary-purple text-back"
                 />
                 <motion.button
                   onClick={() => handleSendMessage()}
