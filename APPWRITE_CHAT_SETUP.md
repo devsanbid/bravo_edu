@@ -137,18 +137,29 @@ Current setup uses `any` permissions for quick testing. For production:
 
 ### Access the Admin Dashboard
 
-Once your database is set up, visit:
-```
-http://localhost:3000/admin/chat
-```
+**Important:** Admin dashboard is now protected with authentication.
+
+**First-time setup:**
+1. Create an admin user in Appwrite Console (see `ADMIN_AUTH_SETUP.md`)
+2. Go to: `http://localhost:3000/admin/login`
+3. Login with your credentials
+4. Access the chat dashboard
 
 **Features:**
+- 🔐 Secure login with email/password
 - Left panel: All active chat sessions with visitor details
 - Right panel: Selected conversation with full history
 - Real-time updates: No refresh needed
 - Notifications: Get alerted for new messages
 - Typing indicators: See when visitor is typing
 - Custom admin name: Personalize your responses
+- Logout: Red logout button in top-right corner
+
+**Authentication:**
+- Session persists across browser refreshes
+- Auto-redirect to login if not authenticated
+- Secure logout functionality
+- See `ADMIN_AUTH_SETUP.md` for detailed auth setup
 
 ### 🎯 Future Enhancements
 

@@ -2,10 +2,13 @@
 
 import { useAdminChat } from '@/hooks/useAdminChat';
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, Send, X, User, Mail, Phone, Clock, ChevronLeft } from 'lucide-react';
+import { MessageCircle, Send, X, User, Mail, Phone, Clock, ChevronLeft, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
-export default function AdminChatDashboard() {
+function AdminChatDashboardContent() {
   const {
     sessions,
     selectedSession,
@@ -18,33 +21,64 @@ export default function AdminChatDashboard() {
     refreshSessions,
   } = useAdminChat();
 
+  const { user, logout } = useAuth();
+  const router = useRouter();
   const [messageInput, setMessageInput] = useState('');
   const [adminName, setAdminName] = useState('Bravo Team');
   const [isVisitorTyping, setIsVisitorTyping] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Set admin name from authenticated user
+  useEffect(() => {
+    if (user) {
+      setAdminName(user.name || user.email?.split('@')[0] || 'Bravo Team');
+    }
+  }, [user]);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push('/admin/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Listen for visitor typing
+  // Listen for visitor typing via localStorage
   useEffect(() => {
     if (!selectedSession) return;
 
-    const handleTypingEvent = (e: CustomEvent) => {
-      const { sessionId, isTyping, isAdmin } = e.detail;
-      if (sessionId === selectedSession.$id && !isAdmin) {
-        setIsVisitorTyping(isTyping);
-        if (isTyping) {
-          setTimeout(() => setIsVisitorTyping(false), 3000);
+    const handleStorageChange = () => {
+      try {
+        const typingData = localStorage.getItem(`typing-${selectedSession.$id}`);
+        if (typingData) {
+          const parsed = JSON.parse(typingData);
+          if (!parsed.isAdmin && parsed.sessionId === selectedSession.$id) {
+            setIsVisitorTyping(parsed.isTyping);
+            if (parsed.isTyping) {
+              setTimeout(() => setIsVisitorTyping(false), 3000);
+            }
+          }
         }
+      } catch (err) {
+        console.log('Error reading typing status:', err);
       }
     };
 
-    window.addEventListener('chat-typing' as any, handleTypingEvent as any);
-    return () => window.removeEventListener('chat-typing' as any, handleTypingEvent as any);
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check current value
+    handleStorageChange();
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [selectedSession]);
 
   // Broadcast admin typing
@@ -52,22 +86,37 @@ export default function AdminChatDashboard() {
     setMessageInput(e.target.value);
     
     if (selectedSession && e.target.value) {
-      const event = new CustomEvent('chat-typing', {
-        detail: {
+      try {
+        const event = {
           sessionId: selectedSession.$id,
           isTyping: true,
           userName: adminName,
-          isAdmin: true
-        }
-      });
-      window.dispatchEvent(event);
+          isAdmin: true,
+          timestamp: Date.now()
+        };
+        
+        // Broadcast via localStorage
+        localStorage.setItem(`typing-${selectedSession.$id}`, JSON.stringify(event));
+        window.dispatchEvent(new Event('storage'));
+      } catch (err) {
+        console.log('Typing broadcast:', err);
+      }
 
       if (typingTimeout) clearTimeout(typingTimeout);
       const timeout = setTimeout(() => {
-        const stopEvent = new CustomEvent('chat-typing', {
-          detail: { sessionId: selectedSession.$id, isTyping: false, userName: adminName, isAdmin: true }
-        });
-        window.dispatchEvent(stopEvent);
+        try {
+          const stopEvent = {
+            sessionId: selectedSession.$id,
+            isTyping: false,
+            userName: adminName,
+            isAdmin: true,
+            timestamp: Date.now()
+          };
+          localStorage.setItem(`typing-${selectedSession.$id}`, JSON.stringify(stopEvent));
+          window.dispatchEvent(new Event('storage'));
+        } catch (err) {
+          console.log('Stop typing broadcast:', err);
+        }
       }, 1000);
       setTypingTimeout(timeout);
     }
@@ -124,25 +173,28 @@ export default function AdminChatDashboard() {
               <MessageCircle className="w-8 h-8 text-blue-600" />
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Admin Chat Dashboard</h1>
-                <p className="text-sm text-gray-500">Manage student conversations</p>
+                <p className="text-sm text-gray-500">
+                  {user?.email && `Logged in as ${user.email}`}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Admin Name:</span>
-                <input
-                  type="text"
-                  value={adminName}
-                  onChange={(e) => setAdminName(e.target.value)}
-                  className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Your name"
-                />
+              <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-lg">
+                <User className="w-4 h-4 text-gray-600" />
+                <span className="text-sm font-medium text-gray-700">{adminName}</span>
               </div>
               <button
                 onClick={refreshSessions}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm"
               >
                 Refresh
+              </button>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
               </button>
             </div>
           </div>
@@ -347,5 +399,13 @@ export default function AdminChatDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminChatDashboard() {
+  return (
+    <ProtectedRoute>
+      <AdminChatDashboardContent />
+    </ProtectedRoute>
   );
 }

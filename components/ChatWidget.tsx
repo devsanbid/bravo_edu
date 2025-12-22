@@ -24,22 +24,27 @@ export default function ChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Listen for admin typing events
+  // Listen for admin typing via Appwrite realtime
   useEffect(() => {
     if (!session) return;
 
-    const handleTypingEvent = (e: CustomEvent) => {
-      const { sessionId, isTyping, isAdmin } = e.detail;
-      if (sessionId === session.$id && isAdmin) {
-        setIsAdminTyping(isTyping);
-        if (isTyping) {
-          setTimeout(() => setIsAdminTyping(false), 3000);
+    const { client } = require('@/lib/appwrite');
+    
+    const unsubscribe = client.subscribe(
+      `typing-${session.$id}`,
+      (response: any) => {
+        if (response.payload?.isAdmin && response.payload?.isTyping !== undefined) {
+          setIsAdminTyping(response.payload.isTyping);
+          if (response.payload.isTyping) {
+            setTimeout(() => setIsAdminTyping(false), 3000);
+          }
         }
       }
-    };
+    );
 
-    window.addEventListener('chat-typing' as any, handleTypingEvent as any);
-    return () => window.removeEventListener('chat-typing' as any, handleTypingEvent as any);
+    return () => {
+      unsubscribe();
+    };
   }, [session]);
 
   // Broadcast visitor typing
@@ -47,22 +52,46 @@ export default function ChatWidget() {
     setInputMessage(e.target.value);
     
     if (session && e.target.value) {
-      const event = new CustomEvent('chat-typing', {
-        detail: {
+      const { client } = require('@/lib/appwrite');
+      
+      // Broadcast typing status
+      client.subscribe(
+        `typing-${session.$id}`,
+        () => {} // Just for publishing
+      );
+
+      // Send typing event via custom channel
+      try {
+        const event = {
           sessionId: session.$id,
           isTyping: true,
           userName: session.visitorName || 'Visitor',
-          isAdmin: false
-        }
-      });
-      window.dispatchEvent(event);
+          isAdmin: false,
+          timestamp: Date.now()
+        };
+        
+        // Broadcast via localStorage for same-domain communication
+        localStorage.setItem(`typing-${session.$id}`, JSON.stringify(event));
+        window.dispatchEvent(new Event('storage'));
+      } catch (err) {
+        console.log('Typing broadcast:', err);
+      }
 
       if (typingTimeout) clearTimeout(typingTimeout);
       const timeout = setTimeout(() => {
-        const stopEvent = new CustomEvent('chat-typing', {
-          detail: { sessionId: session.$id, isTyping: false, userName: session.visitorName, isAdmin: false }
-        });
-        window.dispatchEvent(stopEvent);
+        try {
+          const stopEvent = {
+            sessionId: session.$id,
+            isTyping: false,
+            userName: session.visitorName,
+            isAdmin: false,
+            timestamp: Date.now()
+          };
+          localStorage.setItem(`typing-${session.$id}`, JSON.stringify(stopEvent));
+          window.dispatchEvent(new Event('storage'));
+        } catch (err) {
+          console.log('Stop typing broadcast:', err);
+        }
       }, 1000);
       setTypingTimeout(timeout);
     }
