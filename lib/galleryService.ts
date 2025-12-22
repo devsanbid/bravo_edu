@@ -1,5 +1,5 @@
 import { storage, databases, ID } from './appwrite';
-import { Models, Query } from 'appwrite';
+import { Models, Query, ImageGravity } from 'appwrite';
 
 // Storage and Database IDs
 export const STORAGE_BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_STORAGE_BUCKET_ID || '69493301002498decf98';
@@ -33,7 +33,7 @@ export const galleryService = {
 
   // Get file preview URL
   getFilePreview(fileId: string): string {
-    return storage.getFilePreview(STORAGE_BUCKET_ID, fileId, 1200, 0, 'center', 80).toString();
+    return storage.getFilePreview(STORAGE_BUCKET_ID, fileId, 1200, 0, ImageGravity.Center, 80).toString();
   },
 
   // Get file view URL
