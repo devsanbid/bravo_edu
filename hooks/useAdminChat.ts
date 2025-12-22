@@ -10,6 +10,7 @@ export function useAdminChat() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
+  const [lastMessages, setLastMessages] = useState<Record<string, string>>({});
 
   // Load all sessions
   const loadSessions = useCallback(async () => {
@@ -17,6 +18,22 @@ export function useAdminChat() {
       setLoading(true);
       const allSessions = await chatService.getAllSessions('active');
       setSessions(allSessions);
+      
+      // Load last message for each session
+      const lastMessagesMap: Record<string, string> = {};
+      await Promise.all(allSessions.map(async (session) => {
+        try {
+          const sessionMessages = await chatService.getMessages(session.$id);
+          if (sessionMessages.length > 0) {
+            const lastMsg = sessionMessages[sessionMessages.length - 1];
+            lastMessagesMap[session.$id] = lastMsg.message;
+          }
+        } catch (err) {
+          console.error(`Error loading last message for session ${session.$id}:`, err);
+        }
+      }));
+      setLastMessages(lastMessagesMap);
+      
       setError(null);
     } catch (err) {
       console.error('Error loading sessions:', err);
@@ -145,6 +162,12 @@ export function useAdminChat() {
               );
             });
 
+            // Update last message preview
+            setLastMessages(prev => ({
+              ...prev,
+              [newMessage.sessionId]: newMessage.message
+            }));
+
             // Increment unread count for visitor messages if session not selected
             if (!newMessage.isFromAdmin && selectedSession?.$id !== newMessage.sessionId) {
               setUnreadCounts(prev => ({
@@ -196,5 +219,6 @@ export function useAdminChat() {
     closeSession,
     refreshSessions: loadSessions,
     unreadCounts,
+    lastMessages,
   };
 }

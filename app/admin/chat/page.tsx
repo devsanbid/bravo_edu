@@ -20,6 +20,7 @@ function AdminChatDashboardContent() {
     closeSession,
     refreshSessions,
     unreadCounts,
+    lastMessages,
   } = useAdminChat();
 
   const { user } = useAuth();
@@ -146,6 +147,14 @@ function AdminChatDashboardContent() {
     }
   };
 
+  const truncateMessage = (message: string, wordLimit: number = 6) => {
+    const words = message.split(' ');
+    if (words.length <= wordLimit) {
+      return message;
+    }
+    return words.slice(0, wordLimit).join(' ') + '...';
+  };
+
   if (loading && sessions.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
@@ -263,8 +272,13 @@ function AdminChatDashboardContent() {
                         </div>
                         <span className="w-3 h-3 bg-green-500 rounded-full"></span>
                       </div>
+                      {lastMessages[session.$id] && (
+                        <p className="text-sm text-gray-600 ml-12 mb-1">
+                          {truncateMessage(lastMessages[session.$id])}
+                        </p>
+                      )}
                       {session.visitorEmail && (
-                        <p className="text-xs text-gray-600 truncate">{session.visitorEmail}</p>
+                        <p className="text-xs text-gray-500 ml-12 truncate">{session.visitorEmail}</p>
                       )}
                     </motion.button>
                   ))}
