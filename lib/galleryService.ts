@@ -2,9 +2,9 @@ import { storage, databases, ID } from './appwrite';
 import { Models, Query } from 'appwrite';
 
 // Storage and Database IDs
-export const STORAGE_BUCKET_ID = '69493301002498decf98';
-export const DATABASE_ID = 'bravo_chat_db'; // Reusing existing database
-export const GALLERY_COLLECTION_ID = 'gallery_images';
+export const STORAGE_BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_STORAGE_BUCKET_ID || '69493301002498decf98';
+export const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || 'bravo_chat_db';
+export const GALLERY_COLLECTION_ID = process.env.NEXT_PUBLIC_APPWRITE_GALLERY_COLLECTION_ID || 'gallery_images';
 
 export interface GalleryImage extends Models.Document {
   title?: string;

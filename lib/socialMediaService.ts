@@ -2,8 +2,8 @@ import { databases, ID } from './appwrite';
 import { Models, Query } from 'appwrite';
 
 // Database IDs
-export const DATABASE_ID = 'bravo_chat_db';
-export const SOCIAL_MEDIA_COLLECTION_ID = 'social_media_posts';
+export const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || 'bravo_chat_db';
+export const SOCIAL_MEDIA_COLLECTION_ID = process.env.NEXT_PUBLIC_APPWRITE_SOCIAL_MEDIA_COLLECTION_ID || 'social_media_posts';
 
 export type SocialMediaPlatform = 'facebook' | 'instagram' | 'twitter' | 'linkedin' | 'youtube' | 'tiktok';
 

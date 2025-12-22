@@ -1,10 +1,10 @@
 import { databases, ID, client } from './appwrite';
 import { Models, Query } from 'appwrite';
 
-// Database and Collection IDs (you'll need to create these in Appwrite Console)
-export const DATABASE_ID = 'bravo_chat_db';
-export const MESSAGES_COLLECTION_ID = 'chat_messages';
-export const SESSIONS_COLLECTION_ID = 'chat_sessions';
+// Database and Collection IDs
+export const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || 'bravo_chat_db';
+export const MESSAGES_COLLECTION_ID = process.env.NEXT_PUBLIC_APPWRITE_CHAT_MESSAGES_COLLECTION_ID || 'chat_messages';
+export const SESSIONS_COLLECTION_ID = process.env.NEXT_PUBLIC_APPWRITE_CHAT_SESSIONS_COLLECTION_ID || 'chat_sessions';
 
 export interface ChatMessage extends Models.Document {
   sessionId: string;

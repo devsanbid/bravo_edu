@@ -16,6 +16,7 @@ QUICK_START.md
 SETUP.md
 # testing
 /coverage
+/Markdown
 
 # next.js
 /.next/
