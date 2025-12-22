@@ -243,6 +243,18 @@ export const chatService = {
     );
   },
 
+  // Subscribe to all messages (for unread count tracking)
+  subscribeToAllMessages(callback: (message: ChatMessage) => void) {
+    return client.subscribe(
+      `databases.${DATABASE_ID}.collections.${MESSAGES_COLLECTION_ID}.documents`,
+      (response: any) => {
+        if (response.events.includes('databases.*.collections.*.documents.*.create')) {
+          callback(response.payload as ChatMessage);
+        }
+      }
+    );
+  },
+
   // Broadcast typing indicator (using temporary document approach)
   async broadcastTyping(sessionId: string, isTyping: boolean, userName: string, isAdmin: boolean) {
     // We'll use a simple approach: create a typing indicator message that expires

@@ -9,6 +9,7 @@ export function useAdminChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
 
   // Load all sessions
   const loadSessions = useCallback(async () => {
@@ -40,6 +41,8 @@ export function useAdminChat() {
   const selectSession = useCallback(async (session: ChatSession) => {
     setSelectedSession(session);
     setMessages([]); // Clear previous messages
+    // Mark this session as read
+    setUnreadCounts(prev => ({ ...prev, [session.$id]: 0 }));
     // Messages will be loaded by the useEffect
   }, []);
 
@@ -99,10 +102,22 @@ export function useAdminChat() {
       }
     });
 
+    // Subscribe to ALL messages to track unread counts globally
+    const unsubscribeAllMessages = chatService.subscribeToAllMessages((newMessage) => {
+      // Only increment unread count if it's from visitor and session is not selected
+      if (!newMessage.isFromAdmin && selectedSession?.$id !== newMessage.sessionId) {
+        setUnreadCounts(prev => ({
+          ...prev,
+          [newMessage.sessionId]: (prev[newMessage.sessionId] || 0) + 1
+        }));
+      }
+    });
+
     return () => {
       unsubscribeSessions();
+      unsubscribeAllMessages?.();
     };
-  }, [loadSessions]);
+  }, [loadSessions, selectedSession]);
 
   // Subscribe to messages for selected session
   useEffect(() => {
@@ -129,6 +144,14 @@ export function useAdminChat() {
                 new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
               );
             });
+
+            // Increment unread count for visitor messages if session not selected
+            if (!newMessage.isFromAdmin && selectedSession?.$id !== newMessage.sessionId) {
+              setUnreadCounts(prev => ({
+                ...prev,
+                [newMessage.sessionId]: (prev[newMessage.sessionId] || 0) + 1
+              }));
+            }
 
             // Show notification for new visitor messages
             if (!newMessage.isFromAdmin && document.hidden && 'Notification' in window && Notification.permission === 'granted') {
@@ -172,5 +195,6 @@ export function useAdminChat() {
     sendMessage,
     closeSession,
     refreshSessions: loadSessions,
+    unreadCounts,
   };
 }

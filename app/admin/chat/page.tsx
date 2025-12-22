@@ -19,6 +19,7 @@ function AdminChatDashboardContent() {
     sendMessage,
     closeSession,
     refreshSessions,
+    unreadCounts,
   } = useAdminChat();
 
   const { user } = useAuth();
@@ -27,6 +28,9 @@ function AdminChatDashboardContent() {
   const [isVisitorTyping, setIsVisitorTyping] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Calculate total unread count
+  const totalUnread = Object.values(unreadCounts).reduce((sum, count) => sum + count, 0);
 
   // Set admin name from authenticated user
   useEffect(() => {
@@ -160,7 +164,18 @@ function AdminChatDashboardContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <MessageCircle className="w-8 h-8 text-blue-600" />
+              <div className="relative">
+                <MessageCircle className="w-8 h-8 text-blue-600" />
+                {totalUnread > 0 && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center"
+                  >
+                    {totalUnread > 99 ? '99+' : totalUnread}
+                  </motion.div>
+                )}
+              </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Admin Chat Dashboard</h1>
                 <p className="text-sm text-gray-500">
@@ -223,8 +238,19 @@ function AdminChatDashboardContent() {
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
-                            {session.visitorName ? session.visitorName[0].toUpperCase() : 'V'}
+                          <div className="relative">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                              {session.visitorName ? session.visitorName[0].toUpperCase() : 'V'}
+                            </div>
+                            {unreadCounts[session.$id] > 0 && (
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white"
+                              >
+                                {unreadCounts[session.$id] > 9 ? '9+' : unreadCounts[session.$id]}
+                              </motion.div>
+                            )}
                           </div>
                           <div>
                             <h3 className="font-semibold text-gray-900">
