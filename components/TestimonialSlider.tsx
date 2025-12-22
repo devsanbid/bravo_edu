@@ -1,0 +1,236 @@
+'use client';
+
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Quote, Star, Play } from 'lucide-react';
+
+export default function TestimonialSlider() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const testimonials = [
+    {
+      name: 'Prajita Adhikari',
+      college: 'Niagara College',
+      location: 'Toronto, Canada',
+      image: '/student1_review.jpg',
+      rating: 5,
+      quote: "Bravo International made my dream of studying in Canada a reality. Their personalized guidance and documentation support were exceptional. I'm now pursuing my passion at Niagara College, and I couldn't be happier!",
+      program: 'Business Management',
+      year: '2023',
+      videoUrl: '#',
+    },
+    {
+      name: 'Rajesh Sharma',
+      college: 'University of Manchester',
+      location: 'Manchester, UK',
+      image: '/student2.jpeg',
+      rating: 5,
+      quote: "The team at Bravo is incredibly professional and supportive. They helped me navigate the entire application process seamlessly. Now I'm studying at one of the UK's top universities!",
+      program: 'Computer Science',
+      year: '2023',
+      videoUrl: '#',
+    },
+    {
+      name: 'Sneha Thapa',
+      college: 'Boston University',
+      location: 'Boston, USA',
+      image: '👩‍🎓',
+      rating: 5,
+      quote: "From test preparation to visa approval, Bravo International stood by me every step of the way. Their expertise in US admissions is unmatched. Thank you for making my dreams come true!",
+      program: 'International Relations',
+      year: '2024',
+      videoUrl: '#',
+    },
+    {
+      name: 'Aayush Karki',
+      college: 'University of Toronto',
+      location: 'Toronto, Canada',
+      image: '👨‍🎓',
+      rating: 5,
+      quote: "Best educational consultancy in Kathmandu! The counselors are knowledgeable, patient, and genuinely care about your success. I highly recommend Bravo International to anyone planning to study abroad.",
+      program: 'Engineering',
+      year: '2023',
+      videoUrl: '#',
+    },
+  ];
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
+
+  const current = testimonials[currentIndex];
+
+  return (
+    <section id="testimonials" className="py-20 bg-gradient-to-br from-primary-purple/5 to-accent-orange/5">
+      <div className="container mx-auto px-4 lg:px-8">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="bg-gradient-to-r from-primary-purple to-accent-orange bg-clip-text text-transparent">
+              Student Success Stories
+            </span>
+          </h2>
+          <p className="text-text-light text-lg max-w-2xl mx-auto">
+            Hear from our students who are living their dreams abroad
+          </p>
+        </motion.div>
+
+        {/* Testimonial Slider */}
+        <div className="max-w-6xl mx-auto">
+          <div className="relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentIndex}
+                initial={{ opacity: 0, x: 100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -100 }}
+                transition={{ duration: 0.5 }}
+                className="bg-white rounded-3xl shadow-2xl overflow-hidden"
+              >
+                <div className="grid md:grid-cols-2">
+                  {/* Left Side - Student Info & Video */}
+                  <div className="bg-gradient-to-br from-primary-purple to-primary-purple-light p-8 md:p-12 text-white relative overflow-hidden">
+                    <div className="absolute top-0 right-0 text-9xl opacity-10">
+                      {current.image}
+                    </div>
+                    
+                    <div className="relative z-10">
+                      {/* Video Thumbnail */}
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        className="relative mb-6 rounded-2xl overflow-hidden bg-white/10 backdrop-blur-sm aspect-video flex items-center justify-center cursor-pointer group"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary-purple-dark/50 to-transparent group-hover:opacity-75 transition-opacity" />
+                        <Play className="w-16 h-16 text-white relative z-10 group-hover:scale-110 transition-transform" />
+                        <div className="absolute bottom-4 left-4 text-sm">
+                          <div className="bg-accent-orange px-3 py-1 rounded-full">
+                            Watch Video
+                          </div>
+                        </div>
+                      </motion.div>
+
+                      {/* Student Info */}
+                      <div className="text-center md:text-left">
+                        <div className="relative w-32 h-32 mx-auto md:mx-0 mb-4 rounded-full overflow-hidden border-4 border-white/30">
+                          <img
+                            src={current.image}
+                            alt={current.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <h3 className="text-2xl font-bold mb-2">{current.name}</h3>
+                        <p className="text-white/90 mb-1">{current.program}</p>
+                        <p className="text-white/80 text-sm mb-4">{current.college}</p>
+                        <div className="flex items-center justify-center md:justify-start space-x-1 mb-4">
+                          <span className="text-accent-gold">📍</span>
+                          <span className="text-sm">{current.location}</span>
+                        </div>
+                        
+                        {/* Rating */}
+                        <div className="flex items-center justify-center md:justify-start space-x-1">
+                          {[...Array(current.rating)].map((_, i) => (
+                            <Star key={i} className="w-5 h-5 fill-accent-gold text-accent-gold" />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Side - Testimonial */}
+                  <div className="p-8 md:p-12 flex flex-col justify-center">
+                    <Quote className="w-12 h-12 text-accent-orange mb-6" />
+                    
+                    <blockquote className="text-lg text-text-dark leading-relaxed mb-6">
+                      "{current.quote}"
+                    </blockquote>
+
+                    <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                      <div>
+                        <div className="text-sm text-text-light">Batch of</div>
+                        <div className="text-xl font-bold text-primary-purple">{current.year}</div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-accent-orange rounded-full animate-pulse"></div>
+                        <span className="text-sm text-text-light">Verified Student</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Navigation Buttons */}
+            <div className="flex items-center justify-between mt-8">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={prevSlide}
+                className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-primary-purple hover:bg-primary-purple hover:text-white transition-colors duration-300"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </motion.button>
+
+              {/* Dots Indicator */}
+              <div className="flex items-center space-x-2">
+                {testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentIndex(index)}
+                    className={`transition-all duration-300 rounded-full ${
+                      index === currentIndex
+                        ? 'w-8 h-3 bg-primary-purple'
+                        : 'w-3 h-3 bg-gray-300 hover:bg-gray-400'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={nextSlide}
+                className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-primary-purple hover:bg-primary-purple hover:text-white transition-colors duration-300"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </motion.button>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-4xl mx-auto"
+        >
+          <div className="text-center p-6 bg-white rounded-xl shadow-lg">
+            <div className="text-3xl font-bold text-primary-purple mb-2">500+</div>
+            <div className="text-sm text-text-light">Happy Students</div>
+          </div>
+          <div className="text-center p-6 bg-white rounded-xl shadow-lg">
+            <div className="text-3xl font-bold text-accent-orange mb-2">98%</div>
+            <div className="text-sm text-text-light">Visa Success</div>
+          </div>
+          <div className="text-center p-6 bg-white rounded-xl shadow-lg">
+            <div className="text-3xl font-bold text-primary-purple mb-2">50+</div>
+            <div className="text-sm text-text-light">Partner Universities</div>
+          </div>
+          <div className="text-center p-6 bg-white rounded-xl shadow-lg">
+            <div className="text-3xl font-bold text-accent-orange mb-2">4.9/5</div>
+            <div className="text-sm text-text-light">Student Rating</div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
