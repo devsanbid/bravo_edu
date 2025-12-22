@@ -232,11 +232,6 @@ export default function ChatWidget() {
                             : 'bg-primary-purple text-white rounded-br-none'
                         }`}
                       >
-                        {message.isFromAdmin && (
-                          <p className="text-xs font-semibold text-primary-purple mb-1">
-                            {message.senderName}
-                          </p>
-                        )}
                         <p className="text-sm whitespace-pre-line">{message.message}</p>
                         <p className={`text-xs mt-1 ${message.isFromAdmin ? 'text-gray-500' : 'text-white/70'}`}>
                           {new Date(message.timestamp).toLocaleTimeString('en-US', { 

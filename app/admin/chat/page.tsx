@@ -2,11 +2,11 @@
 
 import { useAdminChat } from '@/hooks/useAdminChat';
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, Send, X, User, Mail, Phone, Clock, ChevronLeft, LogOut } from 'lucide-react';
+import { MessageCircle, Send, X, User, Mail, Phone, Clock, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import AdminLayout from '@/components/AdminLayout';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
 
 function AdminChatDashboardContent() {
   const {
@@ -21,8 +21,7 @@ function AdminChatDashboardContent() {
     refreshSessions,
   } = useAdminChat();
 
-  const { user, logout } = useAuth();
-  const router = useRouter();
+  const { user } = useAuth();
   const [messageInput, setMessageInput] = useState('');
   const [adminName, setAdminName] = useState('Bravo Team');
   const [isVisitorTyping, setIsVisitorTyping] = useState(false);
@@ -35,15 +34,6 @@ function AdminChatDashboardContent() {
       setAdminName(user.name || user.email?.split('@')[0] || 'Bravo Team');
     }
   }, [user]);
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      router.push('/admin/login');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -189,13 +179,6 @@ function AdminChatDashboardContent() {
               >
                 Refresh
               </button>
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm flex items-center gap-2"
-              >
-                <LogOut className="w-4 h-4" />
-                Logout
-              </button>
             </div>
           </div>
         </div>
@@ -331,7 +314,6 @@ function AdminChatDashboardContent() {
                               : 'bg-white text-gray-900 shadow-md'
                           }`}
                         >
-                          <p className="text-sm font-medium mb-1">{message.senderName}</p>
                           <p className="break-words">{message.message}</p>
                           <p className={`text-xs mt-2 ${message.isFromAdmin ? 'text-white/70' : 'text-gray-500'}`}>
                             {formatTime(message.timestamp)}
@@ -405,7 +387,9 @@ function AdminChatDashboardContent() {
 export default function AdminChatDashboard() {
   return (
     <ProtectedRoute>
-      <AdminChatDashboardContent />
+      <AdminLayout>
+        <AdminChatDashboardContent />
+      </AdminLayout>
     </ProtectedRoute>
   );
 }

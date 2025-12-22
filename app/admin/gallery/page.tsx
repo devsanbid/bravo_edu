@@ -1,14 +1,13 @@
 "use client"
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
-import { Upload, X, Image as ImageIcon, Loader2, Check, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Upload, X, Image as ImageIcon, Loader2, Check, AlertCircle, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { galleryService } from '@/lib/galleryService';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import AdminLayout from '@/components/AdminLayout';
 import Image from 'next/image';
-import Link from 'next/link';
 
 interface UploadedImage {
   id: string;
@@ -22,9 +21,39 @@ interface UploadedImage {
 
 function AdminGalleryContent() {
   const { user } = useAuth();
-  const router = useRouter();
   const [images, setImages] = useState<UploadedImage[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<any[]>([]);
+  const [loadingUploaded, setLoadingUploaded] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
+
+  // Load already uploaded images
+  useEffect(() => {
+    loadUploadedImages();
+  }, []);
+
+  const loadUploadedImages = async () => {
+    try {
+      setLoadingUploaded(true);
+      const data = await galleryService.getAllImages();
+      setUploadedImages(data);
+    } catch (error) {
+      console.error('Error loading uploaded images:', error);
+    } finally {
+      setLoadingUploaded(false);
+    }
+  };
+
+  const handleDeleteUploaded = async (imageId: string, fileId: string) => {
+    if (!confirm('Are you sure you want to delete this image?')) return;
+
+    try {
+      await galleryService.deleteImage(imageId, fileId);
+      await loadUploadedImages();
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      alert('Failed to delete image');
+    }
+  };
 
   const handleFileSelect = useCallback((files: FileList | null) => {
     if (!files) return;
@@ -83,6 +112,8 @@ function AdminGalleryContent() {
       );
       
       updateImage(image.id, { status: 'success' });
+      // Reload uploaded images list
+      await loadUploadedImages();
     } catch (error: any) {
       console.error('Upload error:', error);
       updateImage(image.id, { 
@@ -107,59 +138,33 @@ function AdminGalleryContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/admin/chat"
-                className="p-2 hover:bg-gray-100 rounded-lg transition"
-              >
-                <ArrowLeft className="w-5 h-5 text-gray-600" />
-              </Link>
-              <div className="flex items-center gap-3">
-                <ImageIcon className="w-8 h-8 text-blue-600" />
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Gallery Upload</h1>
-                  <p className="text-sm text-gray-500">Manage gallery images</p>
-                </div>
-              </div>
-            </div>
-            <Link
-              href="/gallery"
-              target="_blank"
-              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition text-sm"
-            >
-              View Gallery
-            </Link>
-          </div>
-        </div>
-      </div>
-
+    <div className="h-full bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-auto">
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8">
+        <div className="mb-4 md:mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">Gallery Management</h1>
+          <p className="text-sm md:text-base text-gray-600">Upload and manage gallery images</p>
+        </div>
         {/* Upload Zone */}
         <div
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
-          className={`border-2 border-dashed rounded-xl p-12 text-center transition-all ${
+          className={`border-2 border-dashed rounded-xl p-6 md:p-8 lg:p-12 text-center transition-all ${
             isDragging
               ? 'border-blue-500 bg-blue-50'
               : 'border-gray-300 bg-white hover:border-blue-400'
           }`}
         >
-          <Upload className={`w-16 h-16 mx-auto mb-4 ${isDragging ? 'text-blue-500' : 'text-gray-400'}`} />
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <Upload className={`w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 ${isDragging ? 'text-blue-500' : 'text-gray-400'}`} />
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">
             {isDragging ? 'Drop images here' : 'Upload Images'}
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-sm md:text-base text-gray-600 mb-4">
             Drag and drop images or click to browse
           </p>
-          <label className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer">
-            <Upload className="w-5 h-5" />
+          <label className="inline-flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer text-sm md:text-base">
+            <Upload className="w-4 h-4 md:w-5 md:h-5" />
             <span>Select Images</span>
             <input
               type="file"
@@ -173,30 +178,30 @@ function AdminGalleryContent() {
 
         {/* Images List */}
         {images.length > 0 && (
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900">
+          <div className="mt-6 md:mt-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
+              <h2 className="text-lg md:text-xl font-bold text-gray-900">
                 Selected Images ({images.length})
               </h2>
               <div className="flex gap-2">
                 <button
                   onClick={clearSuccessful}
                   disabled={!images.some(img => img.status === 'success')}
-                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 sm:flex-none px-3 py-2 md:px-4 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition text-xs md:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Clear Uploaded
                 </button>
                 <button
                   onClick={uploadAll}
                   disabled={!images.some(img => img.status === 'pending')}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 sm:flex-none px-4 py-2 md:px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-xs md:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Upload All
                 </button>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
               <AnimatePresence>
                 {images.map((image) => (
                   <motion.div
@@ -289,6 +294,64 @@ function AdminGalleryContent() {
             </div>
           </div>
         )}
+
+        {/* Uploaded Images Section */}
+        <div className="mt-8 md:mt-12">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Uploaded Images</h2>
+          
+          {loadingUploaded ? (
+            <div className="flex items-center justify-center py-12 bg-white rounded-xl">
+              <Loader2 className="w-6 h-6 md:w-8 md:h-8 animate-spin text-blue-600" />
+              <span className="ml-3 text-sm md:text-base text-gray-600">Loading images...</span>
+            </div>
+          ) : uploadedImages.length === 0 ? (
+            <div className="bg-white rounded-xl p-8 md:p-12 text-center">
+              <ImageIcon className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 text-gray-300" />
+              <p className="text-sm md:text-base text-gray-500">No images uploaded yet</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+              {uploadedImages.map((img) => (
+                <motion.div
+                  key={img.$id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+                >
+                  <div className="relative aspect-square">
+                    <Image
+                      src={img.fileUrl}
+                      alt={img.title || 'Gallery image'}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
+                  <div className="p-4">
+                    {img.title && (
+                      <h3 className="font-semibold text-gray-900 mb-1">{img.title}</h3>
+                    )}
+                    {img.description && (
+                      <p className="text-sm text-gray-600 mb-2 line-clamp-2">{img.description}</p>
+                    )}
+                    <div className="flex items-center justify-between mt-3">
+                      <span className="text-xs text-gray-500">
+                        {new Date(img.uploadDate).toLocaleDateString()}
+                      </span>
+                      <button
+                        onClick={() => handleDeleteUploaded(img.$id, img.fileId)}
+                        className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -297,7 +360,9 @@ function AdminGalleryContent() {
 export default function AdminGallery() {
   return (
     <ProtectedRoute>
-      <AdminGalleryContent />
+      <AdminLayout>
+        <AdminGalleryContent />
+      </AdminLayout>
     </ProtectedRoute>
   );
 }

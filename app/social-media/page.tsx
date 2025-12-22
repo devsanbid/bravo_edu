@@ -1,270 +1,259 @@
-'use client';
+"use client"
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Instagram, Facebook, Youtube, Linkedin, ExternalLink, Heart, MessageCircle, Share2 } from 'lucide-react';
-import Image from 'next/image';
+import { Loader2, Instagram, Facebook, Twitter, Linkedin, Youtube, ExternalLink } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ChatWidget from '@/components/ChatWidget';
+import { socialMediaService, SocialMediaPost, SocialMediaPlatform } from '@/lib/socialMediaService';
+
+const platformIcons = {
+  instagram: Instagram,
+  facebook: Facebook,
+  twitter: Twitter,
+  linkedin: Linkedin,
+  youtube: Youtube,
+  tiktok: Youtube,
+};
+
+const platformColors = {
+  instagram: 'from-purple-500 to-pink-500',
+  facebook: 'from-blue-600 to-blue-700',
+  twitter: 'from-sky-400 to-sky-600',
+  linkedin: 'from-blue-700 to-blue-800',
+  youtube: 'from-red-600 to-red-700',
+  tiktok: 'from-gray-900 to-black',
+};
 
 export default function SocialMediaPage() {
-  // Social media post previews
-  const socialPosts = [
-    {
-      id: 1,
-      platform: 'Instagram',
-      icon: Instagram,
-      color: 'from-pink-500 to-purple-600',
-      image: '/student1_review.jpg',
-      caption: '🎉 Another success story! Aisha scored 8.0 in IELTS and got accepted to University of Toronto! 🇨🇦',
-      likes: 245,
-      comments: 32,
-      date: '2 days ago',
-      link: '#',
-    },
-    {
-      id: 2,
-      platform: 'Facebook',
-      icon: Facebook,
-      color: 'from-blue-500 to-blue-700',
-      image: '/student2.jpeg',
-      caption: 'Congratulations Rajesh! PTE Score 79 and heading to Melbourne! 🇦🇺 Your hard work paid off! 🎓',
-      likes: 189,
-      comments: 28,
-      date: '5 days ago',
-      link: '#',
-    },
-    {
-      id: 3,
-      platform: 'Instagram',
-      icon: Instagram,
-      color: 'from-pink-500 to-purple-600',
-      image: '/banner1.jpg',
-      caption: '📚 IELTS Preparation Classes starting next week! Limited seats available. Register now! 🎯',
-      likes: 312,
-      comments: 45,
-      date: '1 week ago',
-      link: '#',
-    },
-    {
-      id: 4,
-      platform: 'LinkedIn',
-      icon: Linkedin,
-      color: 'from-blue-600 to-blue-800',
-      image: '/Director.jpg',
-      caption: 'Study abroad tips from our director: "Success is where preparation meets opportunity" 💼',
-      likes: 156,
-      comments: 19,
-      date: '1 week ago',
-      link: '#',
-    },
-    {
-      id: 5,
-      platform: 'YouTube',
-      icon: Youtube,
-      color: 'from-red-500 to-red-700',
-      thumbnail: 'VIDEO',
-      caption: 'Complete Guide to Student Visa Application Process | Step by Step Tutorial 🎬',
-      likes: 428,
-      comments: 67,
-      date: '2 weeks ago',
-      link: '#',
-    },
-    {
-      id: 6,
-      platform: 'Facebook',
-      icon: Facebook,
-      color: 'from-blue-500 to-blue-700',
-      image: '/banner1.jpg',
-      caption: '🌟 Free Consultation Week! Book your appointment and get expert guidance on studying abroad 🌍',
-      likes: 267,
-      comments: 41,
-      date: '2 weeks ago',
-      link: '#',
-    },
-  ];
+  const [posts, setPosts] = useState<SocialMediaPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedPlatform, setSelectedPlatform] = useState<SocialMediaPlatform | 'all'>('all');
 
-  const socialLinks = [
-    { name: 'Instagram', icon: Instagram, color: 'from-pink-500 to-purple-600', followers: '5.2K', link: '#' },
-    { name: 'Facebook', icon: Facebook, color: 'from-blue-500 to-blue-700', followers: '8.1K', link: '#' },
-    { name: 'YouTube', icon: Youtube, color: 'from-red-500 to-red-700', followers: '3.4K', link: '#' },
-    { name: 'LinkedIn', icon: Linkedin, color: 'from-blue-600 to-blue-800', followers: '2.8K', link: '#' },
-  ];
+  useEffect(() => {
+    loadPosts();
+  }, []);
+
+  const loadPosts = async () => {
+    try {
+      setLoading(true);
+      const fetchedPosts = await socialMediaService.getAllPosts();
+      setPosts(fetchedPosts);
+      setError(null);
+    } catch (err: any) {
+      console.error('Error loading posts:', err);
+      setError(err.message || 'Failed to load posts');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredPosts = selectedPlatform === 'all' 
+    ? posts 
+    : posts.filter(post => post.platform === selectedPlatform);
+
+  const platformCounts = posts.reduce((acc, post) => {
+    acc[post.platform] = (acc[post.platform] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-white pt-20">
+      <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-primary-purple to-primary-purple-light text-white py-20">
-          <div className="container mx-auto px-4 lg:px-8 text-center">
+        <section className="relative py-20 px-4 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 text-white overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
+          <div className="relative max-w-7xl mx-auto text-center z-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-3xl mx-auto"
+              transition={{ duration: 0.8 }}
             >
-              <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                Connect With Us
+              <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                Follow Our Journey
               </h1>
-              <p className="text-xl text-white/90 mb-8">
-                Stay updated with success stories, study abroad tips, and educational opportunities.
-                Follow us on social media for daily inspiration!
+              <p className="text-xl text-blue-50 max-w-3xl mx-auto leading-relaxed">
+                Stay connected with us across social media platforms
               </p>
             </motion.div>
           </div>
         </section>
 
-        {/* Social Media Links */}
-        <section className="py-12 bg-gray-50">
-          <div className="container mx-auto px-4 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {socialLinks.map((social, index) => {
-                const Icon = social.icon;
+        {/* Platform Filter */}
+        <section className="max-w-7xl mx-auto px-4 py-8">
+          <div className="bg-white rounded-2xl shadow-lg p-4">
+            <div className="flex flex-wrap gap-3 justify-center">
+              <button
+                onClick={() => setSelectedPlatform('all')}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                  selectedPlatform === 'all'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                All Posts ({posts.length})
+              </button>
+              
+              {(['instagram', 'facebook', 'twitter', 'linkedin', 'youtube', 'tiktok'] as SocialMediaPlatform[]).map((platform) => {
+                const Icon = platformIcons[platform];
+                const count = platformCounts[platform] || 0;
+                
+                if (count === 0) return null;
+                
                 return (
-                  <motion.a
-                    key={social.name}
-                    href={social.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all text-center"
+                  <button
+                    key={platform}
+                    onClick={() => setSelectedPlatform(platform)}
+                    className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                      selectedPlatform === platform
+                        ? `bg-gradient-to-r ${platformColors[platform]} text-white shadow-lg scale-105`
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
                   >
-                    <div className={`w-16 h-16 bg-gradient-to-r ${social.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
-                      <Icon className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="font-bold text-text-dark mb-1">{social.name}</h3>
-                    <p className="text-sm text-text-light">{social.followers} Followers</p>
-                  </motion.a>
+                    <Icon className="w-5 h-5" />
+                    <span className="capitalize">{platform}</span>
+                    <span className="bg-white/20 px-2 py-0.5 rounded-full text-sm">
+                      {count}
+                    </span>
+                  </button>
                 );
               })}
             </div>
           </div>
         </section>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            <span className="ml-3 text-gray-600">Loading posts...</span>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="max-w-7xl mx-auto px-4 py-12">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+              <p className="text-red-600 mb-4">{error}</p>
+              <button 
+                onClick={loadPosts}
+                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && !error && filteredPosts.length === 0 && (
+          <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+            <Instagram className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+              {selectedPlatform === 'all' ? 'No posts yet' : `No ${selectedPlatform} posts yet`}
+            </h3>
+            <p className="text-gray-500">Check back soon for updates!</p>
+          </div>
+        )}
+
         {/* Posts Grid */}
-        <section className="py-16">
-          <div className="container mx-auto px-4 lg:px-8">
-            <h2 className="text-4xl font-bold mb-12 text-center">
-              <span className="bg-gradient-to-r from-primary-purple to-accent-orange bg-clip-text text-transparent">
-                Latest Posts
-              </span>
-            </h2>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {socialPosts.map((post, index) => {
-                const Icon = post.icon;
+        {!loading && !error && filteredPosts.length > 0 && (
+          <section className="max-w-7xl mx-auto px-4 pb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredPosts.map((post, index) => {
+                const Icon = platformIcons[post.platform];
+                const embedUrl = socialMediaService.getEmbedUrl(post.platform, post.postUrl);
+                
                 return (
                   <motion.div
-                    key={post.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
+                    key={post.$id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300"
+                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
                   >
                     {/* Platform Header */}
-                    <div className={`bg-gradient-to-r ${post.color} p-4 flex items-center justify-between`}>
-                      <div className="flex items-center space-x-2 text-white">
-                        <Icon className="w-5 h-5" />
-                        <span className="font-semibold">{post.platform}</span>
+                    <div className={`bg-gradient-to-r ${platformColors[post.platform]} p-4 flex items-center gap-3`}>
+                      <Icon className="w-6 h-6 text-white" />
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-white capitalize">{post.platform}</h3>
+                        <p className="text-sm text-white/80">
+                          {new Date(post.addedDate).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}
+                        </p>
                       </div>
-                      <span className="text-white/80 text-sm">{post.date}</span>
-                    </div>
-
-                    {/* Post Image/Thumbnail */}
-                    <div className="relative h-64 bg-gradient-to-br from-gray-100 to-gray-200">
-                      {post.thumbnail ? (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-center">
-                            <Youtube className="w-20 h-20 text-red-500 mx-auto mb-3" />
-                            <p className="text-text-dark font-semibold">Video Content</p>
-                          </div>
-                        </div>
-                      ) : post.image ? (
-                        <Image
-                          src={post.image}
-                          alt={`${post.platform} post`}
-                          fill
-                          className="object-cover"
-                        />
-                      ) : null}
+                      <a
+                        href={post.postUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
+                      >
+                        <ExternalLink className="w-5 h-5 text-white" />
+                      </a>
                     </div>
 
                     {/* Post Content */}
-                    <div className="p-6">
-                      <p className="text-text-dark mb-4 line-clamp-3">
-                        {post.caption}
-                      </p>
-                      
-                      {/* Engagement Stats */}
-                      <div className="flex items-center justify-between mb-4 pb-4 border-b">
-                        <div className="flex items-center space-x-4 text-sm text-text-light">
-                          <div className="flex items-center space-x-1">
-                            <Heart className="w-4 h-4 text-red-500" />
-                            <span>{post.likes}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <MessageCircle className="w-4 h-4 text-blue-500" />
-                            <span>{post.comments}</span>
-                          </div>
-                        </div>
-                        <Share2 className="w-5 h-5 text-text-light hover:text-primary-purple cursor-pointer transition-colors" />
-                      </div>
+                    <div className="p-4">
+                      {post.caption && (
+                        <p className="text-gray-700 mb-4">{post.caption}</p>
+                      )}
 
-                      {/* View Post Link */}
-                      <a
-                        href={post.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center space-x-2 text-primary-purple font-semibold hover:text-accent-orange transition-colors"
-                      >
-                        <span>View Post</span>
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
+                      {/* Embed Preview or Card */}
+                      {post.platform === 'facebook' || post.platform === 'linkedin' ? (
+                        // Facebook and LinkedIn: Show card with link (embeds often fail)
+                        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-8 text-center border-2 border-gray-200">
+                          <Icon className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+                          <p className="text-gray-600 mb-4">Click below to view this post</p>
+                          <a
+                            href={post.postUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-2 bg-gradient-to-r ${platformColors[post.platform]} text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all`}
+                          >
+                            View on {post.platform.charAt(0).toUpperCase() + post.platform.slice(1)}
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </div>
+                      ) : (
+                        // Other platforms: Try to embed
+                        <>
+                          <div className="relative w-full bg-gray-100 rounded-lg overflow-hidden" style={{ paddingBottom: '100%' }}>
+                            <iframe
+                              src={embedUrl}
+                              className="absolute inset-0 w-full h-full"
+                              frameBorder="0"
+                              scrolling="no"
+                              allowFullScreen
+                              loading="lazy"
+                            />
+                          </div>
+                          <a
+                            href={post.postUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`mt-4 w-full bg-gradient-to-r ${platformColors[post.platform]} text-white py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2`}
+                          >
+                            View on {post.platform.charAt(0).toUpperCase() + post.platform.slice(1)}
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </>
+                      )}
                     </div>
                   </motion.div>
                 );
               })}
             </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-16 bg-gradient-to-br from-primary-purple to-primary-purple-light text-white">
-          <div className="container mx-auto px-4 lg:px-8 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Join Our Community
-            </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Follow us on social media for daily updates, success stories, and study abroad tips
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <motion.a
-                    key={social.name}
-                    href={social.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`bg-gradient-to-r ${social.color} p-4 rounded-full shadow-lg hover:shadow-xl transition-all`}
-                  >
-                    <Icon className="w-6 h-6 text-white" />
-                  </motion.a>
-                );
-              })}
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
-      <Footer />
       <ChatWidget />
+      <Footer />
     </>
   );
 }
