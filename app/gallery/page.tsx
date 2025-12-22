@@ -165,33 +165,6 @@ export default function Gallery() {
                     unoptimized
                   />
                 </div>
-
-                {/* Image Info */}
-                {(selectedImage.title || selectedImage.description || selectedImage.uploadDate) && (
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className="absolute bottom-4 sm:bottom-8 left-4 sm:left-8 right-4 sm:right-8 bg-black/50 backdrop-blur-md p-4 sm:p-6 rounded-lg text-white"
-                  >
-                    {selectedImage.title && (
-                      <h2 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">{selectedImage.title}</h2>
-                    )}
-                    {selectedImage.description && (
-                      <p className="text-sm sm:text-base text-white/90 mb-2">{selectedImage.description}</p>
-                    )}
-                    {selectedImage.uploadDate && (
-                      <p className="flex items-center gap-2 text-xs sm:text-sm text-white/80">
-                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-                        {new Date(selectedImage.uploadDate).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </p>
-                    )}
-                  </motion.div>
-                )}
               </motion.div>
             </motion.div>
           )}
