@@ -19,6 +19,78 @@ export default function ChatWidget() {
 
   const { messages, loading, sendMessage, updateVisitorDetails, session } = useChat();
 
+  // Send heartbeat to indicate user is online
+  useEffect(() => {
+    if (!session) return;
+
+    const sendHeartbeat = () => {
+      try {
+        localStorage.setItem(`presence-${session.$id}`, JSON.stringify({
+          sessionId: session.$id,
+          lastSeen: Date.now(),
+          isOnline: true,
+        }));
+        window.dispatchEvent(new Event('storage'));
+      } catch (err) {
+        console.log('Heartbeat error:', err);
+      }
+    };
+
+    // Send heartbeat immediately
+    sendHeartbeat();
+
+    // Send heartbeat every 5 seconds
+    const heartbeatInterval = setInterval(sendHeartbeat, 5000);
+
+    // Mark as offline when page is closed/hidden
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        try {
+          localStorage.setItem(`presence-${session.$id}`, JSON.stringify({
+            sessionId: session.$id,
+            lastSeen: Date.now(),
+            isOnline: false,
+          }));
+        } catch (err) {
+          console.log('Visibility error:', err);
+        }
+      } else {
+        sendHeartbeat();
+      }
+    };
+
+    const handleBeforeUnload = () => {
+      try {
+        localStorage.setItem(`presence-${session.$id}`, JSON.stringify({
+          sessionId: session.$id,
+          lastSeen: Date.now(),
+          isOnline: false,
+        }));
+      } catch (err) {
+        console.log('Unload error:', err);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      clearInterval(heartbeatInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      // Mark offline on unmount
+      try {
+        localStorage.setItem(`presence-${session.$id}`, JSON.stringify({
+          sessionId: session.$id,
+          lastSeen: Date.now(),
+          isOnline: false,
+        }));
+      } catch (err) {
+        console.log('Cleanup error:', err);
+      }
+    };
+  }, [session]);
+
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

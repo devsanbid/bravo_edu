@@ -2,7 +2,7 @@
 
 import { useAdminChat } from '@/hooks/useAdminChat';
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, Send, X, User, Mail, Phone, Clock, ChevronLeft } from 'lucide-react';
+import { MessageCircle, Send, X, User, Mail, Phone, Clock, ChevronLeft, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminLayout from '@/components/AdminLayout';
@@ -18,6 +18,7 @@ function AdminChatDashboardContent() {
     selectSession,
     sendMessage,
     closeSession,
+    deleteSession,
     refreshSessions,
     unreadCounts,
     lastMessages,
@@ -29,6 +30,7 @@ function AdminChatDashboardContent() {
   const [isVisitorTyping, setIsVisitorTyping] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [onlineStatus, setOnlineStatus] = useState<Record<string, boolean>>({});
 
   // Calculate total unread count
   const totalUnread = Object.values(unreadCounts).reduce((sum, count) => sum + count, 0);
@@ -39,6 +41,44 @@ function AdminChatDashboardContent() {
       setAdminName(user.name || user.email?.split('@')[0] || 'Bravo Team');
     }
   }, [user]);
+
+  // Monitor online status for all sessions
+  useEffect(() => {
+    const checkOnlineStatus = () => {
+      const statusMap: Record<string, boolean> = {};
+      sessions.forEach(session => {
+        try {
+          const presenceData = localStorage.getItem(`presence-${session.$id}`);
+          if (presenceData) {
+            const presence = JSON.parse(presenceData);
+            // Consider online if heartbeat within last 10 seconds
+            const isRecent = Date.now() - presence.lastSeen < 10000;
+            statusMap[session.$id] = presence.isOnline && isRecent;
+          } else {
+            statusMap[session.$id] = false;
+          }
+        } catch (err) {
+          statusMap[session.$id] = false;
+        }
+      });
+      setOnlineStatus(statusMap);
+    };
+
+    // Check immediately
+    checkOnlineStatus();
+
+    // Check every 3 seconds
+    const interval = setInterval(checkOnlineStatus, 3000);
+
+    // Listen for storage events
+    const handleStorage = () => checkOnlineStatus();
+    window.addEventListener('storage', handleStorage);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, [sessions]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -270,7 +310,14 @@ function AdminChatDashboardContent() {
                             </p>
                           </div>
                         </div>
-                        <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                        <div className="flex items-center gap-2">
+                          <span 
+                            className={`w-3 h-3 rounded-full ${
+                              onlineStatus[session.$id] ? 'bg-green-500' : 'bg-red-500'
+                            }`}
+                            title={onlineStatus[session.$id] ? 'Online' : 'Offline'}
+                          ></span>
+                        </div>
                       </div>
                       {lastMessages[session.$id] && (
                         <p className="text-sm text-gray-600 ml-12 mb-1">
@@ -278,7 +325,10 @@ function AdminChatDashboardContent() {
                         </p>
                       )}
                       {session.visitorEmail && (
-                        <p className="text-xs text-gray-500 ml-12 truncate">{session.visitorEmail}</p>
+                        <p className="text-xs text-gray-500 ml-12 truncate flex items-center gap-1">
+                          <Mail className="w-3 h-3" />
+                          {session.visitorEmail}
+                        </p>
                       )}
                     </motion.button>
                   ))}
@@ -324,16 +374,30 @@ function AdminChatDashboardContent() {
                         </div>
                       </div>
                     </div>
-                    <button
-                      onClick={() => {
-                        if (confirm('Are you sure you want to close this chat?')) {
-                          closeSession(selectedSession.$id);
-                        }
-                      }}
-                      className="p-2 hover:bg-white/20 rounded-lg transition"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          if (confirm('Are you sure you want to permanently delete this chat and all messages?')) {
+                            deleteSession(selectedSession.$id);
+                          }
+                        }}
+                        className="p-2 hover:bg-red-500/20 rounded-lg transition"
+                        title="Delete Chat Permanently"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm('Are you sure you want to close this chat?')) {
+                            closeSession(selectedSession.$id);
+                          }
+                        }}
+                        className="p-2 hover:bg-white/20 rounded-lg transition"
+                        title="Close Chat"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
 

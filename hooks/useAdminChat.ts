@@ -97,6 +97,24 @@ export function useAdminChat() {
     }
   }, [selectedSession]);
 
+  // Delete session permanently
+  const deleteSession = useCallback(async (sessionId: string) => {
+    try {
+      await chatService.deleteSession(sessionId);
+      setSessions(prev => prev.filter(s => s.$id !== sessionId));
+      if (selectedSession?.$id === sessionId) {
+        setSelectedSession(null);
+        setMessages([]);
+      }
+      // Clear local storage data
+      localStorage.removeItem(`presence-${sessionId}`);
+      localStorage.removeItem(`typing-${sessionId}`);
+    } catch (err) {
+      console.error('Error deleting session:', err);
+      setError('Failed to delete session');
+    }
+  }, [selectedSession]);
+
   // Initialize and subscribe
   useEffect(() => {
     loadSessions();
@@ -217,6 +235,7 @@ export function useAdminChat() {
     selectSession,
     sendMessage,
     closeSession,
+    deleteSession,
     refreshSessions: loadSessions,
     unreadCounts,
     lastMessages,

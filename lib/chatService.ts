@@ -184,6 +184,25 @@ export const chatService = {
     }
   },
 
+  // Delete session and all its messages
+  async deleteSession(sessionId: string): Promise<void> {
+    try {
+      // First, delete all messages in the session
+      const messages = await this.getMessages(sessionId);
+      await Promise.all(
+        messages.map(message => 
+          databases.deleteDocument(DATABASE_ID, MESSAGES_COLLECTION_ID, message.$id)
+        )
+      );
+
+      // Then delete the session
+      await databases.deleteDocument(DATABASE_ID, SESSIONS_COLLECTION_ID, sessionId);
+    } catch (error) {
+      console.error('Error deleting session:', error);
+      throw error;
+    }
+  },
+
   // Admin Functions
   
   // Get all sessions (for admin dashboard)
