@@ -19,48 +19,83 @@ export const useChat = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Initialize chat session
+  // Initialize chat session only when explicitly called
   useEffect(() => {
-    const initChat = async () => {
+    const checkExistingSession = async () => {
       try {
         const visitorId = getVisitorId();
-        const chatSession = await chatService.getOrCreateSession(visitorId);
-        setSession(chatSession);
+        
+        // Only check for existing session, don't create new one
+        const sessions = await chatService.getExistingSession(visitorId);
+        
+        if (sessions) {
+          setSession(sessions);
+          
+          // Load existing messages
+          const existingMessages = await chatService.getMessages(sessions.$id);
+          setMessages(existingMessages);
 
-        // Load existing messages
-        const existingMessages = await chatService.getMessages(chatSession.$id);
-        setMessages(existingMessages);
+          // Subscribe to new messages
+          const unsubscribe = chatService.subscribeToMessages(
+            sessions.$id,
+            (newMessage) => {
+              setMessages((prev) => {
+                // Avoid duplicates
+                if (prev.some(msg => msg.$id === newMessage.$id)) {
+                  return prev;
+                }
+                return [...prev, newMessage];
+              });
+            }
+          );
 
-        // Subscribe to new messages
-        const unsubscribe = chatService.subscribeToMessages(
-          chatSession.$id,
-          (newMessage) => {
-            setMessages((prev) => {
-              // Avoid duplicates
-              if (prev.some(msg => msg.$id === newMessage.$id)) {
-                return prev;
-              }
-              return [...prev, newMessage];
-            });
-          }
-        );
-
+          // Cleanup subscription on unmount
+          return () => {
+            if (unsubscribe && typeof unsubscribe === 'function') {
+              unsubscribe();
+            }
+          };
+        }
+        
         setLoading(false);
-
-        // Cleanup subscription on unmount
-        return () => {
-          if (unsubscribe && typeof unsubscribe === 'function') {
-            unsubscribe();
-          }
-        };
       } catch (err) {
-        console.error('Error initializing chat:', err);
-        setError('Failed to initialize chat');
+        console.error('Error checking session:', err);
         setLoading(false);
       }
     };
 
-    initChat();
+    checkExistingSession();
+  }, []);
+
+  // Initialize session when user submits form
+  const initializeSession = useCallback(async () => {
+    try {
+      const visitorId = getVisitorId();
+      const chatSession = await chatService.getOrCreateSession(visitorId);
+      setSession(chatSession);
+
+      // Load existing messages
+      const existingMessages = await chatService.getMessages(chatSession.$id);
+      setMessages(existingMessages);
+
+      // Subscribe to new messages
+      chatService.subscribeToMessages(
+        chatSession.$id,
+        (newMessage) => {
+          setMessages((prev) => {
+            if (prev.some(msg => msg.$id === newMessage.$id)) {
+              return prev;
+            }
+            return [...prev, newMessage];
+          });
+        }
+      );
+
+      return chatSession;
+    } catch (err) {
+      console.error('Error initializing session:', err);
+      throw err;
+    }
   }, []);
 
   // Send message
@@ -107,5 +142,6 @@ export const useChat = () => {
     error,
     sendMessage,
     updateVisitorDetails,
+    initializeSession,
   };
 };

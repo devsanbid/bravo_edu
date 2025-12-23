@@ -49,6 +49,30 @@ export const chatService = {
     }
   },
 
+  // Get existing session without creating a new one
+  async getExistingSession(visitorId: string): Promise<ChatSession | null> {
+    try {
+      // Try to find existing active session
+      const sessions = await databases.listDocuments(
+        DATABASE_ID,
+        SESSIONS_COLLECTION_ID,
+        [
+          Query.equal('visitorId', visitorId),
+          Query.equal('status', 'active'),
+        ]
+      );
+
+      if (sessions.documents.length > 0) {
+        return sessions.documents[0] as unknown as ChatSession;
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Error getting session:', error);
+      return null;
+    }
+  },
+
   // Get or create session for a visitor
   async getOrCreateSession(visitorId: string): Promise<ChatSession> {
     try {

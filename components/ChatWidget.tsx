@@ -26,7 +26,7 @@ export default function ChatWidget() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [lastReadMessageId, setLastReadMessageId] = useState<string | null>(null);
 
-  const { messages, loading, sendMessage, updateVisitorDetails, session } = useChat();
+  const { messages, loading, sendMessage, updateVisitorDetails, session, initializeSession } = useChat();
 
   // Listen for open chat events from anywhere on the page
   useEffect(() => {
@@ -134,6 +134,11 @@ export default function ChatWidget() {
       if (messages.length > 0) {
         setLastReadMessageId(messages[messages.length - 1].$id);
       }
+      
+      // Show form if no session exists
+      if (!session && !loading) {
+        setShowForm(true);
+      }
     } else {
       // When chat is closed, count new admin messages
       const lastReadIndex = lastReadMessageId 
@@ -144,7 +149,7 @@ export default function ChatWidget() {
       const newAdminMessages = newMessages.filter(m => m.isFromAdmin);
       setUnreadCount(newAdminMessages.length);
     }
-  }, [isOpen, messages, lastReadMessageId]);
+  }, [isOpen, messages, lastReadMessageId, session, loading]);
 
   // Listen for admin typing via Appwrite realtime
   useEffect(() => {
@@ -230,18 +235,23 @@ export default function ChatWidget() {
   const handleSubmitDetails = async (e: React.FormEvent) => {
     e.preventDefault();
     if (visitorName && visitorEmail) {
-      await updateVisitorDetails({
-        visitorName,
-        visitorEmail,
-        visitorPhone,
-      });
-      setShowForm(false);
-      await sendMessage(
-        `Hi, I'm ${visitorName}. Email: ${visitorEmail}, Phone: ${visitorPhone}`,
-        visitorName,
-        visitorEmail,
-        visitorPhone
-      );
+      // Initialize session first when user submits form
+      const newSession = await initializeSession();
+      
+      if (newSession) {
+        await updateVisitorDetails({
+          visitorName,
+          visitorEmail,
+          visitorPhone,
+        });
+        setShowForm(false);
+        await sendMessage(
+          `Hi, I'm ${visitorName}. Email: ${visitorEmail}, Phone: ${visitorPhone}`,
+          visitorName,
+          visitorEmail,
+          visitorPhone
+        );
+      }
     }
   };
 

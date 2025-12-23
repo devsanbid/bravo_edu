@@ -138,16 +138,28 @@ export default function AdminPopupsPage() {
   return (
     <ProtectedRoute>
       <AdminLayout>
-        <div className="p-4 md:p-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 md:mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Popup Management</h1>
-            <button
-              onClick={() => setShowForm(!showForm)}
-              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm md:text-base"
-            >
-              {showForm ? <Eye className="w-4 h-4 md:w-5 md:h-5" /> : <Plus className="w-4 h-4 md:w-5 md:h-5" />}
-              {showForm ? 'View Popups' : 'Create Popup'}
-            </button>
+        <div className="p-4 md:p-6 lg:p-8 min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20">
+          {/* Centered Container */}
+          <div className="max-w-6xl mx-auto">
+          {/* Modern Header with Gradient */}
+          <div className="mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2">
+              <div>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                  Popup Management
+                </h1>
+                <p className="text-gray-600 text-sm md:text-base">Create and manage engaging popups for your visitors</p>
+              </div>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowForm(!showForm)}
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 text-sm md:text-base font-semibold"
+              >
+                {showForm ? <Eye className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                {showForm ? 'View Popups' : 'Create Popup'}
+              </motion.button>
+            </div>
           </div>
 
           <AnimatePresence mode="wait">
@@ -157,62 +169,67 @@ export default function AdminPopupsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="bg-white rounded-lg shadow-md p-4 md:p-6 mb-4 md:mb-6"
+                className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-6 md:p-8 mb-6"
               >
-                <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-900">{editingPopup ? 'Edit Popup' : 'Create New Popup'}</h2>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    {editingPopup ? <Edit2 className="w-6 h-6 text-white" /> : <Plus className="w-6 h-6 text-white" />}
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{editingPopup ? 'Edit Popup' : 'Create New Popup'}</h2>
+                </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-900 mb-2">Title *</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Title *</label>
                       <input
                         type="text"
                         required
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                        className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 transition-all duration-200 hover:border-gray-300 bg-white/50 backdrop-blur"
                         placeholder="Enter popup title"
                       />
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-900 mb-2">Content *</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Content *</label>
                       <textarea
                         required
                         value={formData.content}
                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                         rows={5}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                        className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 transition-all duration-200 hover:border-gray-300 bg-white/50 backdrop-blur"
                         placeholder="Enter popup content"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-2">Start Date *</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Start Date *</label>
                       <input
                         type="date"
                         required
                         value={formData.startDate}
                         onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                        className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 transition-all duration-200 hover:border-gray-300 bg-white/50 backdrop-blur"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-2">End Date *</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">End Date *</label>
                       <input
                         type="date"
                         required
                         value={formData.endDate}
                         onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                        className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 transition-all duration-200 hover:border-gray-300 bg-white/50 backdrop-blur"
                       />
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-900 mb-2">Upload Image (Optional)</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Upload Image (Optional)</label>
                       <div className="flex items-center gap-4">
                         <label className="flex-1 cursor-pointer">
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
+                          <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-500 hover:bg-blue-50/50 transition-all duration-300 bg-gradient-to-br from-gray-50 to-blue-50/30">
                             {imageFile || formData.imageUrl ? (
                               <div className="space-y-2">
                                 {imageFile ? (
@@ -262,23 +279,23 @@ export default function AdminPopupsPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-2">Button Text (Optional)</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Button Text (Optional)</label>
                       <input
                         type="text"
                         value={formData.buttonText}
                         onChange={(e) => setFormData({ ...formData, buttonText: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                        className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 transition-all duration-200 hover:border-gray-300 bg-white/50 backdrop-blur"
                         placeholder="Learn More"
                       />
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-900 mb-2">Button Link (Optional)</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Button Link (Optional)</label>
                       <input
                         type="text"
                         value={formData.buttonLink}
                         onChange={(e) => setFormData({ ...formData, buttonLink: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                        className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 transition-all duration-200 hover:border-gray-300 bg-white/50 backdrop-blur"
                         placeholder="/#consultation"
                       />
                     </div>
@@ -296,22 +313,26 @@ export default function AdminPopupsPage() {
                     </div>
                   </div>
 
-                  <div className="flex gap-4 pt-4">
-                    <button
+                  <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       type="submit"
                       disabled={uploading}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 font-semibold"
                     >
                       {uploading ? 'Uploading...' : editingPopup ? 'Update Popup' : 'Create Popup'}
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       type="button"
                       onClick={resetForm}
                       disabled={uploading}
-                      className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg transition-colors disabled:opacity-50"
+                      className="sm:w-auto bg-gray-100 hover:bg-gray-200 text-gray-700 px-8 py-4 rounded-xl transition-all duration-300 disabled:opacity-50 font-semibold border-2 border-gray-200 hover:border-gray-300"
                     >
                       Cancel
-                    </button>
+                    </motion.button>
                   </div>
                 </form>
               </motion.div>
@@ -327,75 +348,102 @@ export default function AdminPopupsPage() {
                     <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                   </div>
                 ) : popups.length === 0 ? (
-                  <div className="text-center py-12 bg-white rounded-lg shadow-md">
-                    <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600 text-lg">No popups created yet</p>
-                    <p className="text-gray-500 text-sm mt-2">Click "Create Popup" to get started</p>
-                  </div>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-center py-16 bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20"
+                  >
+                    <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Calendar className="w-12 h-12 text-blue-600" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">No popups created yet</h3>
+                    <p className="text-gray-600 mb-6">Click "Create Popup" to engage your visitors</p>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setShowForm(true)}
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300"
+                    >
+                      Create Your First Popup
+                    </motion.button>
+                  </motion.div>
                 ) : (
-                  <div className="grid gap-4">
-                    {popups.map((popup) => (
-                      <div
+                  <div className="grid gap-6">
+                    {popups.map((popup, index) => (
+                      <motion.div
                         key={popup.$id}
-                        className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        whileHover={{ y: -4 }}
+                        className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-6 md:p-8 hover:shadow-2xl transition-all duration-300 group"
                       >
-                        <div className="flex justify-between items-start">
+                        <div className="flex flex-col lg:flex-row justify-between lg:items-start gap-4">
                           <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <h3 className="text-xl font-bold text-gray-900">{popup.title}</h3>
+                            <div className="flex flex-wrap items-center gap-3 mb-3">
+                              <h3 className="text-xl md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{popup.title}</h3>
                               {popup.isEnabled ? (
-                                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
+                                <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg shadow-green-500/30 flex items-center gap-1">
+                                  <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
                                   Active
                                 </span>
                               ) : (
-                                <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-semibold">
+                                <span className="bg-gray-200 text-gray-700 px-4 py-1.5 rounded-full text-xs font-bold">
                                   Inactive
                                 </span>
                               )}
                             </div>
-                            <p className="text-gray-600 mb-3 line-clamp-2">{popup.content}</p>
-                            <div className="flex items-center gap-4 text-sm text-gray-500">
-                              <span className="flex items-center gap-1">
-                                <Calendar className="w-4 h-4" />
-                                {new Date(popup.startDate).toLocaleDateString()} - {new Date(popup.endDate).toLocaleDateString()}
+                            <p className="text-gray-600 mb-4 line-clamp-2 text-sm md:text-base leading-relaxed">{popup.content}</p>
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                              <span className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-lg">
+                                <Calendar className="w-4 h-4 text-blue-600" />
+                                <span className="font-medium">{new Date(popup.startDate).toLocaleDateString()} - {new Date(popup.endDate).toLocaleDateString()}</span>
                               </span>
                               {popup.buttonText && (
-                                <span className="text-blue-600">Button: {popup.buttonText}</span>
+                                <span className="bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg font-medium">Button: {popup.buttonText}</span>
                               )}
                             </div>
                           </div>
 
-                          <div className="flex gap-2 ml-4">
-                            <button
+                          <div className="flex lg:flex-col gap-2">
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
                               onClick={() => handleToggle(popup.$id, popup.isEnabled)}
-                              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                              className="p-3 text-gray-600 hover:bg-gradient-to-br hover:from-gray-100 hover:to-gray-200 rounded-xl transition-all duration-300 hover:shadow-lg border-2 border-transparent hover:border-gray-300"
                               title={popup.isEnabled ? 'Disable' : 'Enable'}
                             >
                               {popup.isEnabled ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                            </button>
-                            <button
+                            </motion.button>
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
                               onClick={() => handleEdit(popup)}
-                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              className="p-3 text-blue-600 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-xl transition-all duration-300 hover:shadow-lg border-2 border-transparent hover:border-blue-300"
                               title="Edit"
                             >
                               <Edit2 className="w-5 h-5" />
-                            </button>
-                            <button
+                            </motion.button>
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
                               onClick={() => handleDelete(popup.$id, popup.imageFileId)}
-                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              className="p-3 text-red-600 hover:bg-gradient-to-br hover:from-red-50 hover:to-pink-50 rounded-xl transition-all duration-300 hover:shadow-lg border-2 border-transparent hover:border-red-300"
                               title="Delete"
                             >
                               <Trash2 className="w-5 h-5" />
-                            </button>
+                            </motion.button>
                           </div>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 )}
               </motion.div>
             )}
           </AnimatePresence>
+          </div>
+          {/* End Centered Container */}
         </div>
       </AdminLayout>
     </ProtectedRoute>

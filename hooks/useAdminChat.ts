@@ -55,11 +55,13 @@ export function useAdminChat() {
   }, []);
 
   // Select a session
-  const selectSession = useCallback(async (session: ChatSession) => {
+  const selectSession = useCallback(async (session: ChatSession | null) => {
     setSelectedSession(session);
     setMessages([]); // Clear previous messages
     // Mark this session as read
-    setUnreadCounts(prev => ({ ...prev, [session.$id]: 0 }));
+    if (session) {
+      setUnreadCounts(prev => ({ ...prev, [session.$id]: 0 }));
+    }
     // Messages will be loaded by the useEffect
   }, []);
 
