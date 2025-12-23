@@ -135,7 +135,7 @@ function AdminSocialMediaPanel() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Platform
               </label>
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2 md:gap-3">
                 {(['instagram', 'facebook', 'twitter', 'linkedin', 'youtube', 'tiktok', 'website'] as SocialMediaPlatform[]).map((p) => {
                   const Icon = platformIcons[p];
                   return (
@@ -143,14 +143,14 @@ function AdminSocialMediaPanel() {
                       key={p}
                       type="button"
                       onClick={() => setPlatform(p)}
-                      className={`p-4 rounded-lg border-2 transition-all ${
+                      className={`p-2 md:p-4 rounded-lg border-2 transition-all ${
                         platform === p
                           ? `${platformColors[p]} text-white border-transparent`
                           : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'
                       }`}
                     >
-                      <Icon className="w-6 h-6 mx-auto mb-1" />
-                      <p className="text-xs font-medium capitalize">{p}</p>
+                      <Icon className="w-4 h-4 md:w-6 md:h-6 mx-auto mb-1" />
+                      <p className="text-[10px] md:text-xs font-medium capitalize">{p}</p>
                     </button>
                   );
                 })}
@@ -238,48 +238,59 @@ function AdminSocialMediaPanel() {
                     key={post.$id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                    className="border border-gray-200 rounded-lg p-3 md:p-4 hover:shadow-md transition-shadow"
                   >
-                    <div className="flex items-start gap-4">
+                    <div className="flex flex-col sm:flex-row items-start gap-3 md:gap-4">
                       {/* Platform Icon */}
-                      <div className={`${platformColors[post.platform]} p-3 rounded-lg flex-shrink-0`}>
-                        <Icon className="w-6 h-6 text-white" />
+                      <div className={`${platformColors[post.platform]} p-2 md:p-3 rounded-lg flex-shrink-0 mx-auto sm:mx-0`}>
+                        <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
                       </div>
 
                       {/* Post Info */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-gray-900 capitalize">{post.platform}</span>
-                          <span className="text-gray-400">•</span>
-                          <span className="text-sm text-gray-500">
-                            {new Date(post.addedDate).toLocaleDateString()}
-                          </span>
+                      <div className="flex-1 min-w-0 w-full">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
+                          <span className="font-semibold text-gray-900 capitalize text-sm md:text-base">{post.platform}</span>
+                          <span className="hidden sm:inline text-gray-400">•</span>
+                          <div className="flex items-center gap-1 text-xs md:text-sm text-gray-500">
+                            <span className="sm:hidden">Posted:</span>
+                            <span>{new Date(post.addedDate).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric'
+                            })}</span>
+                            <span className="hidden md:inline text-gray-400">at</span>
+                            <span className="hidden md:inline">{new Date(post.addedDate).toLocaleTimeString('en-US', {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}</span>
+                          </div>
                         </div>
                         
                         <a
                           href={post.postUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1 mb-2 truncate"
+                          className="text-blue-600 hover:text-blue-700 text-xs md:text-sm flex items-center gap-1 mb-2 break-all"
                         >
-                          {post.postUrl}
+                          <span className="truncate">{post.postUrl}</span>
                           <ExternalLink className="w-3 h-3 flex-shrink-0" />
                         </a>
 
                         {post.caption && (
-                          <p className="text-gray-600 text-sm">{post.caption}</p>
+                          <p className="text-gray-600 text-xs md:text-sm mb-2">{post.caption}</p>
                         )}
 
-                        <p className="text-xs text-gray-400 mt-2">Added by: {post.addedBy}</p>
+                        <p className="text-[10px] md:text-xs text-gray-400">Added by: {post.addedBy}</p>
                       </div>
 
                       {/* Delete Button */}
                       <button
                         onClick={() => handleDelete(post.$id)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+                        className="w-full sm:w-auto p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0 flex items-center justify-center gap-2"
                         title="Delete post"
                       >
-                        <Trash2 className="w-5 h-5" />
+                        <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
+                        <span className="sm:hidden text-sm">Delete</span>
                       </button>
                     </div>
                   </motion.div>

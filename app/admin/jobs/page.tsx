@@ -199,33 +199,33 @@ function AdminJobsContent() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Jobs Management</h1>
-          <p className="text-gray-600">Manage job postings and view applications</p>
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Jobs Management</h1>
+          <p className="text-sm md:text-base text-gray-600">Manage job postings and view applications</p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex space-x-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-4 md:mb-6">
           <button
             onClick={() => setActiveTab('jobs')}
-            className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+            className={`px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold transition-all text-sm md:text-base ${
               activeTab === 'jobs'
                 ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
                 : 'bg-white text-gray-600 hover:bg-gray-50'
             }`}
           >
-            <Briefcase className="inline-block mr-2 w-5 h-5" />
+            <Briefcase className="inline-block mr-2 w-4 h-4 md:w-5 md:h-5" />
             Job Postings
           </button>
           <button
             onClick={() => setActiveTab('applications')}
-            className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+            className={`px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold transition-all text-sm md:text-base ${
               activeTab === 'applications'
                 ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
                 : 'bg-white text-gray-600 hover:bg-gray-50'
             }`}
           >
-            <Users className="inline-block mr-2 w-5 h-5" />
+            <Users className="inline-block mr-2 w-4 h-4 md:w-5 md:h-5" />
             Applications
           </button>
         </div>
@@ -240,9 +240,9 @@ function AdminJobsContent() {
               transition={{ duration: 0.3 }}
             >
               {/* Job Postings Section */}
-              <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">
+              <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 mb-4 md:mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 md:mb-6">
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-900">
                     {showJobForm ? (editingJob ? 'Edit Job' : 'Create New Job') : 'Job Postings'}
                   </h2>
                   <button
@@ -253,7 +253,7 @@ function AdminJobsContent() {
                         setShowJobForm(true);
                       }
                     }}
-                    className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                    className={`w-full sm:w-auto px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold transition-all text-sm md:text-base ${
                       showJobForm
                         ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                         : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg'
@@ -261,12 +261,12 @@ function AdminJobsContent() {
                   >
                     {showJobForm ? (
                       <>
-                        <X className="inline-block mr-2 w-5 h-5" />
+                        <X className="inline-block mr-2 w-4 h-4 md:w-5 md:h-5" />
                         Cancel
                       </>
                     ) : (
                       <>
-                        <Plus className="inline-block mr-2 w-5 h-5" />
+                        <Plus className="inline-block mr-2 w-4 h-4 md:w-5 md:h-5" />
                         Create Job
                       </>
                     )}

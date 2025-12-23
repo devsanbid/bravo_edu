@@ -41,7 +41,7 @@ function AnnouncementsContent() {
   const loadAnnouncements = async () => {
     try {
       setLoading(true);
-      const data = await announcementService.getAnnouncements();
+      const data = await announcementService.getAllAnnouncements();
       setAnnouncements(data);
     } catch (error) {
       console.error('Failed to load announcements:', error);
@@ -192,15 +192,15 @@ function AnnouncementsContent() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Announcements Management</h1>
-        <p className="text-gray-600">Create and manage website announcements</p>
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Announcements Management</h1>
+        <p className="text-sm md:text-base text-gray-600">Create and manage website announcements</p>
       </div>
 
       {/* Toggle Button */}
-      <div className="mb-6">
+      <div className="mb-4 md:mb-6">
         <button
           onClick={() => {
             if (showForm) {
@@ -208,9 +208,9 @@ function AnnouncementsContent() {
             }
             setShowForm(!showForm);
           }}
-          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200"
+          className="w-full sm:w-auto inline-flex items-center justify-center px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 text-sm md:text-base"
         >
-          <Plus className="w-5 h-5 mr-2" />
+          <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
           {showForm ? 'View Announcements' : 'Create Announcement'}
         </button>
       </div>
@@ -225,8 +225,8 @@ function AnnouncementsContent() {
             transition={{ duration: 0.3 }}
           >
             {/* Create/Edit Form */}
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 mb-6 md:mb-8">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">
                 {editingId ? 'Edit Announcement' : 'Create New Announcement'}
               </h2>
 
@@ -350,65 +350,65 @@ function AnnouncementsContent() {
             transition={{ duration: 0.3 }}
           >
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8">
               <motion.div
                 whileHover={{ scale: 1.02 }}
-                className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white"
+                className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-4 md:p-6 text-white"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-blue-100 text-sm font-medium">Total Announcements</p>
-                    <p className="text-3xl font-bold mt-2">{stats.total}</p>
+                <div className="flex flex-col md:flex-row items-start md:items-center md:justify-between">
+                  <div className="mb-2 md:mb-0">
+                    <p className="text-blue-100 text-xs md:text-sm font-medium">Total Announcements</p>
+                    <p className="text-2xl md:text-3xl font-bold mt-1 md:mt-2">{stats.total}</p>
                   </div>
-                  <Megaphone className="w-12 h-12 text-blue-200" />
+                  <Megaphone className="w-8 h-8 md:w-12 md:h-12 text-blue-200" />
                 </div>
               </motion.div>
 
               <motion.div
                 whileHover={{ scale: 1.02 }}
-                className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white"
+                className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-4 md:p-6 text-white"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-green-100 text-sm font-medium">Active</p>
-                    <p className="text-3xl font-bold mt-2">{stats.active}</p>
+                <div className="flex flex-col md:flex-row items-start md:items-center md:justify-between">
+                  <div className="mb-2 md:mb-0">
+                    <p className="text-green-100 text-xs md:text-sm font-medium">Active</p>
+                    <p className="text-2xl md:text-3xl font-bold mt-1 md:mt-2">{stats.active}</p>
                   </div>
-                  <Eye className="w-12 h-12 text-green-200" />
+                  <Eye className="w-8 h-8 md:w-12 md:h-12 text-green-200" />
                 </div>
               </motion.div>
 
               <motion.div
                 whileHover={{ scale: 1.02 }}
-                className="bg-gradient-to-br from-gray-500 to-gray-600 rounded-xl shadow-lg p-6 text-white"
+                className="bg-gradient-to-br from-gray-500 to-gray-600 rounded-xl shadow-lg p-4 md:p-6 text-white"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-100 text-sm font-medium">Expired</p>
-                    <p className="text-3xl font-bold mt-2">{stats.expired}</p>
+                <div className="flex flex-col md:flex-row items-start md:items-center md:justify-between">
+                  <div className="mb-2 md:mb-0">
+                    <p className="text-gray-100 text-xs md:text-sm font-medium">Expired</p>
+                    <p className="text-2xl md:text-3xl font-bold mt-1 md:mt-2">{stats.expired}</p>
                   </div>
-                  <Calendar className="w-12 h-12 text-gray-200" />
+                  <Calendar className="w-8 h-8 md:w-12 md:h-12 text-gray-200" />
                 </div>
               </motion.div>
 
               <motion.div
                 whileHover={{ scale: 1.02 }}
-                className="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-6 text-white"
+                className="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-4 md:p-6 text-white"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-red-100 text-sm font-medium">Urgent</p>
-                    <p className="text-3xl font-bold mt-2">{stats.urgent}</p>
+                <div className="flex flex-col md:flex-row items-start md:items-center md:justify-between">
+                  <div className="mb-2 md:mb-0">
+                    <p className="text-red-100 text-xs md:text-sm font-medium">Urgent</p>
+                    <p className="text-2xl md:text-3xl font-bold mt-1 md:mt-2">{stats.urgent}</p>
                   </div>
-                  <AlertCircle className="w-12 h-12 text-red-200" />
+                  <AlertCircle className="w-8 h-8 md:w-12 md:h-12 text-red-200" />
                 </div>
               </motion.div>
             </div>
 
             {/* Filter Buttons */}
-            <div className="mb-6 flex flex-wrap gap-2">
+            <div className="mb-4 md:mb-6 flex flex-wrap gap-2">
               <button
                 onClick={() => setFilter('all')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium transition-all duration-200 text-sm md:text-base ${
                   filter === 'all'
                     ? 'bg-indigo-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -418,7 +418,7 @@ function AnnouncementsContent() {
               </button>
               <button
                 onClick={() => setFilter('active')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium transition-all duration-200 text-sm md:text-base ${
                   filter === 'active'
                     ? 'bg-green-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -428,7 +428,7 @@ function AnnouncementsContent() {
               </button>
               <button
                 onClick={() => setFilter('expired')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium transition-all duration-200 text-sm md:text-base ${
                   filter === 'expired'
                     ? 'bg-gray-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -438,7 +438,7 @@ function AnnouncementsContent() {
               </button>
               <button
                 onClick={() => setFilter('general')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium transition-all duration-200 text-sm md:text-base ${
                   filter === 'general'
                     ? 'bg-blue-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -448,7 +448,7 @@ function AnnouncementsContent() {
               </button>
               <button
                 onClick={() => setFilter('urgent')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium transition-all duration-200 text-sm md:text-base ${
                   filter === 'urgent'
                     ? 'bg-red-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -458,7 +458,7 @@ function AnnouncementsContent() {
               </button>
               <button
                 onClick={() => setFilter('event')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium transition-all duration-200 text-sm md:text-base ${
                   filter === 'event'
                     ? 'bg-purple-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -468,7 +468,7 @@ function AnnouncementsContent() {
               </button>
               <button
                 onClick={() => setFilter('scholarship')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium transition-all duration-200 text-sm md:text-base ${
                   filter === 'scholarship'
                     ? 'bg-green-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'

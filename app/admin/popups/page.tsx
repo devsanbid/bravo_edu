@@ -138,14 +138,14 @@ export default function AdminPopupsPage() {
   return (
     <ProtectedRoute>
       <AdminLayout>
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">Popup Management</h1>
+        <div className="p-4 md:p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 md:mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Popup Management</h1>
             <button
               onClick={() => setShowForm(!showForm)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm md:text-base"
             >
-              {showForm ? <Eye className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+              {showForm ? <Eye className="w-4 h-4 md:w-5 md:h-5" /> : <Plus className="w-4 h-4 md:w-5 md:h-5" />}
               {showForm ? 'View Popups' : 'Create Popup'}
             </button>
           </div>
@@ -157,9 +157,9 @@ export default function AdminPopupsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="bg-white rounded-lg shadow-md p-6 mb-6"
+                className="bg-white rounded-lg shadow-md p-4 md:p-6 mb-4 md:mb-6"
               >
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">{editingPopup ? 'Edit Popup' : 'Create New Popup'}</h2>
+                <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-900">{editingPopup ? 'Edit Popup' : 'Create New Popup'}</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
