@@ -262,10 +262,12 @@ function AdminChatDashboardContent() {
       )}
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-180px)]">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-2 sm:py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-6 h-[calc(100vh-140px)] sm:h-[calc(100vh-180px)]">
           {/* Sessions List */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col">
+          <div className={`bg-white rounded-xl shadow-lg overflow-hidden flex flex-col ${
+            selectedSession ? 'hidden lg:flex' : 'flex'
+          }`}>
             <div className="p-4 bg-gradient-to-r from-blue-600 to-purple-600">
               <h2 className="text-lg font-semibold text-white">
                 Active Chats ({sessions.length})
@@ -343,7 +345,9 @@ function AdminChatDashboardContent() {
           </div>
 
           {/* Chat Window */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-lg overflow-hidden flex flex-col">
+          <div className={`lg:col-span-2 bg-white rounded-xl shadow-lg overflow-hidden flex flex-col ${
+            selectedSession ? 'flex' : 'hidden lg:flex'
+          }`}>
             {selectedSession ? (
               <>
                 {/* Chat Header */}
@@ -417,13 +421,13 @@ function AdminChatDashboardContent() {
                         className={`flex ${message.isFromAdmin ? 'justify-end' : 'justify-start'}`}
                       >
                         <div
-                          className={`max-w-[70%] rounded-2xl px-4 py-3 ${
+                          className={`max-w-[85%] sm:max-w-[70%] rounded-2xl px-4 py-3 break-words ${
                             message.isFromAdmin
                               ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
                               : 'bg-white text-gray-900 shadow-md'
                           }`}
                         >
-                          <p className="break-words">{message.message}</p>
+                          <p className="break-words whitespace-pre-wrap">{message.message}</p>
                           <p className={`text-xs mt-2 ${message.isFromAdmin ? 'text-white/70' : 'text-gray-500'}`}>
                             {formatTime(message.timestamp)}
                           </p>
@@ -457,15 +461,26 @@ function AdminChatDashboardContent() {
                 </div>
 
                 {/* Message Input */}
-                <form onSubmit={handleSendMessage} className="p-4 bg-white border-t border-gray-200">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
+                <form onSubmit={handleSendMessage} className="p-3 sm:p-4 bg-white border-t border-gray-200">
+                  <div className="flex gap-2 items-end">
+                    <textarea
                       value={messageInput}
                       onChange={handleInputChange}
-                      onKeyPress={(e) => e.key === 'Enter' && handleSendMessage(e)}
-                      placeholder="Type your message..."
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSendMessage(e);
+                        }
+                      }}
+                      placeholder="Type your message... (Shift+Enter for new line)"
+                      rows={1}
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black resize-none max-h-32 overflow-y-auto"
+                      style={{ minHeight: '48px' }}
+                      onInput={(e) => {
+                        const target = e.target as HTMLTextAreaElement;
+                        target.style.height = 'auto';
+                        target.style.height = Math.min(target.scrollHeight, 128) + 'px';
+                      }}
                     />
                     <button
                       type="submit"

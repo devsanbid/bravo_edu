@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Send, CheckCircle, User, Mail, Phone, GraduationCap, Globe } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, CheckCircle, User, Mail, Phone, GraduationCap, Globe, X } from 'lucide-react';
+import { consultationService } from '@/lib/consultationService';
 
 export default function ConsultationForm() {
   const [formData, setFormData] = useState({
@@ -15,8 +16,9 @@ export default function ConsultationForm() {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const destinations = ['UK', 'USA', 'Canada', 'Not Sure'];
+  const destinations = ['UK', 'USA', 'Canada', 'Australia', 'New Zealand', 'Ireland', 'Not Sure'];
   const educationLevels = ['Undergraduate', 'Postgraduate', 'PhD', 'Diploma'];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -29,16 +31,14 @@ export default function ConsultationForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
-    // Simulate form submission (replace with actual API call)
-    setTimeout(() => {
-      console.log('Form submitted:', formData);
+    try {
+      await consultationService.createConsultation(formData);
       setIsSubmitted(true);
-      setIsLoading(false);
       
-      // Reset form after 5 seconds
+      // Reset form after showing success message
       setTimeout(() => {
-        setIsSubmitted(false);
         setFormData({
           name: '',
           email: '',
@@ -47,8 +47,13 @@ export default function ConsultationForm() {
           education: '',
           message: '',
         });
-      }, 5000);
-    }, 1500);
+      }, 3000);
+    } catch (err) {
+      console.error('Error submitting consultation:', err);
+      setError('Failed to submit. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -318,7 +323,7 @@ export default function ConsultationForm() {
                         <strong>What's Next?</strong>
                       </p>
                       <ul className="text-sm text-text-light space-y-2 text-left max-w-sm mx-auto">
-                        <li>✓ Check your email for confirmation</li>
+      
                         <li>✓ Prepare your academic documents</li>
                         <li>✓ Note down your questions</li>
                         <li>✓ Our counselor will call you soon</li>
@@ -331,6 +336,79 @@ export default function ConsultationForm() {
           </motion.div>
         </div>
       </div>
+
+      {/* Success Popup Modal */}
+      <AnimatePresence>
+        {isSubmitted && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setIsSubmitted(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setIsSubmitted(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              <div className="text-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring" }}
+                  className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"
+                >
+                  <CheckCircle className="w-12 h-12 text-green-600" />
+                </motion.div>
+                
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  Successfully Submitted! 🎉
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Thank you for your interest! Our team will review your request and contact you soon.
+                </p>
+                
+                <div className="bg-gradient-to-r from-primary-purple/10 to-accent-orange/10 rounded-lg p-6 mb-6">
+                  <p className="text-sm font-semibold text-gray-900 mb-3">
+                    What happens next?
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-2 text-left">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span>Our counselor will review your details</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span>Expect a call within 24 hours</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span>Check your email for confirmation</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <button
+                  onClick={() => setIsSubmitted(false)}
+                  className="w-full bg-gradient-to-r from-primary-purple to-primary-purple-light text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-shadow"
+                >
+                  Got it!
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
