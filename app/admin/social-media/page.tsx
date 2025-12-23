@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Trash2, Loader2, ExternalLink, Instagram, Facebook, Twitter, Linkedin, Youtube } from 'lucide-react';
+import { Plus, Trash2, Loader2, ExternalLink, Instagram, Facebook, Twitter, Linkedin, Youtube, Globe } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminLayout from '@/components/AdminLayout';
@@ -15,6 +15,7 @@ const platformIcons = {
   linkedin: Linkedin,
   youtube: Youtube,
   tiktok: Youtube, // Using Youtube icon as placeholder for TikTok
+  website: Globe,
 };
 
 const platformColors = {
@@ -24,6 +25,7 @@ const platformColors = {
   linkedin: 'bg-blue-700',
   youtube: 'bg-red-600',
   tiktok: 'bg-black',
+  website: 'bg-gradient-to-br from-green-500 to-teal-500',
 };
 
 function AdminSocialMediaPanel() {
@@ -134,7 +136,7 @@ function AdminSocialMediaPanel() {
                 Platform
               </label>
               <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                {(['instagram', 'facebook', 'twitter', 'linkedin', 'youtube', 'tiktok'] as SocialMediaPlatform[]).map((p) => {
+                {(['instagram', 'facebook', 'twitter', 'linkedin', 'youtube', 'tiktok', 'website'] as SocialMediaPlatform[]).map((p) => {
                   const Icon = platformIcons[p];
                   return (
                     <button

@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { MessageSquare, Image, Share2, LogOut, Menu, X, BookOpen } from 'lucide-react';
+import { MessageSquare, Image, Share2, LogOut, Menu, X, BookOpen, Bell, Briefcase, Megaphone } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
 
@@ -22,6 +22,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Gallery', href: '/admin/gallery', icon: Image },
     { name: 'Social Media', href: '/admin/social-media', icon: Share2 },
     { name: 'Bookings', href: '/admin/book', icon: BookOpen },
+    { name: 'Popups', href: '/admin/popups', icon: Bell },
+    { name: 'Jobs', href: '/admin/jobs', icon: Briefcase },
+    { name: 'Announcements', href: '/admin/announcements', icon: Megaphone },
   ];
 
   const handleLogout = async () => {

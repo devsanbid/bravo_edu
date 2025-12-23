@@ -19,13 +19,15 @@ export default function Header() {
 
   const navLinks = [
     { name: 'Home', href: '/' },
-    { name: 'About', href: '#about' },
-    { name: 'Study Abroad', href: '#destinations' },
-    { name: 'Services', href: '#services' },
-    { name: 'Test Preparation', href: '#test-prep' },
+    { name: 'About', href: '/#about' },
+    { name: 'Study Abroad', href: '/#destinations' },
+    { name: 'Services', href: '/#services' },
+    { name: 'Test Preparation', href: '/#test-prep' },
     { name: 'Gallery', href: '/gallery' },
     { name: 'Team', href: '/team' },
-    { name: 'Testimonials', href: '#testimonials' },
+    { name: 'Jobs', href: '/jobs' },
+    { name: 'Announcements', href: '/announcements' },
+    { name: 'Testimonials', href: '/#testimonials' },
     { name: 'Post', href: '/social-media' },
   ];
 

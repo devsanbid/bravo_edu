@@ -5,6 +5,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import AppwriteInit from "@/components/AppwriteInit";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ChatWidget from "@/components/ChatWidget";
+import ConsultationWidget from "@/components/ConsultationWidget";
+import PopupModal from "@/components/PopupModal";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -58,8 +60,10 @@ export default function RootLayout({
       >
         <AuthProvider>
           <AppwriteInit />
+          <PopupModal />
           {children}
           <ChatWidget />
+          <ConsultationWidget />
           <Analytics />
           <SpeedInsights />
         </AuthProvider>
