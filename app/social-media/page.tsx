@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Instagram, Facebook, Twitter, Linkedin, Youtube, ExternalLink } from 'lucide-react';
+import { Loader2, Instagram, Facebook, Twitter, Linkedin, Youtube, ExternalLink, Globe } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ChatWidget from '@/components/ChatWidget';
@@ -15,6 +15,7 @@ const platformIcons = {
   linkedin: Linkedin,
   youtube: Youtube,
   tiktok: Youtube,
+  website: Globe,
 };
 
 const platformColors = {
@@ -24,6 +25,7 @@ const platformColors = {
   linkedin: 'from-blue-700 to-blue-800',
   youtube: 'from-red-600 to-red-700',
   tiktok: 'from-gray-900 to-black',
+  website: 'from-green-600 to-green-700',
 };
 
 export default function SocialMediaPage() {
@@ -62,7 +64,7 @@ export default function SocialMediaPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50">
+      <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 pt-20">
         {/* Hero Section */}
         <section className="relative py-20 px-4 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 text-white overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
@@ -205,8 +207,57 @@ export default function SocialMediaPage() {
                       )}
 
                       {/* Embed Preview or Card */}
-                      {post.platform === 'facebook' || post.platform === 'linkedin' ? (
-                        // Facebook and LinkedIn: Show card with link (embeds often fail)
+                      {post.platform === 'website' ? (
+                        // Website: Show iframe preview
+                        <div className="space-y-3">
+                          <div className="relative w-full bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200" style={{ height: '500px' }}>
+                            <iframe
+                              src={post.postUrl}
+                              className="absolute inset-0 w-full h-full"
+                              frameBorder="0"
+                              scrolling="yes"
+                              loading="lazy"
+                              sandbox="allow-scripts allow-same-origin"
+                              title={`Website preview: ${post.caption || post.platform}`}
+                            />
+                          </div>
+                          <a
+                            href={post.postUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`w-full bg-gradient-to-r ${platformColors[post.platform]} text-white py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2`}
+                          >
+                            Visit Website
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </div>
+                      ) : post.platform === 'facebook' ? (
+                        // Facebook: Show iframe embed
+                        <div className="space-y-3">
+                          <div className="relative w-full bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200">
+                            <iframe
+                              src={`https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(post.postUrl)}&width=500&show_text=true`}
+                              className="w-full"
+                              style={{ height: '500px', border: 'none', overflow: 'hidden' }}
+                              scrolling="no"
+                              frameBorder="0"
+                              allowFullScreen={true}
+                              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                              loading="lazy"
+                            />
+                          </div>
+                          <a
+                            href={post.postUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`w-full bg-gradient-to-r ${platformColors[post.platform]} text-white py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2`}
+                          >
+                            View on Facebook
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </div>
+                      ) : post.platform === 'linkedin' ? (
+                        // LinkedIn: Show card with link (embeds often fail)
                         <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-8 text-center border-2 border-gray-200">
                           <Icon className="w-16 h-16 mx-auto mb-4 text-gray-400" />
                           <p className="text-gray-600 mb-4">Click below to view this post</p>
@@ -216,7 +267,7 @@ export default function SocialMediaPage() {
                             rel="noopener noreferrer"
                             className={`inline-flex items-center gap-2 bg-gradient-to-r ${platformColors[post.platform]} text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all`}
                           >
-                            View on {post.platform.charAt(0).toUpperCase() + post.platform.slice(1)}
+                            View on LinkedIn
                             <ExternalLink className="w-4 h-4" />
                           </a>
                         </div>
