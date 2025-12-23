@@ -5,8 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, User, Mail, Phone, Loader2 } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useChat } from '@/hooks/useChat';
+import { usePathname } from 'next/navigation';
 
 export default function ChatWidget() {
+  const pathname = usePathname();
+  
+  // Don't show chat widget on admin pages
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
   const [isOpen, setIsOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [showForm, setShowForm] = useState(false);

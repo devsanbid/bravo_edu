@@ -27,10 +27,22 @@ export const metadata: Metadata = {
   description: "Your trusted partner for studying in UK, USA, and Canada. Expert educational consultancy with 15+ years of experience. 500+ successful visas. Located in Putalisadak, Kathmandu.",
   keywords: "study abroad, UK education, USA education, Canada education, educational consultancy Nepal, study visa, IELTS preparation, Kathmandu",
   authors: [{ name: "Bravo International" }],
+  icons: {
+    icon: '/logo1.png',
+    apple: '/logo1.png',
+  },
   openGraph: {
     title: "Bravo International - Think Abroad, Think Bravo",
     description: "Expert educational consultancy for UK, USA, and Canada with 15+ years of experience",
     type: "website",
+    images: [
+      {
+        url: '/logo1.png',
+        width: 1200,
+        height: 630,
+        alt: 'Bravo International Logo',
+      },
+    ],
   },
 };
 
