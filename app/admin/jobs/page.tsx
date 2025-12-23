@@ -87,11 +87,16 @@ function AdminJobsContent() {
     }
 
     try {
+      const jobData = {
+        ...formData,
+        type: formData.type as 'full-time' | 'part-time' | 'contract'
+      };
+      
       if (editingJob) {
-        await jobService.updateJob(editingJob.$id, formData);
+        await jobService.updateJob(editingJob.$id, jobData);
         alert('Job updated successfully');
       } else {
-        await jobService.createJob(formData);
+        await jobService.createJob(jobData);
         alert('Job created successfully');
       }
       
@@ -146,7 +151,7 @@ function AdminJobsContent() {
 
   const handleUpdateApplicationStatus = async (appId: string, status: string) => {
     try {
-      await jobService.updateApplicationStatus(appId, status);
+      await jobService.updateApplicationStatus(appId, status as 'pending' | 'reviewed' | 'shortlisted' | 'rejected');
       fetchApplications();
     } catch (error) {
       console.error('Failed to update application status:', error);
@@ -154,11 +159,11 @@ function AdminJobsContent() {
     }
   };
 
-  const handleDeleteApplication = async (appId: string) => {
+  const handleDeleteApplication = async (appId: string, cvFileId: string) => {
     if (!confirm('Are you sure you want to delete this application?')) return;
 
     try {
-      await jobService.deleteApplication(appId);
+      await jobService.deleteApplication(appId, cvFileId);
       alert('Application deleted successfully');
       fetchApplications();
     } catch (error) {
@@ -691,7 +696,7 @@ function AdminJobsContent() {
                               </button>
 
                               <button
-                                onClick={() => handleDeleteApplication(app.$id)}
+                                onClick={() => handleDeleteApplication(app.$id, app.cvFileId)}
                                 className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-all flex items-center justify-center"
                               >
                                 <Trash2 className="w-4 h-4 mr-2" />

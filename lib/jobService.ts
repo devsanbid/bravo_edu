@@ -51,7 +51,7 @@ class JobService {
           postedDate: new Date().toISOString(),
         }
       );
-      return job as Job;
+      return job as unknown as Job;
     } catch (error) {
       console.error('Error creating job:', error);
       throw error;
@@ -65,7 +65,7 @@ class JobService {
         JOBS_COLLECTION_ID,
         [Query.orderDesc('postedDate'), Query.limit(100)]
       );
-      return response.documents as Job[];
+      return response.documents as unknown as Job[];
     } catch (error) {
       console.error('Error fetching jobs:', error);
       throw error;
@@ -89,7 +89,7 @@ class JobService {
         JOBS_COLLECTION_ID,
         queries
       );
-      return response.documents as Job[];
+      return response.documents as unknown as Job[];
     } catch (error) {
       console.error('Error fetching active jobs:', error);
       throw error;
@@ -104,7 +104,7 @@ class JobService {
         id,
         data
       );
-      return job as Job;
+      return job as unknown as Job;
     } catch (error) {
       console.error('Error updating job:', error);
       throw error;
@@ -154,7 +154,7 @@ class JobService {
         }
       );
 
-      return application as JobApplication;
+      return application as unknown as JobApplication;
     } catch (error) {
       console.error('Error submitting application:', error);
       throw error;
@@ -168,7 +168,7 @@ class JobService {
         APPLICATIONS_COLLECTION_ID,
         [Query.orderDesc('appliedDate'), Query.limit(200)]
       );
-      return response.documents as JobApplication[];
+      return response.documents as unknown as JobApplication[];
     } catch (error) {
       console.error('Error fetching applications:', error);
       throw error;
@@ -182,7 +182,7 @@ class JobService {
         APPLICATIONS_COLLECTION_ID,
         [Query.equal('jobId', jobId), Query.orderDesc('appliedDate')]
       );
-      return response.documents as JobApplication[];
+      return response.documents as unknown as JobApplication[];
     } catch (error) {
       console.error('Error fetching job applications:', error);
       throw error;
@@ -197,7 +197,7 @@ class JobService {
         id,
         { status }
       );
-      return application as JobApplication;
+      return application as unknown as JobApplication;
     } catch (error) {
       console.error('Error updating application status:', error);
       throw error;

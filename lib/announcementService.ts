@@ -31,7 +31,7 @@ class AnnouncementService {
           publishedDate: new Date().toISOString(),
         }
       );
-      return announcement as Announcement;
+      return announcement as unknown as Announcement;
     } catch (error) {
       console.error('Error creating announcement:', error);
       throw error;
@@ -45,7 +45,7 @@ class AnnouncementService {
         ANNOUNCEMENTS_COLLECTION_ID,
         [Query.orderDesc('publishedDate'), Query.limit(100)]
       );
-      return response.documents as Announcement[];
+      return response.documents as unknown as Announcement[];
     } catch (error) {
       console.error('Error fetching announcements:', error);
       throw error;
@@ -70,7 +70,7 @@ class AnnouncementService {
         return doc.expiryDate > now;
       });
 
-      return activeAnnouncements as Announcement[];
+      return activeAnnouncements as unknown as Announcement[];
     } catch (error) {
       console.error('Error fetching active announcements:', error);
       throw error;
@@ -88,7 +88,7 @@ class AnnouncementService {
         id,
         data
       );
-      return announcement as Announcement;
+      return announcement as unknown as Announcement;
     } catch (error) {
       console.error('Error updating announcement:', error);
       throw error;

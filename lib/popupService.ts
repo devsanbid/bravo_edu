@@ -63,7 +63,7 @@ class PopupService {
           createdAt: new Date().toISOString(),
         }
       );
-      return popup as Popup;
+      return popup as unknown as Popup;
     } catch (error) {
       console.error('Error creating popup:', error);
       throw error;
@@ -77,7 +77,7 @@ class PopupService {
         POPUP_COLLECTION_ID,
         [Query.orderDesc('createdAt'), Query.limit(100)]
       );
-      return response.documents as Popup[];
+      return response.documents as unknown as Popup[];
     } catch (error) {
       console.error('Error fetching popups:', error);
       throw error;
@@ -97,7 +97,7 @@ class PopupService {
           Query.limit(1)
         ]
       );
-      return response.documents.length > 0 ? (response.documents[0] as Popup) : null;
+      return response.documents.length > 0 ? (response.documents[0] as unknown as Popup) : null;
     } catch (error: any) {
       // Silently return null if collection doesn't exist or permission denied
       if (error?.code === 404 || error?.code === 401) {
@@ -119,7 +119,7 @@ class PopupService {
         id,
         data
       );
-      return popup as Popup;
+      return popup as unknown as Popup;
     } catch (error) {
       console.error('Error updating popup:', error);
       throw error;
