@@ -2,7 +2,7 @@
 
 import { useAdminChat } from '@/hooks/useAdminChat';
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, Send, X, User, Mail, Phone, Clock, ChevronLeft, Trash2 } from 'lucide-react';
+import { MessageCircle, Send, X, User, Mail, Phone, Clock, ChevronLeft, Trash2, Bell, BellOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminLayout from '@/components/AdminLayout';
@@ -31,6 +31,63 @@ function AdminChatDashboardContent() {
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [onlineStatus, setOnlineStatus] = useState<Record<string, boolean>>({});
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
+
+  // Check notification permission on mount
+  useEffect(() => {
+    if ('Notification' in window) {
+      setNotificationPermission(Notification.permission);
+    }
+  }, []);
+
+  // Request notification permission
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window) {
+      const permission = await Notification.requestPermission();
+      setNotificationPermission(permission);
+      console.log('Notification permission:', permission);
+      if (permission === 'granted') {
+        // Test notification
+        try {
+          const notification = new Notification('Notifications Enabled!', {
+            body: 'You will now receive notifications when students send messages.',
+            icon: '/favicon.ico',
+            requireInteraction: false,
+          });
+          console.log('Test notification created successfully');
+          setTimeout(() => notification.close(), 5000);
+        } catch (error) {
+          console.error('Error creating test notification:', error);
+          alert('Notification permission granted but failed to create notification. Please check your browser settings (especially if using Brave, disable "Block Trackers & Ads" for this site).');
+        }
+      } else if (permission === 'denied') {
+        alert('Notifications are blocked. Please enable them in your browser settings.');
+      }
+    } else {
+      alert('This browser does not support notifications.');
+    }
+  };
+
+  // Test notification function
+  const sendTestNotification = () => {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        const notification = new Notification('Test Notification', {
+          body: 'This is a test message from the chat system.',
+          icon: '/favicon.ico',
+          badge: '/favicon.ico',
+          requireInteraction: false,
+        });
+        console.log('Test notification sent');
+        setTimeout(() => notification.close(), 5000);
+      } catch (error) {
+        console.error('Error sending test notification:', error);
+        alert('Failed to send test notification. Please check browser settings.');
+      }
+    } else {
+      alert('Notifications are not enabled. Please click "Enable Notifications" first.');
+    }
+  };
 
   // Calculate total unread count
   const totalUnread = Object.values(unreadCounts).reduce((sum, count) => sum + count, 0);
@@ -238,6 +295,34 @@ function AdminChatDashboardContent() {
               </div>
             </div>
             <div className="flex items-center gap-4">
+              {/* Notification Permission Button */}
+              {notificationPermission !== 'granted' && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={requestNotificationPermission}
+                  className="flex items-center gap-2 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition text-sm font-medium shadow-lg"
+                  title="Enable browser notifications"
+                >
+                  <Bell className="w-4 h-4" />
+                  Enable Notifications
+                </motion.button>
+              )}
+              {notificationPermission === 'granted' && (
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-sm">
+                    <Bell className="w-4 h-4" />
+                    <span>Notifications On</span>
+                  </div>
+                  <button
+                    onClick={sendTestNotification}
+                    className="px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-xs font-medium"
+                    title="Send test notification"
+                  >
+                    Test
+                  </button>
+                </div>
+              )}
               <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-lg">
                 <User className="w-4 h-4 text-gray-600" />
                 <span className="text-sm font-medium text-gray-700">{adminName}</span>

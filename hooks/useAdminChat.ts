@@ -147,6 +147,30 @@ export function useAdminChat() {
           ...prev,
           [newMessage.sessionId]: (prev[newMessage.sessionId] || 0) + 1
         }));
+
+        // Show notification for messages from other sessions
+        if ('Notification' in window && Notification.permission === 'granted') {
+          try {
+            console.log('Creating notification for message from other session');
+            const notification = new Notification('New Message from Student', {
+              body: `${newMessage.senderName}: ${newMessage.message.substring(0, 100)}${newMessage.message.length > 100 ? '...' : ''}`,
+              icon: '/favicon.ico',
+              badge: '/favicon.ico',
+              tag: newMessage.sessionId,
+              requireInteraction: false,
+              silent: false,
+            });
+
+            setTimeout(() => notification.close(), 5000);
+
+            notification.onclick = () => {
+              window.focus();
+              notification.close();
+            };
+          } catch (error) {
+            console.error('Error creating notification for other session:', error);
+          }
+        }
       }
     });
 
@@ -196,12 +220,34 @@ export function useAdminChat() {
               }));
             }
 
-            // Show notification for new visitor messages
-            if (!newMessage.isFromAdmin && document.hidden && 'Notification' in window && Notification.permission === 'granted') {
-              new Notification('New Message from Visitor', {
-                body: `${newMessage.senderName}: ${newMessage.message}`,
-                icon: '/logo1.png',
-              });
+            // Show browser notification for new visitor messages (always, even when tab is active)
+            if (!newMessage.isFromAdmin && 'Notification' in window && Notification.permission === 'granted') {
+              try {
+                console.log('Creating notification for message:', newMessage.message.substring(0, 50));
+                const notification = new Notification('New Message from Student', {
+                  body: `${newMessage.senderName}: ${newMessage.message.substring(0, 100)}${newMessage.message.length > 100 ? '...' : ''}`,
+                  icon: '/favicon.ico',
+                  badge: '/favicon.ico',
+                  tag: newMessage.sessionId, // Group notifications by session
+                  requireInteraction: false,
+                  silent: false,
+                });
+
+                console.log('Notification created successfully');
+
+                // Auto close notification after 5 seconds
+                setTimeout(() => notification.close(), 5000);
+
+                // Click to focus on chat
+                notification.onclick = () => {
+                  window.focus();
+                  notification.close();
+                };
+              } catch (error) {
+                console.error('Error creating notification:', error);
+              }
+            } else if (!newMessage.isFromAdmin) {
+              console.log('Notification not shown. Permission:', Notification?.permission, 'Supported:', 'Notification' in window);
             }
           }
         );
