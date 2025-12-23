@@ -80,7 +80,7 @@ export default function Header() {
           <div className="flex items-center justify-between">
             {/* Mobile Logo */}
             <Link href="/" className="lg:hidden">
-              <img src="/logo.jpg" alt="Bravo International" className="h-12 w-auto object-contain" />
+              <img src="/logo1.png" alt="Bravo International" className="h-12 w-auto object-contain" />
             </Link>
 
             {/* Desktop Navigation */}

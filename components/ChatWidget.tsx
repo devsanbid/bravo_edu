@@ -16,6 +16,8 @@ export default function ChatWidget() {
   const [isAdminTyping, setIsAdminTyping] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [lastReadMessageId, setLastReadMessageId] = useState<string | null>(null);
 
   const { messages, loading, sendMessage, updateVisitorDetails, session } = useChat();
 
@@ -25,12 +27,16 @@ export default function ChatWidget() {
 
     const sendHeartbeat = () => {
       try {
-        localStorage.setItem(`presence-${session.$id}`, JSON.stringify({
+        const presenceData = {
           sessionId: session.$id,
           lastSeen: Date.now(),
           isOnline: true,
+        };
+        localStorage.setItem(`presence-${session.$id}`, JSON.stringify(presenceData));
+        // Dispatch custom event for same-window updates
+        window.dispatchEvent(new CustomEvent('presence-update', { 
+          detail: presenceData 
         }));
-        window.dispatchEvent(new Event('storage'));
       } catch (err) {
         console.log('Heartbeat error:', err);
       }
@@ -46,10 +52,14 @@ export default function ChatWidget() {
     const handleVisibilityChange = () => {
       if (document.hidden) {
         try {
-          localStorage.setItem(`presence-${session.$id}`, JSON.stringify({
+          const presenceData = {
             sessionId: session.$id,
             lastSeen: Date.now(),
             isOnline: false,
+          };
+          localStorage.setItem(`presence-${session.$id}`, JSON.stringify(presenceData));
+          window.dispatchEvent(new CustomEvent('presence-update', { 
+            detail: presenceData 
           }));
         } catch (err) {
           console.log('Visibility error:', err);
@@ -95,6 +105,26 @@ export default function ChatWidget() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Track unread messages when chat is closed
+  useEffect(() => {
+    if (isOpen) {
+      // When chat is opened, mark all messages as read
+      setUnreadCount(0);
+      if (messages.length > 0) {
+        setLastReadMessageId(messages[messages.length - 1].$id);
+      }
+    } else {
+      // When chat is closed, count new admin messages
+      const lastReadIndex = lastReadMessageId 
+        ? messages.findIndex(m => m.$id === lastReadMessageId)
+        : -1;
+      
+      const newMessages = messages.slice(lastReadIndex + 1);
+      const newAdminMessages = newMessages.filter(m => m.isFromAdmin);
+      setUnreadCount(newAdminMessages.length);
+    }
+  }, [isOpen, messages, lastReadMessageId]);
 
   // Listen for admin typing via Appwrite realtime
   useEffect(() => {
@@ -238,7 +268,15 @@ export default function ChatWidget() {
         ) : (
           <>
             <MessageCircle className="w-6 h-6 text-white" />
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent-orange rounded-full border-2 border-white animate-pulse" />
+            {unreadCount > 0 && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center border-2 border-white"
+              >
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </motion.div>
+            )}
           </>
         )}
       </motion.button>

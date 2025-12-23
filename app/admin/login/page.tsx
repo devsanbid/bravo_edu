@@ -62,7 +62,7 @@ export default function AdminLogin() {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <Image
-              src="/logo.png"
+              src="/logo1.png"
               alt="Bravo International"
               width={120}
               height={80}

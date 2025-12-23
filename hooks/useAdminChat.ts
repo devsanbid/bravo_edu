@@ -198,7 +198,7 @@ export function useAdminChat() {
             if (!newMessage.isFromAdmin && document.hidden && 'Notification' in window && Notification.permission === 'granted') {
               new Notification('New Message from Visitor', {
                 body: `${newMessage.senderName}: ${newMessage.message}`,
-                icon: '/logo.png',
+                icon: '/logo1.png',
               });
             }
           }

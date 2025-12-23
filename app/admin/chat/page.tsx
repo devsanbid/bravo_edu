@@ -70,13 +70,18 @@ function AdminChatDashboardContent() {
     // Check every 3 seconds
     const interval = setInterval(checkOnlineStatus, 3000);
 
-    // Listen for storage events
+    // Listen for storage events (cross-tab)
     const handleStorage = () => checkOnlineStatus();
     window.addEventListener('storage', handleStorage);
+
+    // Listen for custom presence-update events (same-tab)
+    const handlePresenceUpdate = () => checkOnlineStatus();
+    window.addEventListener('presence-update', handlePresenceUpdate);
 
     return () => {
       clearInterval(interval);
       window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('presence-update', handlePresenceUpdate);
     };
   }, [sessions]);
 
