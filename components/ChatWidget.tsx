@@ -21,6 +21,19 @@ export default function ChatWidget() {
 
   const { messages, loading, sendMessage, updateVisitorDetails, session } = useChat();
 
+  // Listen for open chat events from anywhere on the page
+  useEffect(() => {
+    const handleOpenChat = () => {
+      setIsOpen(true);
+    };
+
+    window.addEventListener('openChat', handleOpenChat);
+
+    return () => {
+      window.removeEventListener('openChat', handleOpenChat);
+    };
+  }, []);
+
   // Send heartbeat to indicate user is online
   useEffect(() => {
     if (!session) return;

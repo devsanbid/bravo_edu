@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import AppwriteInit from "@/components/AppwriteInit";
 import { AuthProvider } from "@/contexts/AuthContext";
+import ChatWidget from "@/components/ChatWidget";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -46,6 +47,7 @@ export default function RootLayout({
         <AuthProvider>
           <AppwriteInit />
           {children}
+          <ChatWidget />
           <Analytics />
           <SpeedInsights />
         </AuthProvider>

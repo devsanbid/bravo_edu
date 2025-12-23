@@ -24,6 +24,7 @@ export default function Header() {
     { name: 'Services', href: '#services' },
     { name: 'Test Preparation', href: '#test-prep' },
     { name: 'Gallery', href: '/gallery' },
+    { name: 'Team', href: '/team' },
     { name: 'Testimonials', href: '#testimonials' },
     { name: 'Post', href: '/social-media' },
   ];
