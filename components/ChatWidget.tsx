@@ -150,7 +150,7 @@ export default function ChatWidget() {
   }, [session]);
 
   // Broadcast visitor typing
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setInputMessage(e.target.value);
     
     if (session && e.target.value) {

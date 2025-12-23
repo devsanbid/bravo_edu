@@ -122,7 +122,7 @@ function AdminChatDashboardContent() {
   }, [selectedSession]);
 
   // Broadcast admin typing
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setMessageInput(e.target.value);
     
     if (selectedSession && e.target.value) {
