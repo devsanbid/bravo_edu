@@ -4,9 +4,21 @@ import { motion } from 'framer-motion';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import useEmblaCarousel from 'embla-carousel-react';
-import { useCallback } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 
 export default function DestinationHub() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
     loop: true,
     align: 'start',
@@ -82,8 +94,8 @@ export default function DestinationHub() {
     <section id="destinations" className="py-20 bg-white">
       <div className="container mx-auto px-4 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isMobile ? {} : { opacity: 0, y: 30 }}
+          whileInView={isMobile ? {} : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-16"
         >
@@ -117,11 +129,11 @@ export default function DestinationHub() {
               {destinations.map((dest, index) => (
                 <div key={dest.country} className="flex-[0_0_100%] md:flex-[0_0_48%] lg:flex-[0_0_31%] min-w-0">
                   <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={isMobile ? {} : { opacity: 0, y: 30 }}
+                    whileInView={isMobile ? {} : { opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ y: -10 }}
+                    transition={isMobile ? {} : { delay: index * 0.1 }}
+                    whileHover={isMobile ? {} : { y: -10 }}
                     className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 h-full"
                   >
                     <div className={`bg-gradient-to-r ${dest.color} p-6 text-white relative overflow-hidden`}>
@@ -162,8 +174,8 @@ export default function DestinationHub() {
 
                       <Link href={`/destinations/${dest.slug}`}>
                         <motion.div
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
+                          whileHover={isMobile ? {} : { scale: 1.02 }}
+                          whileTap={isMobile ? {} : { scale: 0.98 }}
                           className="group/btn flex items-center justify-center space-x-2 w-full bg-gradient-to-r from-primary-purple to-primary-purple-light text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 cursor-pointer"
                         >
                           <span>Learn More</span>
@@ -179,16 +191,16 @@ export default function DestinationHub() {
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isMobile ? {} : { opacity: 0, y: 30 }}
+          whileInView={isMobile ? {} : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mt-16"
         >
           <p className="text-text-light mb-6">Not sure which destination is right for you?</p>
           <motion.a
             href="#consultation"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={isMobile ? {} : { scale: 1.05 }}
+            whileTap={isMobile ? {} : { scale: 0.95 }}
             className="inline-flex items-center space-x-2 bg-gradient-to-r from-accent-orange to-accent-gold text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <span>Get Free Counseling</span>
