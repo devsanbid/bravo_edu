@@ -29,7 +29,7 @@ export interface ChatSession extends Models.Document {
 // Chat Service
 export const chatService = {
   // Create a new chat session
-  async createSession(visitorId: string): Promise<ChatSession> {
+  async createSession(visitorId: string, details?: { visitorName?: string; visitorEmail?: string; visitorPhone?: string }): Promise<ChatSession> {
     try {
       const session = await databases.createDocument(
         DATABASE_ID,
@@ -37,6 +37,9 @@ export const chatService = {
         ID.unique(),
         {
           visitorId,
+          visitorName: details?.visitorName || 'Anonymous Visitor',
+          visitorEmail: details?.visitorEmail,
+          visitorPhone: details?.visitorPhone,
           status: 'active',
           lastMessageAt: new Date().toISOString(),
           createdAt: new Date().toISOString(),
@@ -74,7 +77,7 @@ export const chatService = {
   },
 
   // Get or create session for a visitor
-  async getOrCreateSession(visitorId: string): Promise<ChatSession> {
+  async getOrCreateSession(visitorId: string, details?: { visitorName?: string; visitorEmail?: string; visitorPhone?: string }): Promise<ChatSession> {
     try {
       // Try to find existing active session
       const sessions = await databases.listDocuments(
@@ -91,7 +94,7 @@ export const chatService = {
       }
 
       // Create new session if none exists
-      return await this.createSession(visitorId);
+      return await this.createSession(visitorId, details);
     } catch (error) {
       console.error('Error getting/creating session:', error);
       throw error;

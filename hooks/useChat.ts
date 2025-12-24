@@ -21,6 +21,8 @@ export const useChat = () => {
 
   // Initialize chat session only when explicitly called
   useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+    
     const checkExistingSession = async () => {
       try {
         const visitorId = getVisitorId();
@@ -36,7 +38,7 @@ export const useChat = () => {
           setMessages(existingMessages);
 
           // Subscribe to new messages
-          const unsubscribe = chatService.subscribeToMessages(
+          unsubscribe = chatService.subscribeToMessages(
             sessions.$id,
             (newMessage) => {
               setMessages((prev) => {
@@ -48,13 +50,6 @@ export const useChat = () => {
               });
             }
           );
-
-          // Cleanup subscription on unmount
-          return () => {
-            if (unsubscribe && typeof unsubscribe === 'function') {
-              unsubscribe();
-            }
-          };
         }
         
         setLoading(false);
@@ -65,13 +60,20 @@ export const useChat = () => {
     };
 
     checkExistingSession();
+    
+    // Cleanup subscription on unmount
+    return () => {
+      if (unsubscribe && typeof unsubscribe === 'function') {
+        unsubscribe();
+      }
+    };
   }, []);
 
   // Initialize session when user submits form
-  const initializeSession = useCallback(async () => {
+  const initializeSession = useCallback(async (visitorDetails?: { visitorName?: string; visitorEmail?: string; visitorPhone?: string }) => {
     try {
       const visitorId = getVisitorId();
-      const chatSession = await chatService.getOrCreateSession(visitorId);
+      const chatSession = await chatService.getOrCreateSession(visitorId, visitorDetails);
       setSession(chatSession);
 
       // Load existing messages

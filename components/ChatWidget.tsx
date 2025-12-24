@@ -235,15 +235,14 @@ export default function ChatWidget() {
   const handleSubmitDetails = async (e: React.FormEvent) => {
     e.preventDefault();
     if (visitorName && visitorEmail) {
-      // Initialize session first when user submits form
-      const newSession = await initializeSession();
+      // Initialize session with visitor details
+      const newSession = await initializeSession({
+        visitorName,
+        visitorEmail,
+        visitorPhone,
+      });
       
       if (newSession) {
-        await updateVisitorDetails({
-          visitorName,
-          visitorEmail,
-          visitorPhone,
-        });
         setShowForm(false);
         await sendMessage(
           `Hi, I'm ${visitorName}. Email: ${visitorEmail}, Phone: ${visitorPhone}`,
