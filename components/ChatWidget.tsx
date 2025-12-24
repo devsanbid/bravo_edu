@@ -346,17 +346,17 @@ export default function ChatWidget() {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
-              {loading ? (
+              {loading && session ? (
                 <div className="flex items-center justify-center h-full">
                   <Loader2 className="w-8 h-8 text-primary-purple animate-spin" />
                 </div>
-              ) : messages.length === 0 ? (
+              ) : messages.length === 0 && !showForm ? (
                 <div className="text-center text-gray-500 mt-8">
                   <MessageCircle className="w-12 h-12 mx-auto mb-3 opacity-50" />
                   <p>Start a conversation with us!</p>
                   <p className="text-sm mt-2">We're here to help with your study abroad journey.</p>
                 </div>
-              ) : (
+              ) : messages.length > 0 ? (
                 <>
                   {messages.map((message, index) => (
                     <motion.div
@@ -406,10 +406,10 @@ export default function ChatWidget() {
                   
                   <div ref={messagesEndRef} />
                 </>
-              )}
+              ) : null}
 
-              {/* Quick Replies - Show only if no messages yet */}
-              {!loading && messages.length === 0 && !showForm && (
+              {/* Quick Replies - Show only if session exists and no messages yet */}
+              {!loading && messages.length === 0 && !showForm && session && (
                 <div className="space-y-2 mt-4">
                   <p className="text-xs text-gray-500 mb-2">Quick options:</p>
                   {quickReplies.map((reply, index) => (
@@ -482,9 +482,9 @@ export default function ChatWidget() {
                       handleSendMessage();
                     }
                   }}
-                  placeholder={session?.visitorName ? "Type your message..." : "Click here to start..."}
+                  placeholder={session?.visitorName ? "Type your message..." : "Fill the form to start..."}
                   onFocus={() => {
-                    if (!session?.visitorName) {
+                    if (!session && !showForm) {
                       setShowForm(true);
                     }
                   }}
