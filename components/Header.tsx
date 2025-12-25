@@ -87,7 +87,7 @@ export default function Header() {
                   {settings?.headerEmail2 && (
                     <div 
                       className="text-text-light text-xs flex items-center gap-1 cursor-pointer hover:text-primary-purple transition-colors group"
-                      onClick={() => copyToClipboard(settings.headerEmail2)}
+                      onClick={() => copyToClipboard(settings.headerEmail2!)}
                     >
                       <a href={`mailto:${settings.headerEmail2}`} className="hover:underline">
                         {settings.headerEmail2}
@@ -123,7 +123,7 @@ export default function Header() {
                   {settings?.headerPhone2 && (
                     <div 
                       className="text-text-light text-xs flex items-center gap-1 cursor-pointer hover:text-primary-purple transition-colors group"
-                      onClick={() => copyToClipboard(settings.headerPhone2)}
+                      onClick={() => copyToClipboard(settings.headerPhone2!)}
                     >
                       <a href={`tel:${settings.headerPhone2}`} className="hover:underline">
                         {settings.headerPhone2}
