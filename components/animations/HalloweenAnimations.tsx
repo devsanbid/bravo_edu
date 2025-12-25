@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 
 export function GhostAnimation() {
   const ghosts = [
-    { delay: 0, left: 20 },
-    { delay: 6, left: 70 },
+    { delay: 0, left: 15 },
+    { delay: 6, left: 80 },
   ];
 
   return (
@@ -72,18 +72,20 @@ export function BatAnimation() {
 }
 
 export function PumpkinAnimation() {
-  const pumpkins = [
-    { left: 40, delay: 2 },
-    { left: 60, delay: 8 },
+  const items = [
+    { emoji: '🎃', left: 10, delay: 0 },
+    { emoji: '💀', left: 70, delay: 4 },
+    { emoji: '🕷️', left: 80, delay: 8 },
+    { emoji: '🍬', left: 90, delay: 12 },
   ];
   
   return (
     <>
-      {pumpkins.map((pumpkin, i) => (
+      {items.map((item, i) => (
         <motion.div
           key={i}
           className="fixed pointer-events-none z-5 text-4xl opacity-60"
-          initial={{ top: '-100px', left: `${pumpkin.left}%` }}
+          initial={{ top: '-100px', left: `${item.left}%` }}
           animate={{
             top: '100vh',
             rotate: [0, 15, -15, 0],
@@ -91,11 +93,11 @@ export function PumpkinAnimation() {
           transition={{
             duration: 22,
             repeat: Infinity,
-            delay: pumpkin.delay,
+            delay: item.delay,
             ease: 'linear',
           }}
         >
-          🎃
+          {item.emoji}
         </motion.div>
       ))}
     </>

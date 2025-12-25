@@ -7,12 +7,16 @@ export function FlowerPetalsEffect() {
   const [petals, setPetals] = useState<Array<{ id: number; left: number; delay: number; duration: number }>>([]);
 
   useEffect(() => {
-    const petalArray = Array.from({ length: 15 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      delay: Math.random() * 8,
-      duration: 15 + Math.random() * 10,
-    }));
+    const petalArray = Array.from({ length: 20 }, (_, i) => {
+      // 85% on right side (60-95%), 15% on left side (5-30%)
+      const left = i < 3 ? 5 + Math.random() * 25 : 60 + Math.random() * 35;
+      return {
+        id: i,
+        left,
+        delay: Math.random() * 8,
+        duration: 15 + Math.random() * 10,
+      };
+    });
     setPetals(petalArray);
   }, []);
 
@@ -43,28 +47,33 @@ export function FlowerPetalsEffect() {
 }
 
 export function KiteAnimation() {
-  const kites = ['🪁', '🪁'];
+  const items = [
+    { emoji: '🪁', left: 10, delay: 0 },
+    { emoji: '🌺', left: 70, delay: 4 },
+    { emoji: '🪁', left: 85, delay: 8 },
+    { emoji: '🌸', left: 92, delay: 12 },
+  ];
 
   return (
     <>
-      {kites.map((kite, i) => (
+      {items.map((item, i) => (
         <motion.div
           key={i}
           className="fixed pointer-events-none z-10 text-4xl opacity-60"
-          initial={{ left: `${25 + i * 35}%`, top: '10%' }}
+          initial={{ top: '-100px', left: `${item.left}%` }}
           animate={{
-            y: [0, -20, 0],
+            top: '100vh',
+            rotate: 360,
             x: [0, 15, -15, 0],
-            rotate: [0, 8, -8, 0],
           }}
           transition={{
-            duration: 10,
+            duration: 18,
             repeat: Infinity,
-            delay: i * 2,
-            ease: 'easeInOut',
+            delay: item.delay,
+            ease: 'linear',
           }}
         >
-          {kite}
+          {item.emoji}
         </motion.div>
       ))}
     </>

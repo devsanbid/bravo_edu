@@ -50,12 +50,16 @@ export function ConfettiAnimation() {
   const [confetti, setConfetti] = useState<Array<{ id: number; left: number; delay: number; duration: number }>>([]);
 
   useEffect(() => {
-    const confettiArray = Array.from({ length: 10 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      delay: Math.random() * 5,
-      duration: 8 + Math.random() * 5,
-    }));
+    const confettiArray = Array.from({ length: 15 }, (_, i) => {
+      // 85% on right side (60-95%), 15% on left side (5-30%)
+      const left = i < 2 ? 5 + Math.random() * 25 : 60 + Math.random() * 35;
+      return {
+        id: i,
+        left,
+        delay: Math.random() * 5,
+        duration: 8 + Math.random() * 5,
+      };
+    });
     setConfetti(confettiArray);
   }, []);
 
@@ -85,27 +89,33 @@ export function ConfettiAnimation() {
 }
 
 export function BalloonAnimation() {
-  const balloons = ['🎈', '🎈', '🎈', '🎈'];
+  const items = [
+    { emoji: '🎈', left: 10, delay: 0 },
+    { emoji: '🎉', left: 68, delay: 3 },
+    { emoji: '🥳', left: 78, delay: 6 },
+    { emoji: '🍾', left: 88, delay: 9 },
+    { emoji: '✨', left: 93, delay: 12 },
+  ];
 
   return (
     <>
-      {balloons.map((balloon, i) => (
+      {items.map((item, i) => (
         <motion.div
           key={i}
-          className="fixed pointer-events-none z-10 text-5xl"
-          initial={{ bottom: '-100px', left: `${20 + i * 20}%` }}
+          className="fixed pointer-events-none z-5 text-3xl opacity-60"
+          initial={{ top: '-100px', left: `${item.left}%` }}
           animate={{
-            bottom: '100vh',
-            x: [0, 20, -20, 0],
+            top: '100vh',
+            rotate: [0, 20, -20, 0],
           }}
           transition={{
-            duration: 10,
+            duration: 18,
             repeat: Infinity,
-            delay: i * 1.5,
-            ease: 'easeOut',
+            delay: item.delay,
+            ease: 'linear',
           }}
         >
-          {balloon}
+          {item.emoji}
         </motion.div>
       ))}
     </>

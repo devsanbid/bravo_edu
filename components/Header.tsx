@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useWebsiteSettings } from '@/hooks/useWebsiteSettings';
 import { websiteService } from '@/lib/websiteService';
 import { HeaderFestivalEffects } from './HeaderFestivalEffects';
+import { HeaderDecorations } from './SectionDecorations';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -48,13 +49,16 @@ export default function Header() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md relative">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
       {/* Festival Effects */}
       <HeaderFestivalEffects />
       
       {/* Top Info Bar */}
-      <div className="bg-gray-100 py-2 hidden md:block">
-        <div className="container mx-auto px-4 lg:px-8">
+      <div className="bg-gray-100 py-2 hidden md:block relative">
+        {/* Festival Decorations */}
+        <HeaderDecorations />
+        
+        <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="grid grid-cols-4 gap-4 text-sm">
             {/* Logo */}
             <div className="flex items-center">

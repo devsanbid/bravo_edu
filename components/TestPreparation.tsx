@@ -5,8 +5,26 @@ import Link from 'next/link';
 import { BookOpen, Award, Target, CheckCircle, ChevronLeft, ChevronRight, Users, TrendingUp } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback } from 'react';
+import { SectionDecorations } from './SectionDecorations';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function TestPreparation() {
+  const { currentTheme } = useTheme();
+  
+  const getThemeEmojis = () => {
+    switch (currentTheme) {
+      case 'christmas': return ['🎄', '⭐'];
+      case 'halloween': return ['🎃', '👻'];
+      case 'dashain': return ['🪁', '🌸'];
+      case 'tihar': return ['🪔', '✨'];
+      case 'holi': return ['🎨', '🌈'];
+      case 'newYear': return ['🎆', '🎉'];
+      default: return [];
+    }
+  };
+
+  const emojis = getThemeEmojis();
+
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
     loop: true,
     align: 'start',
@@ -72,8 +90,11 @@ export default function TestPreparation() {
   ];
 
   return (
-    <section id="test-prep" className="py-20 bg-white">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section id="test-prep" className="py-20 bg-white relative">
+      {/* Festival Decorations */}
+      <SectionDecorations />
+      
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -134,7 +155,12 @@ export default function TestPreparation() {
                       <p className="text-white/90 text-sm">{test.fullName}</p>
                     </div>
 
-                    <div className="p-6">
+                    <div className="p-6 relative">
+                      {/* Theme Emoji */}
+                      {emojis.length > 0 && (
+                        <span className="absolute top-2 right-2 text-xl opacity-25">{emojis[index % emojis.length]}</span>
+                      )}
+                      
                       <div className="mb-4">
                         <div className="flex items-center space-x-2 mb-2">
                           <Target className="w-4 h-4 text-primary-purple" />

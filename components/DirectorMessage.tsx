@@ -4,13 +4,33 @@ import { motion } from 'framer-motion';
 import { Quote } from 'lucide-react';
 import { useWebsiteSettings } from '@/hooks/useWebsiteSettings';
 import { websiteService } from '@/lib/websiteService';
+import { SectionDecorations } from './SectionDecorations';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function DirectorMessage() {
   const { settings } = useWebsiteSettings();
+  const { currentTheme } = useTheme();
+
+  const getThemeEmojis = () => {
+    switch (currentTheme) {
+      case 'christmas': return ['🎄', '🎅', '⭐', '🎁', '🔔', '❄️', '🦌'];
+      case 'halloween': return ['🎃', '👻', '🦇', '💀', '🕷️', '🍬', '🕸️'];
+      case 'dashain': return ['🪁', '🌸', '🌺', '🌼', '🎋', '🏵️', '🌻'];
+      case 'tihar': return ['🪔', '✨', '🏮', '⭐', '💫', '🌟', '✨'];
+      case 'holi': return ['🎨', '🌈', '💧', '💦', '🎭', '🖌️', '💐'];
+      case 'newYear': return ['🎆', '🎉', '🥳', '🍾', '✨', '🎊', '🥂'];
+      default: return [];
+    }
+  };
+
+  const emojis = getThemeEmojis();
 
   return (
-    <section id="about" className="py-20 bg-gradient-to-br from-gray-50 to-white">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section id="about" className="py-20 bg-gradient-to-br from-gray-50 to-white relative">
+      {/* Festival Decorations */}
+      <SectionDecorations />
+      
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -43,7 +63,20 @@ export default function DirectorMessage() {
           >
             <div className="flex flex-col items-center">
               {/* Small Avatar-style Image */}
-              <div className="mb-8">
+              <div className="mb-8 relative">
+                {/* Theme Emojis around image */}
+                {emojis.length > 0 && (
+                  <>
+                    <span className="absolute -left-8 top-2 text-2xl opacity-30">{emojis[0]}</span>
+                    <span className="absolute -right-8 top-8 text-xl opacity-25">{emojis[1]}</span>
+                    <span className="absolute -left-6 bottom-4 text-xl opacity-25">{emojis[2]}</span>
+                    <span className="absolute -right-10 bottom-2 text-2xl opacity-30">{emojis[3]}</span>
+                    <span className="absolute -left-12 top-12 text-lg opacity-20">{emojis[4]}</span>
+                    <span className="absolute -right-6 top-16 text-lg opacity-20">{emojis[5]}</span>
+                    {emojis[6] && <span className="absolute left-1/2 -translate-x-1/2 -top-6 text-xl opacity-25">{emojis[6]}</span>}
+                  </>
+                )}
+                
                 <div className="relative">
                   <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-primary-purple/20 shadow-xl">
                     {settings?.directorImageFileId ? (

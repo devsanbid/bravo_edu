@@ -36,11 +36,15 @@ export function SkyLanternAnimation() {
   const [lanterns, setLanterns] = useState<Array<{ id: number; left: number; delay: number }>>([]);
 
   useEffect(() => {
-    const lanternArray = Array.from({ length: 3 }, (_, i) => ({
-      id: i,
-      left: 20 + i * 30,
-      delay: i * 3,
-    }));
+    const lanternArray = Array.from({ length: 3 }, (_, i) => {
+      // Position: one on left, two on right
+      const left = i === 0 ? 15 : (i === 1 ? 72 : 88);
+      return {
+        id: i,
+        left,
+        delay: i * 3,
+      };
+    });
     setLanterns(lanternArray);
   }, []);
 
@@ -74,12 +78,16 @@ export function TwinklingStars() {
   const [stars, setStars] = useState<Array<{ id: number; left: number; top: number; delay: number }>>([]);
 
   useEffect(() => {
-    const starArray = Array.from({ length: 8 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      top: Math.random() * 50,
-      delay: Math.random() * 4,
-    }));
+    const starArray = Array.from({ length: 12 }, (_, i) => {
+      // 85% on right side (60-95%), 15% on left side (5-30%)
+      const left = i < 2 ? 5 + Math.random() * 25 : 60 + Math.random() * 35;
+      return {
+        id: i,
+        left,
+        top: Math.random() * 50,
+        delay: Math.random() * 2,
+      };
+    });
     setStars(starArray);
   }, []);
 

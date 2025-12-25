@@ -8,12 +8,16 @@ export function ColorPowderEffect() {
 
   useEffect(() => {
     const colors = ['#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#eab308', '#ef4444'];
-    const powderArray = Array.from({ length: 8 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      delay: Math.random() * 6,
-    }));
+    const powderArray = Array.from({ length: 12 }, (_, i) => {
+      // 85% on right side (60-95%), 15% on left side (5-30%)
+      const left = i < 2 ? 5 + Math.random() * 25 : 60 + Math.random() * 35;
+      return {
+        id: i,
+        left,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        delay: Math.random() * 6,
+      };
+    });
     setPowders(powderArray);
   }, []);
 
@@ -43,14 +47,22 @@ export function ColorPowderEffect() {
 }
 
 export function WaterBalloonAnimation() {
+  const balloons = [
+    { emoji: '💧', left: 12, delay: 0 },
+    { emoji: '💦', left: 68, delay: 2 },
+    { emoji: '💧', left: 78, delay: 4 },
+    { emoji: '💦', left: 88, delay: 6 },
+    { emoji: '💧', left: 93, delay: 8 },
+  ];
+  
   return (
     <>
-      {[0, 1, 2].map((i) => (
+      {balloons.map((balloon, i) => (
         <motion.div
           key={i}
-          className="fixed pointer-events-none z-10 text-5xl"
+          className="fixed pointer-events-none z-10 text-4xl opacity-60"
           initial={{ 
-            left: `${20 + i * 30}%`, 
+            left: `${balloon.left}%`, 
             top: '-100px',
           }}
           animate={{
@@ -58,13 +70,13 @@ export function WaterBalloonAnimation() {
             rotate: [0, 360],
           }}
           transition={{
-            duration: 3,
+            duration: 15,
             repeat: Infinity,
-            delay: i * 2,
-            ease: 'easeIn',
+            delay: balloon.delay,
+            ease: 'linear',
           }}
         >
-          💧
+          {balloon.emoji}
         </motion.div>
       ))}
     </>

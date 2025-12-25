@@ -5,9 +5,26 @@ import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useState, useEffect } from 'react';
+import { SectionDecorations } from './SectionDecorations';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function DestinationHub() {
+  const { currentTheme } = useTheme();
   const [isMobile, setIsMobile] = useState(true); // Default to true to prevent flicker
+
+  const getThemeEmojis = () => {
+    switch (currentTheme) {
+      case 'christmas': return ['🎄', '⭐', '🎁'];
+      case 'halloween': return ['🎃', '👻', '🦇'];
+      case 'dashain': return ['🪁', '🌸', '🌺'];
+      case 'tihar': return ['🪔', '✨', '⭐'];
+      case 'holi': return ['🎨', '🌈', '💧'];
+      case 'newYear': return ['🎆', '🎉', '🥳'];
+      default: return [];
+    }
+  };
+
+  const emojis = getThemeEmojis();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -91,8 +108,11 @@ export default function DestinationHub() {
   ];
 
   return (
-    <section id="destinations" className="py-20 bg-white">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section id="destinations" className="py-20 bg-white relative">
+      {/* Festival Decorations */}
+      <SectionDecorations />
+      
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <motion.div
           initial={isMobile ? {} : { opacity: 0, y: 30 }}
           whileInView={isMobile ? {} : { opacity: 1, y: 0 }}
@@ -147,7 +167,12 @@ export default function DestinationHub() {
                       </div>
                     </div>
 
-                    <div className="p-6">
+                    <div className="p-6 relative">
+                      {/* Theme Emojis */}
+                      {emojis.length > 0 && index < 3 && (
+                        <span className="absolute top-2 right-2 text-xl opacity-25">{emojis[index % emojis.length]}</span>
+                      )}
+                      
                       <div className="space-y-3 mb-6">
                         {dest.features.map((feature) => (
                           <div key={feature} className="flex items-center space-x-2">

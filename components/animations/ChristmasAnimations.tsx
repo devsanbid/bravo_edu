@@ -64,8 +64,12 @@ export function SantaAnimation() {
 
 export function ChristmasGifts() {
   const gifts = [
-    { emoji: '🎁', left: 30, delay: 0 },
-    { emoji: '🎄', left: 70, delay: 8 },
+    { emoji: '🎁', left: 15, delay: 0 },
+    { emoji: '🎄', left: 65, delay: 3 },
+    { emoji: '🔔', left: 75, delay: 6 },
+    { emoji: '⭐', left: 85, delay: 9 },
+    { emoji: '🎅', left: 90, delay: 12 },
+    { emoji: '🦌', left: 80, delay: 15 },
   ];
 
   return (

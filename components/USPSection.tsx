@@ -2,8 +2,26 @@
 
 import { motion } from 'framer-motion';
 import { Users, Trophy, FileSearch, FileCheck, Sparkles } from 'lucide-react';
+import { SectionDecorations } from './SectionDecorations';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function USPSection() {
+  const { currentTheme } = useTheme();
+
+  const getThemeEmojis = () => {
+    switch (currentTheme) {
+      case 'christmas': return ['🎄', '⭐'];
+      case 'halloween': return ['🎃', '👻'];
+      case 'dashain': return ['🪁', '🌸'];
+      case 'tihar': return ['🪔', '✨'];
+      case 'holi': return ['🎨', '🌈'];
+      case 'newYear': return ['🎆', '🎉'];
+      default: return [];
+    }
+  };
+
+  const emojis = getThemeEmojis();
+
   const usps = [
     {
       icon: Users,
@@ -32,8 +50,11 @@ export default function USPSection() {
   ];
 
   return (
-    <section id="services" className="py-20 bg-white">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section id="services" className="py-20 bg-white relative">
+      {/* Festival Decorations */}
+      <SectionDecorations />
+      
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -75,7 +96,12 @@ export default function USPSection() {
                 whileHover={{ y: -10 }}
                 className="group relative"
               >
-                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full">
+                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full relative">
+                  {/* Theme Emoji */}
+                  {emojis.length > 0 && (
+                    <span className="absolute top-4 right-4 text-xl opacity-25">{emojis[index % emojis.length]}</span>
+                  )}
+                  
                   {/* Icon */}
                   <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${usp.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                     <Icon className="w-8 h-8 text-white" />

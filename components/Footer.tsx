@@ -15,9 +15,27 @@ import {
 import { FaWhatsapp } from 'react-icons/fa';
 import { useWebsiteSettings } from '@/hooks/useWebsiteSettings';
 import { websiteService } from '@/lib/websiteService';
+import { SectionDecorations } from './SectionDecorations';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function Footer() {
   const { settings } = useWebsiteSettings();
+  const { currentTheme } = useTheme();
+
+  const getThemeEmojis = () => {
+    switch (currentTheme) {
+      case 'christmas': return ['🎄', '🎅', '⭐', '🎁'];
+      case 'halloween': return ['🎃', '👻', '🦇', '💀'];
+      case 'dashain': return ['🪁', '🌸', '🌺', '🌼'];
+      case 'tihar': return ['🪔', '✨', '🏮', '⭐'];
+      case 'holi': return ['🎨', '🌈', '💧', '💦'];
+      case 'newYear': return ['🎆', '🎉', '🥳', '🍾'];
+      default: return [];
+    }
+  };
+
+  const emojis = getThemeEmojis();
+
   const quickLinks = [
     { name: 'About Us', href: '#about' },
     { name: 'Destinations', href: '#destinations' },
@@ -44,8 +62,11 @@ export default function Footer() {
   ];
 
   return (
-    <footer id="contact" className="bg-gradient-to-br from-gray-900 to-gray-800 text-white pt-20 pb-6">
-      <div className="container mx-auto px-4 lg:px-8">
+    <footer id="contact" className="bg-gradient-to-br from-gray-900 to-gray-800 text-white pt-20 pb-6 relative overflow-hidden">
+      {/* Festival Decorations */}
+      <SectionDecorations />
+      
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Main Footer Content */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Company Info */}
@@ -53,7 +74,13 @@ export default function Footer() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            className="relative"
           >
+            {/* Theme Emoji */}
+            {emojis.length > 0 && (
+              <span className="absolute top-0 right-0 text-2xl opacity-30">{emojis[0]}</span>
+            )}
+            
             <div className="mb-6">
               {settings?.logoFileId ? (
                 <img 
@@ -97,7 +124,13 @@ export default function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
+            className="relative"
           >
+            {/* Theme Emoji */}
+            {emojis.length > 0 && (
+              <span className="absolute top-0 right-0 text-2xl opacity-30">{emojis[1]}</span>
+            )}
+            
             <h4 className="text-xl font-bold mb-6">Quick Links</h4>
             <ul className="space-y-3">
               {quickLinks.map((link) => (
@@ -120,7 +153,13 @@ export default function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
+            className="relative"
           >
+            {/* Theme Emoji */}
+            {emojis.length > 0 && (
+              <span className="absolute top-0 right-0 text-2xl opacity-30">{emojis[2]}</span>
+            )}
+            
             <h4 className="text-xl font-bold mb-6">Our Services</h4>
             <ul className="space-y-3">
               {services.map((service) => (
@@ -143,7 +182,13 @@ export default function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
+            className="relative"
           >
+            {/* Theme Emoji */}
+            {emojis.length > 0 && (
+              <span className="absolute top-0 right-0 text-2xl opacity-30">{emojis[3]}</span>
+            )}
+            
             <h4 className="text-xl font-bold mb-6">Contact Us</h4>
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
