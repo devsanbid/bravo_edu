@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import AppwriteInit from "@/components/AppwriteInit";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import ChatWidget from "@/components/ChatWidget";
 import ConsultationWidget from "@/components/ConsultationWidget";
 import PopupModal from "@/components/PopupModal";
@@ -92,13 +93,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
         <AuthProvider>
-          <AppwriteInit />
-          <PopupModal />
-          {children}
-          <ChatWidget />
-          <ConsultationWidget />
-          <Analytics />
-          <SpeedInsights />
+          <ThemeProvider>
+            <AppwriteInit />
+            <PopupModal />
+            {children}
+            <ChatWidget />
+            <ConsultationWidget />
+            <Analytics />
+            <SpeedInsights />
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>

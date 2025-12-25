@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { MessageSquare, Image, Share2, LogOut, Menu, X, BookOpen, Bell, Briefcase, Megaphone, Building2, Globe, Calendar, GraduationCap } from 'lucide-react';
+import { MessageSquare, Image, Share2, LogOut, Menu, X, BookOpen, Bell, Briefcase, Megaphone, Building2, Globe, Calendar, GraduationCap, Paintbrush } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface AdminLayoutProps {
@@ -31,9 +31,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   const navItems = [
     { name: 'Chat', href: '/admin/chat', icon: MessageSquare },
-    { name: 'Calendar', href: '/admin/calendar', icon: Calendar },
-    { name: 'Universities', href: '/admin/universities', icon: GraduationCap },
-    { name: 'Scholarships', href: '/admin/scholarships', icon: BookOpen },
     { name: 'Gallery', href: '/admin/gallery', icon: Image },
     { name: 'Social Media', href: '/admin/social-media', icon: Share2 },
     { name: 'Bookings', href: '/admin/book', icon: BookOpen },
@@ -42,6 +39,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Branches', href: '/admin/branches', icon: Building2 },
     { name: 'Announcements', href: '/admin/announcements', icon: Megaphone },
     { name: 'Website', href: '/admin/website', icon: Globe },
+      { name: 'Calendar', href: '/admin/calendar', icon: Calendar },
+    { name: 'Theme Settings', href: '/admin/settings/theme', icon: Paintbrush },
   ];
 
   const handleLogout = async () => {

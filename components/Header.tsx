@@ -6,6 +6,7 @@ import { Menu, X, Phone, Mail, Clock, MapPin, Copy } from 'lucide-react';
 import Link from 'next/link';
 import { useWebsiteSettings } from '@/hooks/useWebsiteSettings';
 import { websiteService } from '@/lib/websiteService';
+import { HeaderFestivalEffects } from './HeaderFestivalEffects';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -47,7 +48,10 @@ export default function Header() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md relative">
+      {/* Festival Effects */}
+      <HeaderFestivalEffects />
+      
       {/* Top Info Bar */}
       <div className="bg-gray-100 py-2 hidden md:block">
         <div className="container mx-auto px-4 lg:px-8">

@@ -1,3 +1,6 @@
+'use client';
+
+import { useTheme } from '@/context/ThemeContext';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import DirectorMessage from '@/components/DirectorMessage';
@@ -9,21 +12,47 @@ import TestimonialSlider from '@/components/TestimonialSlider';
 import ConsultationForm from '@/components/ConsultationForm';
 import Footer from '@/components/Footer';
 import ChatWidget from '@/components/ChatWidget';
+import ThemeAnimations from '@/components/ThemeAnimations';
+import ThemeBadge from '@/components/ThemeBadge';
 
 export default function Home() {
+  const { themeConfig, isLoading } = useTheme();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="text-center">
+          <div className="animate-spin w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <main className="min-h-screen bg-white">
-      <Header />
-      <Hero />
-      <DirectorMessage />
-      <DestinationHub />
-      <USPSection />
-      <TestPreparation />
-      <ProcessMap />
-      <TestimonialSlider />
-      <ConsultationForm />
-      <Footer />
-      <ChatWidget />
+    <main 
+      className="min-h-screen relative overflow-hidden bg-white"
+    >
+      {/* Theme-specific animations */}
+      <ThemeAnimations />
+      
+      {/* Main content with theme-aware styling */}
+      <div className="relative z-10">
+        <Header />
+        <Hero />
+        <DirectorMessage />
+        <DestinationHub />
+        <USPSection />
+        <TestPreparation />
+        <ProcessMap />
+        <TestimonialSlider />
+        <ConsultationForm />
+        <Footer />
+        <ChatWidget />
+      </div>
+
+      {/* Theme indicator badge */}
+      <ThemeBadge />
     </main>
   );
 }
