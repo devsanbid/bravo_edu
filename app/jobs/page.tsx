@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { jobService, Job } from '@/lib/jobService';
+import { branchService, Branch } from '@/lib/branchService';
 import { Briefcase, MapPin, Clock, Calendar, FileText, Upload, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const branches = ['Putalisadak'];
-
 export default function JobsPage() {
-  const [selectedBranch, setSelectedBranch] = useState(branches[0]);
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [selectedBranch, setSelectedBranch] = useState('all');
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -27,13 +27,34 @@ export default function JobsPage() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
+    fetchBranches();
+  }, []);
+
+  useEffect(() => {
     fetchJobs();
   }, [selectedBranch]);
+
+  const fetchBranches = async () => {
+    try {
+      const fetchedBranches = await branchService.getActiveBranches();
+      setBranches(fetchedBranches);
+      // Start with 'all' to show all branches by default
+    } catch (error) {
+      console.error('Error fetching branches:', error);
+    }
+  };
 
   const fetchJobs = async () => {
     setLoading(true);
     try {
-      const data = await jobService.getActiveJobs(selectedBranch);
+      let data;
+      if (selectedBranch === 'all') {
+        // Fetch all active jobs from all branches
+        data = await jobService.getAllActiveJobs();
+      } else {
+        // Fetch jobs for specific branch
+        data = await jobService.getActiveJobs(selectedBranch);
+      }
       setJobs(data);
     } catch (error) {
       console.error('Error fetching jobs:', error);
@@ -123,19 +144,31 @@ export default function JobsPage() {
               <h2 className="text-base md:text-lg font-semibold text-gray-900">Select Branch:</h2>
             </div>
             <div className="flex gap-2 flex-wrap">
-              {branches.map((branch) => (
-                <button
-                  key={branch}
-                  onClick={() => setSelectedBranch(branch)}
-                  className={`px-4 md:px-6 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${
-                    selectedBranch === branch
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {branch}
-                </button>
-              ))}
+              <button
+                onClick={() => setSelectedBranch('all')}
+                className={`px-4 md:px-6 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${
+                  selectedBranch === 'all'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                All Branches
+              </button>
+              {branches.length === 0 ? null : (
+                branches.map((branch) => (
+                  <button
+                    key={branch.$id}
+                    onClick={() => setSelectedBranch(branch.name)}
+                    className={`px-4 md:px-6 py-2 rounded-lg font-medium transition-all text-sm md:text-base ${
+                      selectedBranch === branch.name
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {branch.name}
+                  </button>
+                ))
+              )}
             </div>
           </div>
         </div>

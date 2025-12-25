@@ -1,21 +1,33 @@
 "use client"
 
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { MessageSquare, Image, Share2, LogOut, Menu, X, BookOpen, Bell, Briefcase, Megaphone } from 'lucide-react';
+import { MessageSquare, Image, Share2, LogOut, Menu, X, BookOpen, Bell, Briefcase, Megaphone, Building2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useState } from 'react';
 
 interface AdminLayoutProps {
   children: ReactNode;
 }
 
+// Initialize sidebar state from localStorage
+const getInitialSidebarState = () => {
+  if (typeof window === 'undefined') return true;
+  const savedState = localStorage.getItem('adminSidebarOpen');
+  return savedState !== null ? savedState === 'true' : true;
+};
+
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(false); // Closed by default on mobile
+  const [sidebarOpen, setSidebarOpen] = useState(getInitialSidebarState);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Save sidebar state to localStorage when it changes
+  const toggleSidebar = (isOpen: boolean) => {
+    setSidebarOpen(isOpen);
+    localStorage.setItem('adminSidebarOpen', String(isOpen));
+  };
 
   const navItems = [
     { name: 'Chat', href: '/admin/chat', icon: MessageSquare },
@@ -24,6 +36,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Bookings', href: '/admin/book', icon: BookOpen },
     { name: 'Popups', href: '/admin/popups', icon: Bell },
     { name: 'Jobs', href: '/admin/jobs', icon: Briefcase },
+    { name: 'Branches', href: '/admin/branches', icon: Building2 },
     { name: 'Announcements', href: '/admin/announcements', icon: Megaphone },
   ];
 
@@ -79,7 +92,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <>
               <h1 className="text-xl font-bold">Admin Panel</h1>
               <button
-                onClick={() => setSidebarOpen(false)}
+                onClick={() => toggleSidebar(false)}
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors"
               >
                 <X className="w-5 h-5" />
@@ -87,7 +100,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </>
           ) : (
             <button
-              onClick={() => setSidebarOpen(true)}
+              onClick={() => toggleSidebar(true)}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors mx-auto"
             >
               <Menu className="w-5 h-5" />

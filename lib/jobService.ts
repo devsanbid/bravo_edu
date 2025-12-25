@@ -96,6 +96,25 @@ class JobService {
     }
   }
 
+  async getAllActiveJobs(): Promise<Job[]> {
+    try {
+      const response = await databases.listDocuments(
+        DATABASE_ID,
+        JOBS_COLLECTION_ID,
+        [
+          Query.equal('isActive', true),
+          Query.greaterThan('deadline', new Date().toISOString()),
+          Query.orderDesc('postedDate'),
+          Query.limit(100)
+        ]
+      );
+      return response.documents as unknown as Job[];
+    } catch (error) {
+      console.error('Error fetching all active jobs:', error);
+      throw error;
+    }
+  }
+
   async updateJob(id: string, data: Partial<Omit<Job, '$id' | '$createdAt' | '$updatedAt' | '$permissions' | '$databaseId' | '$collectionId'>>): Promise<Job> {
     try {
       const job = await databases.updateDocument(

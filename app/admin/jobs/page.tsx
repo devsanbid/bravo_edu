@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/AdminLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { jobService, Job, JobApplication } from '@/lib/jobService';
+import { branchService, Branch } from '@/lib/branchService';
 import { Plus, Edit2, Trash2, Eye, Download, Calendar, Briefcase, X, Users, CheckCircle, Clock, FileText, XCircle, Mail, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -22,6 +23,7 @@ function AdminJobsContent() {
   const [showJobForm, setShowJobForm] = useState(false);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [applications, setApplications] = useState<JobApplication[]>([]);
+  const [branches, setBranches] = useState<Branch[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(true);
   const [loadingApplications, setLoadingApplications] = useState(false);
   const [editingJob, setEditingJob] = useState<Job | null>(null);
@@ -33,7 +35,7 @@ function AdminJobsContent() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    branch: 'Putalisadak',
+    branch: '',
     type: 'full-time',
     requirements: '',
     deadline: '',
@@ -42,6 +44,7 @@ function AdminJobsContent() {
 
   useEffect(() => {
     fetchJobs();
+    fetchBranches();
   }, []);
 
   useEffect(() => {
@@ -60,6 +63,19 @@ function AdminJobsContent() {
       alert('Failed to load jobs');
     } finally {
       setLoadingJobs(false);
+    }
+  };
+
+  const fetchBranches = async () => {
+    try {
+      const fetchedBranches = await branchService.getActiveBranches();
+      setBranches(fetchedBranches);
+      // Set default branch if branches exist and no branch is selected
+      if (fetchedBranches.length > 0 && !formData.branch) {
+        setFormData(prev => ({ ...prev, branch: fetchedBranches[0].name }));
+      }
+    } catch (error) {
+      console.error('Failed to fetch branches:', error);
     }
   };
 
@@ -312,7 +328,15 @@ function AdminJobsContent() {
                             onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                           >
-                            <option value="Putalisadak">Putalisadak</option>
+                            {branches.length === 0 ? (
+                              <option value="">No branches available</option>
+                            ) : (
+                              branches.map((branch) => (
+                                <option key={branch.$id} value={branch.name}>
+                                  {branch.name}
+                                </option>
+                              ))
+                            )}
                           </select>
                         </div>
 
