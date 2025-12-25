@@ -6,7 +6,8 @@ import AppwriteInit from "@/components/AppwriteInit";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import ChatWidget from "@/components/ChatWidget";
-import ConsultationWidget from "@/components/ConsultationWidget";
+import CallWidget from "@/components/CallWidget";
+import WhatsAppWidget from "@/components/WhatsAppWidget";
 import PopupModal from "@/components/PopupModal";
 import { websiteService } from "@/lib/websiteService";
 import "./globals.css";
@@ -98,7 +99,8 @@ export default function RootLayout({
             <PopupModal />
             {children}
             <ChatWidget />
-            <ConsultationWidget />
+            <WhatsAppWidget />
+            <CallWidget />
             <Analytics />
             <SpeedInsights />
           </ThemeProvider>

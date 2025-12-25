@@ -11,7 +11,7 @@ import ProcessMap from '@/components/ProcessMap';
 import TestimonialSlider from '@/components/TestimonialSlider';
 import ConsultationForm from '@/components/ConsultationForm';
 import Footer from '@/components/Footer';
-import ChatWidget from '@/components/ChatWidget';
+import CallWidget from '@/components/CallWidget';
 import ThemeAnimations from '@/components/ThemeAnimations';
 
 export default function Home() {
@@ -47,7 +47,6 @@ export default function Home() {
         <TestimonialSlider />
         <ConsultationForm />
         <Footer />
-        <ChatWidget />
       </div>
     </main>
   );
