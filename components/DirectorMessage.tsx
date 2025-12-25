@@ -46,9 +46,11 @@ export default function DirectorMessage() {
               viewport={{ once: true }}
               className="text-4xl md:text-5xl font-bold mb-4"
             >
+              {emojis.length > 0 && <span className="mr-3 inline-block">{emojis[0]}</span>}
               <span className="bg-gradient-to-r from-primary-purple to-accent-orange bg-clip-text text-transparent">
                 Director's Message
               </span>
+              {emojis.length > 0 && <span className="ml-3 inline-block">{emojis[1] || emojis[0]}</span>}
             </motion.h2>
             <p className="text-text-light text-lg">Leading with vision and commitment</p>
           </div>
@@ -64,16 +66,12 @@ export default function DirectorMessage() {
             <div className="flex flex-col items-center">
               {/* Small Avatar-style Image */}
               <div className="mb-8 relative">
-                {/* Theme Emojis around image */}
+                {/* Theme Emojis around image - 3 random positions */}
                 {emojis.length > 0 && (
                   <>
-                    <span className="absolute -left-8 top-2 text-2xl opacity-30">{emojis[0]}</span>
-                    <span className="absolute -right-8 top-8 text-xl opacity-25">{emojis[1]}</span>
-                    <span className="absolute -left-6 bottom-4 text-xl opacity-25">{emojis[2]}</span>
-                    <span className="absolute -right-10 bottom-2 text-2xl opacity-30">{emojis[3]}</span>
-                    <span className="absolute -left-12 top-12 text-lg opacity-20">{emojis[4]}</span>
-                    <span className="absolute -right-6 top-16 text-lg opacity-20">{emojis[5]}</span>
-                    {emojis[6] && <span className="absolute left-1/2 -translate-x-1/2 -top-6 text-xl opacity-25">{emojis[6]}</span>}
+                    <span className="absolute -left-8 top-2 text-2xl">{emojis[Math.floor(Math.random() * emojis.length)]}</span>
+                    <span className="absolute -right-8 top-8 text-xl">{emojis[Math.floor(Math.random() * emojis.length)]}</span>
+                    <span className="absolute left-1/2 -translate-x-1/2 -top-6 text-xl">{emojis[Math.floor(Math.random() * emojis.length)]}</span>
                   </>
                 )}
                 

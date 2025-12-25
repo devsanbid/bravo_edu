@@ -112,9 +112,11 @@ export default function TestPreparation() {
           </motion.div>
           
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            {emojis.length > 0 && <span className="mr-3 inline-block">{emojis[0]}</span>}
             <span className="bg-gradient-to-r from-primary-purple to-accent-orange bg-clip-text text-transparent">
               Test Preparation
             </span>
+            {emojis.length > 0 && <span className="ml-3 inline-block">{emojis[1] || emojis[0]}</span>}
           </h2>
           <p className="text-text-light text-lg max-w-2xl mx-auto">
             Comprehensive coaching for all major English proficiency and standardized tests
@@ -158,7 +160,7 @@ export default function TestPreparation() {
                     <div className="p-6 relative">
                       {/* Theme Emoji */}
                       {emojis.length > 0 && (
-                        <span className="absolute top-2 right-2 text-xl opacity-25">{emojis[index % emojis.length]}</span>
+                        <span className="absolute top-2 right-2 text-xl">{emojis[index % emojis.length]}</span>
                       )}
                       
                       <div className="mb-4">

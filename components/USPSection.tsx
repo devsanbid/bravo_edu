@@ -73,9 +73,11 @@ export default function USPSection() {
           </motion.div>
           
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            {emojis.length > 0 && <span className="mr-3 inline-block">{emojis[0]}</span>}
             <span className="bg-gradient-to-r from-primary-purple to-accent-orange bg-clip-text text-transparent">
               What Separates Us Among All?
             </span>
+            {emojis.length > 0 && <span className="ml-3 inline-block">{emojis[1] || emojis[0]}</span>}
           </h2>
           <p className="text-text-light text-lg max-w-2xl mx-auto">
             Our unique approach and commitment to excellence make us the preferred choice for students
@@ -99,7 +101,7 @@ export default function USPSection() {
                 <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full relative">
                   {/* Theme Emoji */}
                   {emojis.length > 0 && (
-                    <span className="absolute top-4 right-4 text-xl opacity-25">{emojis[index % emojis.length]}</span>
+                    <span className="absolute top-4 right-4 text-xl">{emojis[index % emojis.length]}</span>
                   )}
                   
                   {/* Icon */}

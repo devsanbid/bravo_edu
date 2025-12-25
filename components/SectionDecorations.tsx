@@ -129,7 +129,7 @@ export function HeaderDecorations() {
       {emojis.map((emoji, i) => (
         <motion.div
           key={i}
-          className="absolute text-2xl opacity-40"
+          className="absolute text-2xl"
           style={{ 
             left: `${10 + i * 18}%`, 
             top: '50%',
