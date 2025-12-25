@@ -2,8 +2,23 @@
 
 import { motion } from 'framer-motion';
 import { ArrowRight, GraduationCap, Globe, TrendingUp } from 'lucide-react';
+import { useWebsiteSettings } from '@/hooks/useWebsiteSettings';
+import { websiteService } from '@/lib/websiteService';
 
 export default function Hero() {
+  const { settings } = useWebsiteSettings();
+
+  // Get image size class
+  const getImageSizeClass = (size?: string) => {
+    switch (size) {
+      case 'small': return 'max-w-md';
+      case 'medium': return 'max-w-lg';
+      case 'large': return 'max-w-2xl';
+      case 'full': return 'w-full';
+      default: return 'max-w-xl';
+    }
+  };
+
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32">
       {/* Background Gradient */}
@@ -67,11 +82,11 @@ export default function Hero() {
               className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
             >
               <span className="bg-gradient-to-r from-primary-purple to-primary-purple-light bg-clip-text text-transparent">
-                THINK ABROAD,
+                {settings?.heroTitle || 'THINK ABROAD,'}
               </span>
               <br />
               <span className="bg-gradient-to-r from-accent-orange to-accent-gold bg-clip-text text-transparent">
-                THINK BRAVO
+                {settings?.heroSubtitle || 'THINK BRAVO'}
               </span>
             </motion.h1>
 
@@ -81,9 +96,7 @@ export default function Hero() {
               transition={{ delay: 0.4 }}
               className="text-lg md:text-xl text-text-light mb-8 max-w-xl mx-auto lg:mx-0"
             >
-              Your trusted partner for studying in UK, USA, and Canada. 
-              We turn your dreams of international education into reality with 
-              expert guidance and personalized support.
+              {settings?.heroDescription || 'Your trusted partner for studying in UK, USA, and Canada. We turn your dreams of international education into reality with expert guidance and personalized support.'}
             </motion.p>
 
             {/* CTA Buttons */}
@@ -144,12 +157,20 @@ export default function Hero() {
           >
             <div className="relative">
               {/* Banner image */}
-              <div className="relative w-full h-[600px] rounded-3xl overflow-hidden shadow-2xl">
-                <img
-                  src="/banner.jpg"
-                  alt="Students studying abroad"
-                  className="w-full h-full object-cover"
-                />
+              <div className={`relative w-full h-[800px] rounded-3xl overflow-hidden shadow-2xl ${settings?.heroImageSize ? getImageSizeClass(settings.heroImageSize) : ''}`}>
+                {settings?.heroImageFileId ? (
+                  <img
+                    src={websiteService.getImageUrl(settings.heroImageFileId)}
+                    alt={settings.heroTitle || "Students studying abroad"}
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <img
+                    src="/banner.jpg"
+                    alt="Students studying abroad"
+                    className="w-full h-full object-contain"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-primary-purple/30 to-transparent"></div>
               </div>
               
@@ -157,7 +178,7 @@ export default function Hero() {
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 3, repeat: Infinity }}
-                className="absolute top-10 -left-10 bg-white p-4 rounded-xl shadow-xl"
+                className="absolute bottom-10 -left-10 bg-white p-4 rounded-xl shadow-xl"
               >
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-primary-purple/10 rounded-lg flex items-center justify-center">

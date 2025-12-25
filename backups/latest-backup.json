@@ -1,0 +1,1156 @@
+{
+  "exportedAt": "2025-12-25T06:45:59.774Z",
+  "databaseId": "bravo_chat_db",
+  "collections": [
+    {
+      "id": "chat_sessions",
+      "name": "Chat Sessions",
+      "permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "documentSecurity": false,
+      "enabled": true,
+      "attributes": [
+        {
+          "key": "visitorId",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "visitorName",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "visitorEmail",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "visitorPhone",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "status",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": "active"
+        },
+        {
+          "key": "lastMessageAt",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "createdAt",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        }
+      ],
+      "indexes": [
+        {
+          "$id": "4163_3_visitor_id_idx",
+          "$createdAt": "2025-12-22T11:15:46.977+00:00",
+          "$updatedAt": "2025-12-22T11:15:47.052+00:00",
+          "key": "visitor_id_idx",
+          "type": "key",
+          "status": "available",
+          "error": "",
+          "attributes": [
+            "visitorId"
+          ],
+          "lengths": [
+            0
+          ],
+          "orders": [
+            "ASC"
+          ]
+        },
+        {
+          "$id": "4163_3_status_idx",
+          "$createdAt": "2025-12-22T11:16:01.998+00:00",
+          "$updatedAt": "2025-12-22T11:16:02.067+00:00",
+          "key": "status_idx",
+          "type": "key",
+          "status": "available",
+          "error": "",
+          "attributes": [
+            "status"
+          ],
+          "lengths": [
+            0
+          ],
+          "orders": [
+            "ASC"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chat_messages",
+      "name": "Chat Messages",
+      "permissions": [
+        "create(\"any\")",
+        "read(\"any\")"
+      ],
+      "documentSecurity": false,
+      "enabled": true,
+      "attributes": [
+        {
+          "key": "sessionId",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "message",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 5000,
+          "default": null
+        },
+        {
+          "key": "senderName",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "senderEmail",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "senderPhone",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "isFromAdmin",
+          "type": "boolean",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": false
+        },
+        {
+          "key": "timestamp",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        }
+      ],
+      "indexes": [
+        {
+          "$id": "4163_4_session_id_idx",
+          "$createdAt": "2025-12-22T11:18:50.393+00:00",
+          "$updatedAt": "2025-12-22T11:18:50.464+00:00",
+          "key": "session_id_idx",
+          "type": "key",
+          "status": "available",
+          "error": "",
+          "attributes": [
+            "sessionId"
+          ],
+          "lengths": [
+            0
+          ],
+          "orders": [
+            "ASC"
+          ]
+        },
+        {
+          "$id": "4163_4_timestamp_idx",
+          "$createdAt": "2025-12-22T11:19:02.144+00:00",
+          "$updatedAt": "2025-12-22T11:19:02.210+00:00",
+          "key": "timestamp_idx",
+          "type": "key",
+          "status": "available",
+          "error": "",
+          "attributes": [
+            "timestamp"
+          ],
+          "lengths": [
+            0
+          ],
+          "orders": [
+            "ASC"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gallery_images",
+      "name": "Gallery Images",
+      "permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "documentSecurity": false,
+      "enabled": true,
+      "attributes": [
+        {
+          "key": "title",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "description",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 1000,
+          "default": null
+        },
+        {
+          "key": "fileId",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 355,
+          "default": null
+        },
+        {
+          "key": "uploadedBy",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 355,
+          "default": null
+        },
+        {
+          "key": "uploadDate",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "fileUrl",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 500,
+          "default": null
+        }
+      ],
+      "indexes": [
+        {
+          "$id": "4163_5_uploadDate_idx",
+          "$createdAt": "2025-12-22T12:04:34.263+00:00",
+          "$updatedAt": "2025-12-22T12:04:34.328+00:00",
+          "key": "uploadDate_idx",
+          "type": "key",
+          "status": "available",
+          "error": "",
+          "attributes": [
+            "uploadDate"
+          ],
+          "lengths": [
+            0
+          ],
+          "orders": [
+            "ASC"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "social_media_posts",
+      "name": "Social Media Posts",
+      "permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "documentSecurity": false,
+      "enabled": true,
+      "attributes": [
+        {
+          "key": "platform",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "postUrl",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "caption",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 5000,
+          "default": null
+        },
+        {
+          "key": "addedBy",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "addedDate",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "id": "consultations",
+      "name": "consultations",
+      "permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "documentSecurity": false,
+      "enabled": true,
+      "attributes": [
+        {
+          "key": "name",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "email",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "phone",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 15,
+          "default": null
+        },
+        {
+          "key": "destination",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "education",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "message",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 5000,
+          "default": null
+        },
+        {
+          "key": "status",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": "pending",
+          "elements": [
+            "pending",
+            "contacted",
+            "completed"
+          ]
+        },
+        {
+          "key": "submittedAt",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "id": "popups",
+      "name": "popups",
+      "permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "documentSecurity": false,
+      "enabled": true,
+      "attributes": [
+        {
+          "key": "content",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 1000,
+          "default": null
+        },
+        {
+          "key": "startDate",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "endDate",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "isEnabled",
+          "type": "boolean",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "imageUrl",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 300,
+          "default": null
+        },
+        {
+          "key": "buttonText",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "buttonLink",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 300,
+          "default": null
+        },
+        {
+          "key": "createdAt",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "title",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "imageFileId",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 355,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "id": "jobs",
+      "name": "jobs",
+      "permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "documentSecurity": false,
+      "enabled": true,
+      "attributes": [
+        {
+          "key": "title",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "description",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 5000,
+          "default": null
+        },
+        {
+          "key": "branch",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "type",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null,
+          "elements": [
+            "full-time",
+            "part-time",
+            "contract"
+          ]
+        },
+        {
+          "key": "requirements",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 4000,
+          "default": null
+        },
+        {
+          "key": "isActive",
+          "type": "boolean",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "postedDate",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "deadline",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "id": "job_applications",
+      "name": "job_applications",
+      "permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "documentSecurity": false,
+      "enabled": true,
+      "attributes": [
+        {
+          "key": "jobId",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 300,
+          "default": null
+        },
+        {
+          "key": "jobTitle",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "applicantName",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "applicantEmail",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "applicantPhone",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 30,
+          "default": null
+        },
+        {
+          "key": "coverLetter",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 300,
+          "default": null
+        },
+        {
+          "key": "cvFileId",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "status",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": "pending",
+          "elements": [
+            "pending",
+            "reviewed",
+            "shortlisted",
+            "rejected"
+          ]
+        },
+        {
+          "key": "appliedDate",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "cvFileName",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "id": "announcements",
+      "name": "announcements",
+      "permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "documentSecurity": false,
+      "enabled": true,
+      "attributes": [
+        {
+          "key": "title",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "content",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 3000,
+          "default": null
+        },
+        {
+          "key": "category",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null,
+          "elements": [
+            "general",
+            "urgent",
+            "event",
+            "scholarship"
+          ]
+        },
+        {
+          "key": "isActive",
+          "type": "boolean",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "publishedDate",
+          "type": "datetime",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "expiryDate",
+          "type": "datetime",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "id": "branches",
+      "name": "branches",
+      "permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "documentSecurity": false,
+      "enabled": true,
+      "attributes": [
+        {
+          "key": "name",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 244,
+          "default": null
+        },
+        {
+          "key": "address",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "email",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "city",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "isActive",
+          "type": "boolean",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": true
+        },
+        {
+          "key": "createdAt",
+          "type": "datetime",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "phone",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 20,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "id": "website_settings",
+      "name": "Website Settings",
+      "permissions": [
+        "read(\"any\")",
+        "create(\"users\")",
+        "update(\"users\")",
+        "delete(\"users\")"
+      ],
+      "documentSecurity": false,
+      "enabled": true,
+      "attributes": [
+        {
+          "key": "siteTitle",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "siteDescription",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "siteKeywords",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "logoFileId",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "headerPhone",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "headerEmail",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "headerAddress",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "heroTitle",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "heroSubtitle",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "heroImageFileId",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "heroImageSize",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "aboutTitle",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "aboutDescription",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 2000,
+          "default": null
+        },
+        {
+          "key": "aboutImageFileId",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "aboutImageSize",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "footerDescription",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "footerPhone",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "footerEmail",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "footerAddress",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "facebookUrl",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "instagramUrl",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "twitterUrl",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "linkedinUrl",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "youtubeUrl",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "footerCopyright",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "updatedAt",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        }
+      ],
+      "indexes": []
+    }
+  ]
+}

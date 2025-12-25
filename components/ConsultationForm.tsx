@@ -85,8 +85,8 @@ export default function ConsultationForm() {
             className="bg-white rounded-3xl shadow-2xl overflow-hidden"
           >
             <div className="grid md:grid-cols-2">
-              {/* Left Side - Info */}
-              <div className="bg-gradient-to-br from-primary-purple to-primary-purple-light p-8 md:p-12 text-white">
+              {/* Left Side - Info (Hidden on Mobile) */}
+              <div className="hidden md:block bg-gradient-to-br from-primary-purple to-primary-purple-light p-8 md:p-12 text-white">
                 <h3 className="text-3xl font-bold mb-6">Why Choose Bravo?</h3>
                 
                 <div className="space-y-6">

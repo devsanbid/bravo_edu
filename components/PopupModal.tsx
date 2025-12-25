@@ -107,6 +107,8 @@ export default function PopupModal() {
                 {popup.buttonText && popup.buttonLink && (
                   <Link
                     href={popup.buttonLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={handleClose}
                     className="inline-block w-full sm:w-auto text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base"
                   >

@@ -1,0 +1,32 @@
+# Backups Directory
+
+This directory stores database schema backups created by the `backup-database.js` script.
+
+## Files
+
+- `latest-backup.json` - Always contains the most recent backup
+- `appwrite-backup-YYYY-MM-DDTHH-MM-SS.json` - Timestamped backups
+
+## Important
+
+⚠️ **Keep these files safe!** They contain your entire database schema.
+
+✅ **Recommended**: 
+- Store backups in cloud storage (Google Drive, Dropbox, etc.)
+- Commit to a private Git repository
+- Keep local copies in a secure location
+
+## Restore Instructions
+
+To restore from a backup:
+
+```bash
+export APPWRITE_API_KEY="your-api-key"
+node scripts/restore-database.js backups/latest-backup.json
+```
+
+Or restore from a specific timestamped backup:
+
+```bash
+node scripts/restore-database.js backups/appwrite-backup-2025-12-25T10-30-00.json
+```

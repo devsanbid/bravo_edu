@@ -13,8 +13,11 @@ import {
   Send
 } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
+import { useWebsiteSettings } from '@/hooks/useWebsiteSettings';
+import { websiteService } from '@/lib/websiteService';
 
 export default function Footer() {
+  const { settings } = useWebsiteSettings();
   const quickLinks = [
     { name: 'About Us', href: '#about' },
     { name: 'Destinations', href: '#destinations' },
@@ -34,10 +37,10 @@ export default function Footer() {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: '#', color: 'hover:text-blue-600' },
-    { icon: Instagram, href: '#', color: 'hover:text-pink-600' },
-    { icon: Linkedin, href: '#', color: 'hover:text-blue-700' },
-    { icon: Youtube, href: '#', color: 'hover:text-red-600' },
+    { icon: Facebook, href: settings?.facebookUrl || '#', color: 'hover:text-blue-600' },
+    { icon: Instagram, href: settings?.instagramUrl || '#', color: 'hover:text-pink-600' },
+    { icon: Linkedin, href: settings?.linkedinUrl || '#', color: 'hover:text-blue-700' },
+    { icon: Youtube, href: settings?.youtubeUrl || '#', color: 'hover:text-red-600' },
   ];
 
   return (
@@ -52,12 +55,19 @@ export default function Footer() {
             viewport={{ once: true }}
           >
             <div className="mb-6">
-              <img src="/logo1.png" alt="Bravo International" className="h-20 w-auto mb-3 brightness-110" />
+              {settings?.logoFileId ? (
+                <img 
+                  src={websiteService.getImageUrl(settings.logoFileId)} 
+                  alt={settings.siteTitle || "Bravo International"} 
+                  className="h-20 w-auto mb-3 brightness-110" 
+                />
+              ) : (
+                <img src="/logo1.png" alt="Bravo International" className="h-20 w-auto mb-3 brightness-110" />
+              )}
               <p className="text-gray-400">International Educational Consultancy</p>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
-              Your trusted partner for studying abroad. We make your dreams of international 
-              education a reality with expert guidance and personalized support.
+              {settings?.footerDescription || 'Your trusted partner for studying abroad. We make your dreams of international education a reality with expert guidance and personalized support.'}
             </p>
             
             {/* Social Links */}
@@ -68,6 +78,8 @@ export default function Footer() {
                   <motion.a
                     key={index}
                     href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.2, rotate: 5 }}
                     whileTap={{ scale: 0.9 }}
                     className={`w-10 h-10 rounded-full bg-white/10 flex items-center justify-center ${social.color} transition-colors duration-300`}
@@ -137,22 +149,21 @@ export default function Footer() {
               <div className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-accent-orange flex-shrink-0 mt-1" />
                 <div>
-                  <p className="text-gray-400">Putalisadak Chowk</p>
-                  <p className="text-gray-400">Kathmandu, Nepal</p>
+                  <p className="text-gray-400">{settings?.footerAddress || 'Putalisadak Chowk, Kathmandu, Nepal'}</p>
                 </div>
               </div>
               
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-accent-orange flex-shrink-0" />
-                <a href="tel:+977XXXXXXX" className="text-gray-400 hover:text-accent-orange transition-colors">
-                  +977 9851352807, 01-5908733
+                <a href={`tel:${settings?.footerPhone || '+9779851352807'}`} className="text-gray-400 hover:text-accent-orange transition-colors">
+                  {settings?.footerPhone || '+977 9851352807, 01-5908733'}
                 </a>
               </div>
               
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-accent-orange flex-shrink-0" />
-                <a href="mailto:info@bravointernational.com" className="text-gray-400 hover:text-accent-orange transition-colors">
-                  info@bravointernational.edu.np
+                <a href={`mailto:${settings?.footerEmail || 'info@bravointernational.edu.np'}`} className="text-gray-400 hover:text-accent-orange transition-colors">
+                  {settings?.footerEmail || 'info@bravointernational.edu.np'}
                 </a>
               </div>
               
@@ -201,7 +212,7 @@ export default function Footer() {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-6 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent-orange"
+                className="flex-1 px-6 text-white py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent-orange"
               />
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -219,7 +230,7 @@ export default function Footer() {
         <div className="border-t border-gray-700 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-gray-400 text-sm">
-              © 2024 Bravo International. All rights reserved.
+              {settings?.footerCopyright || '© 2024 Bravo International. All rights reserved.'}
             </p>
             
             <div className="flex items-center space-x-6 text-sm text-gray-400">

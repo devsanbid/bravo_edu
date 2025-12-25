@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { MessageSquare, Image, Share2, LogOut, Menu, X, BookOpen, Bell, Briefcase, Megaphone, Building2 } from 'lucide-react';
+import { MessageSquare, Image, Share2, LogOut, Menu, X, BookOpen, Bell, Briefcase, Megaphone, Building2, Globe } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface AdminLayoutProps {
@@ -38,6 +38,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Jobs', href: '/admin/jobs', icon: Briefcase },
     { name: 'Branches', href: '/admin/branches', icon: Building2 },
     { name: 'Announcements', href: '/admin/announcements', icon: Megaphone },
+       { name: 'Website', href: '/admin/website', icon: Globe },
   ];
 
   const handleLogout = async () => {
