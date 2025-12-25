@@ -16,8 +16,8 @@ export default function CallWidget() {
   }
 
   const handleCall = () => {
-    if (settings?.phone) {
-      window.location.href = `tel:${settings.phone}`;
+    if (settings?.headerPhone) {
+      window.location.href = `tel:${settings.headerPhone}`;
     }
   };
 
