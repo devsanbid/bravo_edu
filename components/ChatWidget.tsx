@@ -276,13 +276,13 @@ export default function ChatWidget() {
         animate={{ scale: 1 }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-gradient-to-r from-primary-purple to-primary-purple-light rounded-full flex items-center justify-center shadow-2xl hover:shadow-purple-500/50 transition-shadow"
+        className="fixed bottom-4 md:bottom-6 right-3 md:right-6 z-40 w-12 h-12 md:w-14 md:h-14 bg-gradient-to-r from-primary-purple to-primary-purple-light rounded-full flex items-center justify-center shadow-2xl hover:shadow-purple-500/50 transition-shadow"
       >
         {isOpen ? (
-          <X className="w-6 h-6 text-white" />
+          <X className="w-5 h-5 md:w-6 md:h-6 text-white" />
         ) : (
           <>
-            <MessageCircle className="w-6 h-6 text-white" />
+            <MessageCircle className="w-5 h-5 md:w-6 md:h-6 text-white" />
             {unreadCount > 0 && (
               <motion.div
                 initial={{ scale: 0 }}

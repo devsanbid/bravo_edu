@@ -21,9 +21,9 @@ export default function WhatsAppWidget() {
       animate={{ scale: 1 }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      className="fixed bottom-24 right-6 z-40 w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-2xl hover:shadow-green-500/50 transition-shadow"
+      className="fixed bottom-20 md:bottom-24 right-3 md:right-6 z-40 w-12 h-12 md:w-14 md:h-14 bg-green-500 rounded-full flex items-center justify-center shadow-2xl hover:shadow-green-500/50 transition-shadow"
     >
-      <FaWhatsapp className="w-8 h-8 text-white" />
+      <FaWhatsapp className="w-6 h-6 md:w-8 md:h-8 text-white" />
     </motion.a>
   );
 }
