@@ -117,6 +117,28 @@ class CalendarService {
     }
   }
 
+  // Helper method to get all events
+  async getAllEvents() {
+    try {
+      const queries: any[] = [
+        Query.equal('active', true),
+        Query.orderAsc('startDate'),
+        Query.limit(500)
+      ];
+
+      const response = await databases.listDocuments(
+        DATABASE_ID,
+        CALENDAR_COLLECTION_ID,
+        queries
+      );
+
+      return response.documents as unknown as CalendarEvent[];
+    } catch (error) {
+      console.error('Error fetching all calendar events:', error);
+      throw error;
+    }
+  }
+
   // Helper method to get events for a specific month
   async getMonthEvents(year: number, month: number) {
     const startDate = new Date(year, month, 1).toISOString();

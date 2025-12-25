@@ -32,6 +32,9 @@ const DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
 export default function AdminCalendar() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [allEvents, setAllEvents] = useState<CalendarEvent[]>([]);
+  const [filterMonth, setFilterMonth] = useState<string>('all');
+  const [filterYear, setFilterYear] = useState<string>(new Date().getFullYear().toString());
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -59,6 +62,7 @@ export default function AdminCalendar() {
 
   useEffect(() => {
     loadEvents();
+    loadAllEvents();
   }, [currentDate]);
 
   const loadEvents = async () => {
@@ -69,6 +73,15 @@ export default function AdminCalendar() {
       setEvents(data);
     } catch (error) {
       console.error('Failed to load events:', error);
+    }
+  };
+
+  const loadAllEvents = async () => {
+    try {
+      const data = await calendarService.getAllEvents();
+      setAllEvents(data);
+    } catch (error) {
+      console.error('Failed to load all events:', error);
     }
   };
 
@@ -112,12 +125,37 @@ export default function AdminCalendar() {
     });
   };
 
+  const getRangeEventInfo = (date: Date, event: any) => {
+    const eventStart = new Date(event.startDate);
+    const eventEnd = event.endDate ? new Date(event.endDate) : eventStart;
+    
+    const dateStr = date.toDateString();
+    const startStr = eventStart.toDateString();
+    const endStr = eventEnd.toDateString();
+    
+    const isStart = dateStr === startStr;
+    const isEnd = dateStr === endStr;
+    const isMiddle = !isStart && !isEnd;
+    const isRange = startStr !== endStr;
+    
+    // Check if it's at the end of a week (Saturday = 6)
+    const isWeekEnd = date.getDay() === 6;
+    // Check if it's at the start of a week (Sunday = 0)
+    const isWeekStart = date.getDay() === 0;
+    
+    return { isStart, isEnd, isMiddle, isRange, isWeekEnd, isWeekStart };
+  };
+
   const changeMonth = (direction: number) => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + direction, 1));
+    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + direction, 1);
+    setCurrentDate(newDate);
+    setSelectedMonthIndex(newDate.getMonth());
   };
 
   const changeYear = (direction: number) => {
-    setCurrentDate(new Date(currentDate.getFullYear() + direction, currentDate.getMonth(), 1));
+    const newDate = new Date(currentDate.getFullYear() + direction, currentDate.getMonth(), 1);
+    setCurrentDate(newDate);
+    setSelectedMonthIndex(newDate.getMonth());
   };
 
   const selectMonth = (monthName: string) => {
@@ -142,14 +180,36 @@ export default function AdminCalendar() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Prepare the data - convert date strings to ISO format for Appwrite
+      const eventData = {
+        title: formData.title,
+        description: formData.description,
+        type: formData.type,
+        startDate: new Date(formData.startDate).toISOString(),
+        endDate: formData.endDate ? new Date(formData.endDate).toISOString() : undefined,
+        startTime: formData.startTime || undefined,
+        endTime: formData.endTime || undefined,
+        location: formData.location || undefined,
+        organizer: formData.organizer || undefined,
+        color: formData.color,
+        isAllDay: formData.isAllDay,
+        isRecurring: formData.isRecurring,
+        recurringPattern: formData.recurringPattern || undefined,
+        active: formData.active,
+      };
+
       if (editingId) {
-        await calendarService.updateEvent(editingId, formData);
+        await calendarService.updateEvent(editingId, eventData);
+        alert('Event updated successfully!');
       } else {
-        await calendarService.createEvent(formData);
+        await calendarService.createEvent(eventData);
+        alert('Event created successfully!');
       }
       setShowModal(false);
       resetForm();
-      loadEvents();
+      await loadEvents();
+      await loadAllEvents();
+      setActiveTab('calendar');
     } catch (error) {
       console.error('Failed to save event:', error);
       alert('Failed to save event. Please try again.');
@@ -182,6 +242,7 @@ export default function AdminCalendar() {
       await calendarService.deleteEvent(id);
       setDeleteConfirm(null);
       loadEvents();
+      loadAllEvents();
     } catch (error) {
       console.error('Failed to delete event:', error);
       alert('Failed to delete event. Please try again.');
@@ -209,14 +270,23 @@ export default function AdminCalendar() {
   };
 
   const handleDateDoubleClick = (date: Date) => {
-    resetForm();
-    const dateStr = date.toISOString().split('T')[0];
-    setFormData(prev => ({
-      ...prev,
-      startDate: dateStr,
-      endDate: dateStr,
-    }));
-    setActiveTab('create');
+    const eventsOnDate = getEventsForDate(date);
+    
+    if (eventsOnDate.length > 0) {
+      // If there are events on this date, edit the first one
+      handleEdit(eventsOnDate[0]);
+      setActiveTab('create');
+    } else {
+      // Otherwise create a new event with this date
+      resetForm();
+      const dateStr = date.toISOString().split('T')[0];
+      setFormData(prev => ({
+        ...prev,
+        startDate: dateStr,
+        endDate: dateStr,
+      }));
+      setActiveTab('create');
+    }
   };
 
   const handleDateClick = (date: Date) => {
@@ -233,25 +303,25 @@ export default function AdminCalendar() {
 
   return (
     <AdminLayout>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 p-3 sm:p-4 md:p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header with Tabs */}
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-800 mb-4">Academic Calendar</h1>
-            <div className="flex gap-2 border-b border-gray-200">
+          <div className="mb-4 md:mb-6">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 md:mb-4">Academic Calendar</h1>
+            <div className="flex gap-1 sm:gap-2 border-b border-gray-200 overflow-x-auto">
               <button
                 onClick={() => setActiveTab('calendar')}
-                className={`px-6 py-3 font-semibold transition-colors ${
+                className={`px-3 sm:px-4 md:px-6 py-2 md:py-3 text-sm sm:text-base font-semibold transition-colors whitespace-nowrap ${
                   activeTab === 'calendar'
                     ? 'border-b-2 border-indigo-600 text-indigo-600'
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
-                Calendar View
+                Calendar
               </button>
               <button
                 onClick={() => setActiveTab('events')}
-                className={`px-6 py-3 font-semibold transition-colors ${
+                className={`px-3 sm:px-4 md:px-6 py-2 md:py-3 text-sm sm:text-base font-semibold transition-colors whitespace-nowrap ${
                   activeTab === 'events'
                     ? 'border-b-2 border-indigo-600 text-indigo-600'
                     : 'text-gray-600 hover:text-gray-800'
@@ -261,23 +331,23 @@ export default function AdminCalendar() {
               </button>
               <button
                 onClick={() => setActiveTab('create')}
-                className={`px-6 py-3 font-semibold transition-colors ${
+                className={`px-3 sm:px-4 md:px-6 py-2 md:py-3 text-sm sm:text-base font-semibold transition-colors whitespace-nowrap ${
                   activeTab === 'create'
                     ? 'border-b-2 border-indigo-600 text-indigo-600'
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
-                Create Event
+                Create
               </button>
             </div>
           </div>
 
           {/* Calendar View Tab */}
           {activeTab === 'calendar' && (
-            <div className="flex gap-6">
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
               {/* Sidebar */}
-              <div className="w-56 bg-white/80 backdrop-blur-sm rounded-xl p-5 space-y-4 h-fit">
-                <h2 className="text-xl font-bold text-gray-800">Navigator</h2>
+              <div className="w-full lg:w-56 bg-white/80 backdrop-blur-sm rounded-xl p-4 md:p-5 space-y-3 md:space-y-4 h-fit">
+                <h2 className="text-lg md:text-xl font-bold text-gray-800">Navigator</h2>
                 
                 {/* Year Selector */}
                 <div className="flex items-center justify-between">
@@ -291,18 +361,19 @@ export default function AdminCalendar() {
                 </div>
 
                 {/* Month List */}
-                <div className="space-y-1 max-h-9/10 overflow-y-auto">
+                <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-1 gap-1 max-h-9/10 overflow-y-auto">
                   {MONTHS.map((month, index) => (
                     <button
                       key={month}
                       onClick={() => selectMonth(month)}
-                      className={`w-full text-left px-3 py-1.5 text-sm rounded-lg transition-colors ${
+                      className={`w-full text-center lg:text-left px-2 md:px-3 py-1.5 text-xs md:text-sm rounded-lg transition-colors ${
                         selectedMonthIndex === index
                           ? 'bg-indigo-100 text-indigo-700 font-semibold'
                           : 'text-gray-600 hover:bg-gray-100'
                       }`}
                     >
-                      {month}
+                      <span className="lg:hidden">{month.substring(0, 3)}</span>
+                      <span className="hidden lg:inline">{month}</span>
                     </button>
                   ))}
                 </div>
@@ -316,14 +387,54 @@ export default function AdminCalendar() {
                     <span className="font-semibold text-green-600">{getCompletedEvents()}</span> completed
                   </p>
                 </div>
+
+                {/* Selected Date Events in Sidebar */}
+                {getEventsForDate(selectedDate).length > 0 && (
+                  <div className="pt-4 border-t border-gray-200">
+                    <h4 className="text-sm font-bold text-gray-800 mb-3">
+                      {selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </h4>
+                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                      {getEventsForDate(selectedDate).map(event => (
+                        <div
+                          key={event.$id}
+                          className="p-2 rounded-lg hover:bg-gray-50 transition-colors text-xs"
+                          style={{ borderLeft: `3px solid ${event.color}` }}
+                        >
+                          <h5 className="font-semibold text-gray-800 mb-1">{event.title}</h5>
+                          <p className="text-gray-600 text-xs">
+                            {event.isAllDay ? 'All Day' : `${event.startTime} - ${event.endTime}`}
+                          </p>
+                          <div className="flex gap-1 mt-2">
+                            <button
+                              onClick={() => {
+                                handleEdit(event);
+                                setActiveTab('create');
+                              }}
+                              className="p-1 text-blue-600 hover:bg-blue-50 rounded"
+                            >
+                              <Edit2 className="w-3 h-3" />
+                            </button>
+                            <button
+                              onClick={() => setDeleteConfirm(event.$id)}
+                              className="p-1 text-red-600 hover:bg-red-50 rounded"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Main Calendar */}
               <div className="flex-1">
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6">
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-3 sm:p-4 md:p-6">
                   {/* Calendar Header */}
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-2xl font-bold text-gray-800">
+                  <div className="flex items-center justify-between mb-4 md:mb-6">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">
                       {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
                     </h3>
                     <div className="flex gap-2">
@@ -343,16 +454,16 @@ export default function AdminCalendar() {
                   </div>
 
                   {/* Days of Week */}
-                  <div className="grid grid-cols-7 gap-2 mb-3">
+                  <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-3">
                     {DAYS.map(day => (
-                      <div key={day} className="text-center text-xs font-semibold text-indigo-600">
+                      <div key={day} className="text-center text-[10px] sm:text-xs font-semibold text-indigo-600">
                         {day}
                       </div>
                     ))}
                   </div>
 
                   {/* Calendar Grid */}
-                  <div className="grid grid-cols-7 gap-2">
+                  <div className="grid grid-cols-7 gap-1 sm:gap-2">
                     {getDaysInMonth(currentDate).map((day, index) => {
                       if (!day.isCurrentMonth || !day.fullDate) {
                         return <div key={index} className="aspect-square"></div>;
@@ -360,122 +471,161 @@ export default function AdminCalendar() {
                       
                       const dayEvents = getEventsForDate(day.fullDate);
                       const isCurrentDay = isToday(day.fullDate);
+                      const isSelected = selectedDate.toDateString() === day.fullDate.toDateString();
+                      const hasEvents = dayEvents.length > 0;
+                      const eventColor = hasEvents ? dayEvents[0].color : null;
+                      const hasDeadline = dayEvents.some(e => e.type === 'deadline');
+                      const hasExam = dayEvents.some(e => e.type === 'exam');
+                      
+                      // Check if this day is part of a range event
+                      const rangeEvent = dayEvents.find(e => {
+                        const start = new Date(e.startDate);
+                        const end = e.endDate ? new Date(e.endDate) : start;
+                        return start.toDateString() !== end.toDateString();
+                      });
+                      const rangeInfo = rangeEvent ? getRangeEventInfo(day.fullDate, rangeEvent) : null;
                       
                       return (
                         <motion.div
                           key={index}
                           whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                           onClick={() => handleDateClick(day.fullDate)}
                           onDoubleClick={() => handleDateDoubleClick(day.fullDate)}
-                          className={`
-                            relative aspect-square rounded-lg cursor-pointer transition-all
-                            ${isCurrentDay ? 'bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg' : 'bg-gray-50 hover:bg-gray-100'}
-                          `}
-                          title="Double-click to create event"
+                          className="relative aspect-square cursor-pointer transition-all touch-manipulation"
+                          title={hasEvents ? `${dayEvents.length} event(s) - Double-click to edit` : "Double-click to create event"}
                         >
-                          <div className="absolute inset-0 flex flex-col items-center justify-center p-1">
-                            <span className={`text-sm font-semibold ${isCurrentDay ? 'text-white' : 'text-gray-700'}`}>
-                              {day.date}
-                            </span>
-                            
-                            {/* Event Indicators */}
-                            {dayEvents.length > 0 && (
-                              <div className="flex gap-0.5 mt-1 flex-wrap justify-center">
-                                {dayEvents.slice(0, 3).map((event, i) => (
-                                  <div
-                                    key={i}
-                                    className="w-1.5 h-1.5 rounded-full"
-                                    style={{ backgroundColor: event.color }}
-                                    title={event.title}
-                                  />
-                                ))}
-                              </div>
-                            )}
+                          {/* Range Event Continuous Bar */}
+                          {rangeEvent && rangeInfo && !isCurrentDay && (
+                            <div 
+                              className={`absolute inset-y-0 opacity-30 z-0 ${
+                                rangeInfo.isStart && !rangeInfo.isWeekEnd ? 'left-0 right-[-0.25rem] rounded-l-lg' :
+                                rangeInfo.isEnd && !rangeInfo.isWeekStart ? 'left-[-0.25rem] right-0 rounded-r-lg' :
+                                rangeInfo.isMiddle && rangeInfo.isWeekEnd ? 'left-[-0.25rem] right-0 rounded-r-lg' :
+                                rangeInfo.isMiddle && rangeInfo.isWeekStart ? 'left-0 right-[-0.25rem] rounded-l-lg' :
+                                rangeInfo.isMiddle ? 'left-[-0.25rem] right-[-0.25rem]' :
+                                'inset-0 rounded-lg'
+                              }`}
+                              style={{ backgroundColor: rangeEvent.color || '#3b82f6' }}
+                            />
+                          )}
+
+                          {/* Background Circle for Single-Day Events */}
+                          {hasEvents && !rangeEvent && !isCurrentDay && (
+                            <div 
+                              className="absolute inset-0 rounded-lg opacity-30 z-0"
+                              style={{ backgroundColor: eventColor || '#3b82f6' }}
+                            />
+                          )}
+
+                          {/* Deadline Badge - Top Right Corner */}
+                          {hasDeadline && (
+                            <div className="absolute -top-1 -right-1 bg-red-600 text-white text-xs px-1.5 py-0.5 rounded-full shadow-lg z-10 font-bold">
+                              !
+                            </div>
+                          )}
+                          
+                          {/* Main Content */}
+                          <div className={`
+                            absolute inset-0 flex items-center justify-center rounded-lg
+                            ${isCurrentDay ? 'bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg' : 
+                              isSelected ? 'ring-2 ring-indigo-400' : 'hover:bg-gray-100'}
+                          `}>
+                            <div className="flex flex-col items-center">
+                              <span className={`text-xs sm:text-sm font-semibold ${isCurrentDay ? 'text-white' : 'text-gray-700'}`}>
+                                {day.date}
+                              </span>
+                              
+                              {/* Event Count Badge */}
+                              {hasEvents && dayEvents.length > 1 && (
+                                <span 
+                                  className="text-[10px] sm:text-xs font-bold mt-0.5 px-1 sm:px-1.5 py-0.5 rounded-full"
+                                  style={{ 
+                                    backgroundColor: eventColor || '#3b82f6',
+                                    color: 'white'
+                                  }}
+                                >
+                                  {dayEvents.length}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </motion.div>
                       );
                     })}
                   </div>
-
-                  {/* Selected Date Events */}
-                  {getEventsForDate(selectedDate).length > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-6 pt-6 border-t border-gray-200"
-                    >
-                      <h4 className="text-lg font-bold text-gray-800 mb-3">
-                        Events on {selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                      </h4>
-                      <div className="space-y-2">
-                        {getEventsForDate(selectedDate).map(event => (
-                          <div
-                            key={event.$id}
-                            className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                            style={{ borderLeft: `3px solid ${event.color}` }}
-                          >
-                            <div className="flex-1">
-                              <h5 className="font-semibold text-gray-800 text-sm">{event.title}</h5>
-                              <p className="text-xs text-gray-600">
-                                {event.isAllDay ? 'All Day' : `${event.startTime} - ${event.endTime}`}
-                                {event.location && ` • ${event.location}`}
-                              </p>
-                            </div>
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => {
-                                  handleEdit(event);
-                                  setActiveTab('create');
-                                }}
-                                className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                              >
-                                <Edit2 className="w-3.5 h-3.5" />
-                              </button>
-                              <button
-                                onClick={() => setDeleteConfirm(event.$id)}
-                                className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
                 </div>
               </div>
             </div>
           )}
 
           {/* All Events Tab */}
-          {activeTab === 'events' && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-800">All Events</h3>
-                <button
-                  onClick={() => setActiveTab('create')}
-                  className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
-                >
-                  <Plus className="w-4 h-4" />
-                  Create Event
-                </button>
-              </div>
+          {activeTab === 'events' && (() => {
+            const filteredEvents = filterMonth === 'all' 
+              ? allEvents 
+              : allEvents.filter(event => {
+                  const eventDate = new Date(event.startDate);
+                  const monthMatch = filterMonth === 'all' || eventDate.getMonth() === parseInt(filterMonth);
+                  const yearMatch = eventDate.getFullYear() === parseInt(filterYear);
+                  return monthMatch && yearMatch;
+                });
 
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-100 border-b">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Title</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Type</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Date</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Time</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Location</th>
-                      <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {events.map((event) => (
+            return (
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-3 sm:p-4 md:p-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 md:mb-6">
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-800">All Events</h3>
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+                    <select
+                      value={filterMonth}
+                      onChange={(e) => setFilterMonth(e.target.value)}
+                      className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm w-full sm:w-auto text-black font-medium"
+                    >
+                      <option value="all">All Months</option>
+                      {MONTHS.map((month, i) => (
+                        <option key={i} value={i}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={filterYear}
+                      onChange={(e) => setFilterYear(e.target.value)}
+                      className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm w-full sm:w-auto text-black font-medium"
+                    >
+                      {Array.from({ length: 5 }, (_, i) => {
+                        const year = new Date().getFullYear() - 1 + i;
+                        return (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <button
+                      onClick={() => setActiveTab('create')}
+                      className="bg-indigo-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Create Event</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-100 border-b">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Title</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Type</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Date</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Time</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Location</th>
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {filteredEvents.map((event) => (
                       <tr key={event.$id} className="hover:bg-gray-50">
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
@@ -542,27 +692,88 @@ export default function AdminCalendar() {
                         </td>
                       </tr>
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                    </tbody>
+                  </table>
+                </div>
 
-              <div className="mt-4 text-sm text-gray-600">
-                Showing {events.length} events
+                {/* Mobile Card View */}
+                <div className="md:hidden space-y-3">
+                  {filteredEvents.map((event) => (
+                    <div key={event.$id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2 flex-1">
+                          <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: event.color }} />
+                          <h4 className="font-semibold text-gray-900 text-sm">{event.title}</h4>
+                        </div>
+                        <span className="px-2 py-1 rounded-full text-xs font-semibold capitalize flex-shrink-0 ml-2"
+                          style={{ backgroundColor: event.color + '20', color: event.color }}>
+                          {event.type}
+                        </span>
+                      </div>
+                      {event.description && (
+                        <p className="text-xs text-gray-600 mb-2 line-clamp-2">{event.description}</p>
+                      )}
+                      <div className="space-y-1 text-xs text-gray-700 mb-3">
+                        <div className="flex items-center gap-1">
+                          <span className="font-medium">Date:</span>
+                          <span>{formatDate(event.startDate)}
+                            {event.endDate && event.endDate !== event.startDate && ` - ${formatDate(event.endDate)}`}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="font-medium">Time:</span>
+                          <span>
+                            {event.isAllDay ? 'All Day' : `${event.startTime}${event.endTime ? ` - ${event.endTime}` : ''}`}
+                          </span>
+                        </div>
+                        {event.location && (
+                          <div className="flex items-center gap-1">
+                            <span className="font-medium">Location:</span>
+                            <span>{event.location}</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex gap-2 pt-2 border-t border-gray-100">
+                        <button
+                          onClick={() => {
+                            handleEdit(event);
+                            setActiveTab('create');
+                          }}
+                          className="flex-1 py-2 px-3 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-1"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => setDeleteConfirm(event.$id)}
+                          className="flex-1 py-2 px-3 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-1"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 text-xs sm:text-sm text-gray-600">
+                  Showing {filteredEvents.length} of {allEvents.length} events
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Create Event Tab */}
           {activeTab === 'create' && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 max-w-4xl mx-auto">
-              <h3 className="text-2xl font-bold text-gray-800 mb-6">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-5 md:p-6 max-w-4xl mx-auto">
+              <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">
                 {editingId ? 'Edit Event' : 'Create New Event'}
               </h3>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
                 {/* Title */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 md:mb-2">
                     Event Title *
                   </label>
                   <input
@@ -577,21 +788,21 @@ export default function AdminCalendar() {
 
                 {/* Description */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 md:mb-2">
                     Description
                   </label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={3}
-                    className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 sm:px-4 py-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                     placeholder="Event details..."
                   />
                 </div>
 
                 {/* Type */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 md:mb-2">
                     Event Type * (Color will be set automatically)
                   </label>
                   <select
@@ -605,7 +816,7 @@ export default function AdminCalendar() {
                         color: TYPE_COLOR_MAP[newType] || '#3b82f6'
                       });
                     }}
-                    className="w-full px-4 text-black py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 sm:px-4 text-black py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                   >
                     {EVENT_TYPES.map(type => (
                       <option key={type} value={type}>
@@ -615,19 +826,19 @@ export default function AdminCalendar() {
                   </select>
                   <div className="mt-2 flex items-center gap-2">
                     <div
-                      className="w-6 h-6 rounded-full"
+                      className="w-5 h-5 sm:w-6 sm:h-6 rounded-full"
                       style={{ backgroundColor: formData.color }}
                     />
-                    <span className="text-sm text-gray-600">
+                    <span className="text-xs sm:text-sm text-gray-600">
                       Auto-selected color for {formData.type}
                     </span>
                   </div>
                 </div>
 
                 {/* Dates */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 md:mb-2">
                       Start Date *
                     </label>
                     <input
@@ -635,19 +846,19 @@ export default function AdminCalendar() {
                       required
                       value={formData.startDate}
                       onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                      className="w-full px-4 text-black py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 sm:px-4 text-black py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 md:mb-2">
                       End Date (Optional)
                     </label>
                     <input
                       type="date"
                       value={formData.endDate}
                       onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                      className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 sm:px-4 py-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                     />
                   </div>
                 </div>
@@ -661,64 +872,64 @@ export default function AdminCalendar() {
                     onChange={(e) => setFormData({ ...formData, isAllDay: e.target.checked })}
                     className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
                   />
-                  <label htmlFor="isAllDay" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="isAllDay" className="text-xs sm:text-sm font-medium text-gray-700">
                     All Day Event
                   </label>
                 </div>
 
                 {/* Times (if not all day) */}
                 {!formData.isAllDay && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 md:mb-2">
                         Start Time
                       </label>
                       <input
                         type="time"
                         value={formData.startTime}
                         onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                        className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-3 sm:px-4 py-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 md:mb-2">
                         End Time
                       </label>
                       <input
                         type="time"
                         value={formData.endTime}
                         onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
-                        className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-3 sm:px-4 py-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                       />
                     </div>
                   </div>
                 )}
 
                 {/* Location and Organizer */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 md:mb-2">
                       Location
                     </label>
                     <input
                       type="text"
                       value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      className="w-full px-4 text-black py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 sm:px-4 text-black py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                       placeholder="e.g., Main Hall"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 md:mb-2">
                       Organizer
                     </label>
                     <input
                       type="text"
                       value={formData.organizer}
                       onChange={(e) => setFormData({ ...formData, organizer: e.target.value })}
-                      className="w-full px-4  text-black py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 sm:px-4 text-black py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                       placeholder="e.g., Student Affairs"
                     />
                   </div>
@@ -733,16 +944,16 @@ export default function AdminCalendar() {
                     onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
                     className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
                   />
-                  <label htmlFor="active" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="active" className="text-xs sm:text-sm font-medium text-gray-700">
                     Active (Show on calendar)
                   </label>
                 </div>
 
                 {/* Buttons */}
-                <div className="flex gap-4 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
                   <button
                     type="submit"
-                    className="flex-1 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors font-semibold"
+                    className="flex-1 bg-indigo-600 text-white py-2.5 sm:py-3 rounded-lg hover:bg-indigo-700 transition-colors font-semibold text-sm sm:text-base"
                   >
                     {editingId ? 'Update Event' : 'Create Event'}
                   </button>
@@ -752,7 +963,7 @@ export default function AdminCalendar() {
                       resetForm();
                       setActiveTab('calendar');
                     }}
-                    className="px-6 text-black py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+                    className="px-6 text-black py-2.5 sm:py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-sm sm:text-base"
                   >
                     Cancel
                   </button>
@@ -770,22 +981,22 @@ export default function AdminCalendar() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6"
+                className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-4 sm:p-6 mx-4"
               >
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Delete Event</h3>
-                <p className="text-gray-600 mb-6">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Delete Event</h3>
+                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
                   Are you sure you want to delete this event? This action cannot be undone.
                 </p>
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <button
                     onClick={() => handleDelete(deleteConfirm)}
-                    className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition-colors"
+                    className="flex-1 bg-red-600 text-white py-2 sm:py-2.5 rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base font-medium"
                   >
                     Delete
                   </button>
                   <button
                     onClick={() => setDeleteConfirm(null)}
-                    className="flex-1 border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex-1 border border-gray-300 py-2 sm:py-2.5 rounded-lg hover:bg-gray-50 transition-colors text-sm sm:text-base font-medium"
                   >
                     Cancel
                   </button>
