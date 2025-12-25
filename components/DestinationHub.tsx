@@ -7,7 +7,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useState, useEffect } from 'react';
 
 export default function DestinationHub() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(true); // Default to true to prevent flicker
 
   useEffect(() => {
     const checkMobile = () => {
