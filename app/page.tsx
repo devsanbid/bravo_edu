@@ -13,7 +13,6 @@ import ConsultationForm from '@/components/ConsultationForm';
 import Footer from '@/components/Footer';
 import ChatWidget from '@/components/ChatWidget';
 import ThemeAnimations from '@/components/ThemeAnimations';
-import ThemeBadge from '@/components/ThemeBadge';
 
 export default function Home() {
   const { themeConfig, isLoading } = useTheme();
@@ -50,9 +49,6 @@ export default function Home() {
         <Footer />
         <ChatWidget />
       </div>
-
-      {/* Theme indicator badge */}
-      <ThemeBadge />
     </main>
   );
 }
