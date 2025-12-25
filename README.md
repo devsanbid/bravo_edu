@@ -32,12 +32,35 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Features
 
-- 🎨 Modern UI with Tailwind CSS & Framer Motion
+### Core Features
+- 🎨 Modern UI with Tailwind CSS 4 & Framer Motion
 - 💬 Real-time Chat System (Appwrite)
 - 🔐 Admin Authentication & Dashboard
 - 🖼️ Gallery Management with Upload
 - 📱 Social Media Integration
 - 📱 Fully Responsive Design
+
+### Student Tools
+- 📅 **Academic Calendar** - Beautiful calendar with events, holidays, exams, and deadlines (Saturdays auto-marked as holidays)
+- 🏫 University Search & Comparison
+- 💰 Cost Calculator / Budget Planner
+- 🎓 Scholarship Finder
+- 🧭 Course Finder Quiz
+- ⏰ Deadline Tracker
+- 💬 Student Community Forum
+
+### Admin Features
+- 📊 Admin Dashboard with Analytics
+- 📅 **Calendar Management** - Add/edit events, holidays, exams, workshops, seminars
+- 🏛️ University Management (CRUD with logo upload)
+- 🎓 Scholarship Management
+- 📝 Content Management (Gallery, Jobs, Announcements, Social Media)
+- 🔒 Secure Authentication
+
+### Integrations
+- 📱 WhatsApp Widget for instant contact
+- 🔍 SEO Optimization
+- 🌍 Multi-country Support
 
 ## Environment Variables
 

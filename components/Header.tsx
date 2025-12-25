@@ -36,6 +36,7 @@ export default function Header() {
     { name: 'About', href: '/#about' },
     { name: 'Study Abroad', href: '/#destinations' },
     { name: 'Services', href: '/#services' },
+    { name: 'Calendar', href: '/calendar' },
     { name: 'Test Preparation', href: '/#test-prep' },
     { name: 'Gallery', href: '/gallery' },
     { name: 'Team', href: '/team' },
@@ -162,7 +163,15 @@ export default function Header() {
           <div className="flex items-center justify-between">
             {/* Mobile Logo */}
             <Link href="/" className="lg:hidden">
-              <img src="/logo1.png" alt="Bravo International" className="h-12 w-auto object-contain" />
+              {settings?.logoFileId ? (
+                <img 
+                  src={websiteService.getImageUrl(settings.logoFileId)} 
+                  alt={settings.siteTitle || "Bravo International"} 
+                  className="h-12 w-auto object-contain" 
+                />
+              ) : (
+                <img src="/logo1.png" alt="Bravo International" className="h-12 w-auto object-contain" />
+              )}
             </Link>
 
             {/* Desktop Navigation */}
@@ -207,12 +216,55 @@ export default function Header() {
                   </a>
                 ))}
                 {/* Mobile Contact Info */}
-                <div className="border-t pt-4 space-y-2 text-sm">
-                  <div className="flex items-center space-x-2 text-text-light">
-                    <Phone className="w-4 h-4" />
-                    <div>
-                      <div>015908733</div>
-                      <div>9851352807</div>
+                <div className="border-t pt-4 space-y-3 text-sm">
+                  <div className="space-y-2">
+                    <div className="font-semibold text-gray-700 flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-primary-purple" />
+                      Phone
+                    </div>
+                    <div 
+                      className="text-gray-600 flex items-center gap-2 cursor-pointer hover:text-primary-purple transition-colors group pl-6"
+                      onClick={() => copyToClipboard(settings?.headerPhone || '01-5908733')}
+                    >
+                      <a href={`tel:${settings?.headerPhone || '01-5908733'}`} className="hover:underline">
+                        {settings?.headerPhone || '01-5908733'}
+                      </a>
+                      <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      {copiedText === (settings?.headerPhone || '01-5908733') && (
+                        <span className="text-green-600 text-xs">✓</span>
+                      )}
+                    </div>
+                    {settings?.headerPhone2 && (
+                      <div 
+                        className="text-gray-600 flex items-center gap-2 cursor-pointer hover:text-primary-purple transition-colors group pl-6"
+                        onClick={() => copyToClipboard(settings.headerPhone2!)}
+                      >
+                        <a href={`tel:${settings.headerPhone2}`} className="hover:underline">
+                          {settings.headerPhone2}
+                        </a>
+                        <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        {copiedText === settings.headerPhone2 && (
+                          <span className="text-green-600 text-xs">✓</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <div className="font-semibold text-gray-700 flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-primary-purple" />
+                      Email
+                    </div>
+                    <div 
+                      className="text-gray-600 flex items-center gap-2 cursor-pointer hover:text-primary-purple transition-colors group pl-6"
+                      onClick={() => copyToClipboard(settings?.headerEmail || 'info@bravointernational.edu.np')}
+                    >
+                      <a href={`mailto:${settings?.headerEmail || 'info@bravointernational.edu.np'}`} className="hover:underline text-xs">
+                        {settings?.headerEmail || 'info@bravointernational.edu.np'}
+                      </a>
+                      <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      {copiedText === (settings?.headerEmail || 'info@bravointernational.edu.np') && (
+                        <span className="text-green-600 text-xs">✓</span>
+                      )}
                     </div>
                   </div>
                 </div>
