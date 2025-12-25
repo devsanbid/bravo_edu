@@ -307,7 +307,7 @@ export default function AdminCalendar() {
         <div className="max-w-7xl mx-auto">
           {/* Header with Tabs */}
           <div className="mb-4 md:mb-6">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 md:mb-4">Academic Calendar</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 md:mb-4 text-center">Academic Calendar</h1>
             <div className="flex gap-1 sm:gap-2 border-b border-gray-200 overflow-x-auto">
               <button
                 onClick={() => setActiveTab('calendar')}
