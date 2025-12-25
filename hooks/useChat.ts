@@ -18,6 +18,7 @@ export const useChat = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [messageSubscription, setMessageSubscription] = useState<(() => void) | null>(null);
 
   // Initialize chat session only when explicitly called
   useEffect(() => {
@@ -50,6 +51,8 @@ export const useChat = () => {
               });
             }
           );
+          
+          setMessageSubscription(() => unsubscribe);
         }
         
         setLoading(false);
@@ -72,6 +75,11 @@ export const useChat = () => {
   // Initialize session when user submits form
   const initializeSession = useCallback(async (visitorDetails?: { visitorName?: string; visitorEmail?: string; visitorPhone?: string }) => {
     try {
+      // Clean up previous subscription if exists
+      if (messageSubscription) {
+        messageSubscription();
+      }
+      
       const visitorId = getVisitorId();
       const chatSession = await chatService.getOrCreateSession(visitorId, visitorDetails);
       setSession(chatSession);
@@ -81,7 +89,7 @@ export const useChat = () => {
       setMessages(existingMessages);
 
       // Subscribe to new messages
-      chatService.subscribeToMessages(
+      const unsubscribe = chatService.subscribeToMessages(
         chatSession.$id,
         (newMessage) => {
           setMessages((prev) => {
@@ -92,13 +100,15 @@ export const useChat = () => {
           });
         }
       );
+      
+      setMessageSubscription(() => unsubscribe);
 
       return chatSession;
     } catch (err) {
       console.error('Error initializing session:', err);
       throw err;
     }
-  }, []);
+  }, [messageSubscription]);
 
   // Send message
   const sendMessage = useCallback(
