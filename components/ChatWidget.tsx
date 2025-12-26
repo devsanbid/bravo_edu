@@ -303,7 +303,7 @@ export default function ChatWidget() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed inset-0 md:inset-auto md:bottom-24 md:right-6 z-50 md:w-[550px] lg:w-[600px] md:max-w-[calc(100vw-3rem)] bg-white md:rounded-2xl shadow-2xl overflow-hidden flex flex-col md:h-[700px] lg:h-[750px]"
+            className="fixed inset-0 md:inset-auto md:bottom-4 md:right-4 z-[60] md:w-[550px] lg:w-[600px] md:max-w-[calc(100vw-3rem)] bg-white md:rounded-2xl shadow-2xl overflow-hidden flex flex-col md:h-[700px] lg:h-[750px]"
           >
             {/* Chat Header */}
             <div className="bg-gradient-to-r from-primary-purple to-primary-purple-light p-4 text-white">
