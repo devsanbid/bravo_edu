@@ -106,28 +106,7 @@ function WebsiteSettingsContent() {
         linkedinUrl: data.linkedinUrl || '',
         youtubeUrl: data.youtubeUrl || '',
         footerCopyright: data.footerCopyright || '',
-        teamTitle: data.teamTitle || '',
-        teamDescription: data.teamDescription || '',
-        testimonialsTitle: data.testimonialsTitle || '',
-        testimonialsDescription: data.testimonialsDescription || '',
       });
-
-      // Parse team members and testimonials from JSON
-      if (data.teamMembers) {
-        try {
-          setTeamMembers(JSON.parse(data.teamMembers));
-        } catch {
-          setTeamMembers([]);
-        }
-      }
-      
-      if (data.testimonials) {
-        try {
-          setTestimonials(JSON.parse(data.testimonials));
-        } catch {
-          setTestimonials([]);
-        }
-      }
 
       if (data.logoFileId) {
         setLogoPreview(websiteService.getImageUrl(data.logoFileId));
@@ -140,7 +119,6 @@ function WebsiteSettingsContent() {
       }
     } catch (error) {
       console.error('Failed to load settings:', error);
-      alert('Failed to load website settings');
     } finally {
       setLoading(false);
     }

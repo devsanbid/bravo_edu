@@ -118,7 +118,7 @@ export default function TeamPage() {
                   <div className="md:w-48 md:flex-shrink-0">
                     <div className="relative h-64 md:h-full w-full">
                       <Image
-                        src={member.imageFileName ? teamService.getImageUrl(member.imageFileName) : member.image || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'}
+                        src={member.imageFileName ? teamService.getImageUrl(member.imageFileName) : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'}
                         alt={member.name}
                         fill
                         className="object-cover"
