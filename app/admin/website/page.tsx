@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/AdminLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { websiteService, WebsiteSettings } from '@/lib/websiteService';
-import { Image as ImageIcon, Save, Upload, X, Globe, FileText, Mail, Phone, MapPin, Loader2, Settings as SettingsIcon, Facebook, Instagram, Twitter, Linkedin, Youtube, Quote } from 'lucide-react';
+import { Image as ImageIcon, Save, Upload, X, Globe, FileText, Mail, Phone, MapPin, Loader2, Settings as SettingsIcon, Facebook, Instagram, Twitter, Linkedin, Youtube, Quote, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -106,7 +106,28 @@ function WebsiteSettingsContent() {
         linkedinUrl: data.linkedinUrl || '',
         youtubeUrl: data.youtubeUrl || '',
         footerCopyright: data.footerCopyright || '',
+        teamTitle: data.teamTitle || '',
+        teamDescription: data.teamDescription || '',
+        testimonialsTitle: data.testimonialsTitle || '',
+        testimonialsDescription: data.testimonialsDescription || '',
       });
+
+      // Parse team members and testimonials from JSON
+      if (data.teamMembers) {
+        try {
+          setTeamMembers(JSON.parse(data.teamMembers));
+        } catch {
+          setTeamMembers([]);
+        }
+      }
+      
+      if (data.testimonials) {
+        try {
+          setTestimonials(JSON.parse(data.testimonials));
+        } catch {
+          setTestimonials([]);
+        }
+      }
 
       if (data.logoFileId) {
         setLogoPreview(websiteService.getImageUrl(data.logoFileId));
@@ -791,6 +812,7 @@ function WebsiteSettingsContent() {
             </div>
           </div>
         )}
+
       </div>
     </div>
   );

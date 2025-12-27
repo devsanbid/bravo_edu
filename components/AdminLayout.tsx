@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { MessageSquare, Image, Share2, LogOut, Menu, X, BookOpen, Bell, Briefcase, Megaphone, Building2, Globe, Calendar, GraduationCap, Paintbrush } from 'lucide-react';
+import { MessageSquare, Image, Share2, LogOut, Menu, X, BookOpen, Bell, Briefcase, Megaphone, Building2, Globe, Calendar, GraduationCap, Paintbrush, Users, Quote } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface AdminLayoutProps {
@@ -39,7 +39,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Branches', href: '/admin/branches', icon: Building2 },
     { name: 'Announcements', href: '/admin/announcements', icon: Megaphone },
     { name: 'Website', href: '/admin/website', icon: Globe },
-      { name: 'Calendar', href: '/admin/calendar', icon: Calendar },
+    { name: 'Calendar', href: '/admin/calendar', icon: Calendar },
+    { name: 'Team Members', href: '/admin/team', icon: Users },
+    { name: 'Testimonials', href: '/admin/testimonials', icon: Quote },
     { name: 'Theme Settings', href: '/admin/settings/theme', icon: Paintbrush },
   ];
 

@@ -1,11 +1,13 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Mail, Phone, Linkedin } from 'lucide-react';
+import { Mail, Phone, Linkedin, Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import { teamService, TeamMember } from '@/lib/teamService';
 
-const teamMembers = [
+const defaultTeamMembers = [
   {
     name: 'Santosh Pokherel',
     role: 'Chief Education Consultant',
@@ -45,6 +47,37 @@ const teamMembers = [
 ];
 
 export default function TeamPage() {
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    loadTeamMembers();
+  }, []);
+
+  const loadTeamMembers = async () => {
+    try {
+      const members = await teamService.getTeamMembers();
+      if (members.length > 0) {
+        setTeamMembers(members);
+      } else {
+        setTeamMembers(defaultTeamMembers as any);
+      }
+    } catch (error) {
+      console.error('Failed to load team members:', error);
+      setTeamMembers(defaultTeamMembers as any);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+  
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -85,10 +118,11 @@ export default function TeamPage() {
                   <div className="md:w-48 md:flex-shrink-0">
                     <div className="relative h-64 md:h-full w-full">
                       <Image
-                        src={member.image}
+                        src={member.imageFileName ? teamService.getImageUrl(member.imageFileName) : member.image || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'}
                         alt={member.name}
                         fill
                         className="object-cover"
+                        unoptimized
                       />
                     </div>
                   </div>

@@ -59,6 +59,16 @@ export interface WebsiteSettings extends Models.Document {
   youtubeUrl?: string;
   footerCopyright: string;
   
+  // Team Section
+  teamTitle?: string;
+  teamDescription?: string;
+  teamMembers?: string; // JSON string of team members array
+  
+  // Testimonials Section  
+  testimonialsTitle?: string;
+  testimonialsDescription?: string;
+  testimonials?: string; // JSON string of testimonials array
+  
   updatedAt: string;
 }
 

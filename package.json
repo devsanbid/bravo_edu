@@ -4,9 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dv": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "add-attributes": "node scripts/add-attributes.js",
+    "create-collections": "node scripts/create-collections.js"
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
