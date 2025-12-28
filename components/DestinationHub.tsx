@@ -50,6 +50,17 @@ export default function DestinationHub() {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
+  // Auto-play every 15 seconds
+  useEffect(() => {
+    if (!emblaApi) return;
+    
+    const interval = setInterval(() => {
+      emblaApi.scrollNext();
+    }, 10000);
+    
+    return () => clearInterval(interval);
+  }, [emblaApi]);
+
   const destinations = [
     {
       country: 'United Kingdom',

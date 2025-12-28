@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { BookOpen, Award, Target, CheckCircle, ChevronLeft, ChevronRight, Users, TrendingUp } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { SectionDecorations } from './SectionDecorations';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -38,6 +38,17 @@ export default function TestPreparation() {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
+  // Auto-play every 15 seconds
+  useEffect(() => {
+    if (!emblaApi) return;
+    
+    const interval = setInterval(() => {
+      emblaApi.scrollNext();
+    }, 10000);
+    
+    return () => clearInterval(interval);
+  }, [emblaApi]);
+
   const tests = [
     {
       name: 'IELTS',
@@ -63,30 +74,16 @@ export default function TestPreparation() {
       features: ['Reading', 'Listening', 'Speaking', 'Writing'],
       score: '0-120 Points',
     },
-    {
-      name: 'GRE',
-      fullName: 'Graduate Record Examination',
-      icon: '📚',
-      color: 'from-purple-500 to-purple-600',
-      features: ['Verbal', 'Quantitative', 'Analytical Writing'],
-      score: '260-340',
+     {
+      name: 'DUOLINGO',
+      fullName: 'Duolingo English Test',
+      icon: '🦜',
+      color: 'from-red-500 to-red-600',
+      features: ['Online Test', 'Convenient', 'Affordable'],
+      score: '10-160 Points',
     },
-    {
-      name: 'NAT',
-      fullName: 'National Aptitude Test',
-      icon: '📝',
-      color: 'from-orange-500 to-orange-600',
-      features: ['Aptitude Test', 'Quick Assessment', 'Multiple Sections'],
-      score: 'Pass/Fail',
-    },
-    {
-      name: 'JLPT',
-      fullName: 'Japanese Language Proficiency Test',
-      icon: '🇯🇵',
-      color: 'from-pink-500 to-pink-600',
-      features: ['N5 to N1 Levels', 'Language Skills', 'Cultural Knowledge'],
-      score: 'N5-N1',
-    },
+  
+  
   ];
 
   return (

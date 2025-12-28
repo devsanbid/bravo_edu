@@ -79,7 +79,7 @@ export default function Header() {
             <div className="flex items-center space-x-2">
               <Mail className="w-5 h-5 text-primary-purple" />
               <div className="flex-1">
-                <div className="font-semibold text-text-dark">Email</div>
+                {/* <div className="font-semibold text-text-dark">Email</div> */}
                 <div className="space-y-0.5">
                   <div 
                     className="text-text-light text-xs flex items-center gap-1 cursor-pointer hover:text-primary-purple transition-colors group"
@@ -115,7 +115,7 @@ export default function Header() {
             <div className="flex items-center space-x-2">
               <Phone className="w-5 h-5 text-primary-purple" />
               <div className="flex-1">
-                <div className="font-semibold text-text-dark">Call</div>
+                {/* <div className="font-semibold text-text-dark">Call</div> */}
                 <div className="space-y-0.5">
                   <div 
                     className="text-text-light text-xs flex items-center gap-1 cursor-pointer hover:text-primary-purple transition-colors group"
@@ -151,7 +151,7 @@ export default function Header() {
             <div className="flex items-center space-x-2">
               <MapPin className="w-5 h-5 text-primary-purple" />
               <div className="flex-1">
-                <div className="font-semibold text-text-dark">Location</div>
+                {/* <div className="font-semibold text-text-dark">Location</div> */}
                 <div className="space-y-0.5">
                   <div className="text-text-light text-xs">{settings?.headerAddress || '28 Putalisadak, Kathmandu 44600'}</div>
                   <div className="text-text-light text-xs flex items-center gap-1">

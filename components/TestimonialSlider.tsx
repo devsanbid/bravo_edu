@@ -27,6 +27,15 @@ export default function TestimonialSlider() {
     loadTestimonials();
   }, []);
 
+  // Auto-play every 15 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    }, 40000);
+    
+    return () => clearInterval(interval);
+  }, [testimonials.length]);
+
   const loadTestimonials = async () => {
     try {
       const data = await testimonialService.getTestimonials();

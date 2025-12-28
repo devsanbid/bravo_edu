@@ -115,12 +115,12 @@ export default function DirectorMessage() {
                       <div className="text-sm text-text-light mt-1">Success Target</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-accent-orange">500+</div>
+                      <div className="text-3xl font-bold text-accent-orange">5000+</div>
                       <div className="text-sm text-text-light mt-1">Students Guided</div>
                     </div>
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary-purple">15+</div>
-                      <div className="text-sm text-text-light mt-1">Years of Excellence</div>
+                      <div className="text-sm text-text-light mt-1">Years of Experience</div>
                     </div>
                   </div>
                 </div>

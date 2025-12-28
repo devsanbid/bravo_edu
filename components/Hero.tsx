@@ -70,7 +70,7 @@ export default function Hero() {
             >
               <GraduationCap className="w-5 h-5 text-primary-purple" />
               <span className="text-sm font-semibold text-text-dark">
-                15+ Years of Excellence
+                8+ Years of Excellence
               </span>
             </motion.div>
 
@@ -134,11 +134,11 @@ export default function Hero() {
               className="grid grid-cols-3 gap-6 mt-12 max-w-xl mx-auto lg:mx-0"
             >
               <div className="text-center lg:text-left">
-                <div className="text-3xl font-bold text-primary-purple">500+</div>
+                <div className="text-3xl font-bold text-primary-purple">1000+</div>
                 <div className="text-sm text-text-light">Visas Approved</div>
               </div>
               <div className="text-center lg:text-left">
-                <div className="text-3xl font-bold text-accent-orange">15+</div>
+                <div className="text-3xl font-bold text-accent-orange">8+</div>
                 <div className="text-sm text-text-light">Years Experience</div>
               </div>
               <div className="text-center lg:text-left">
