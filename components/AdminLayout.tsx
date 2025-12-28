@@ -19,9 +19,16 @@ const getInitialSidebarState = () => {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, logout, isAuthenticated, isVerified } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(getInitialSidebarState);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Redirect to login if not authenticated or not verified
+  useEffect(() => {
+    if (!isAuthenticated || !isVerified) {
+      router.push('/admin/login');
+    }
+  }, [isAuthenticated, isVerified, router]);
 
   // Save sidebar state to localStorage when it changes
   const toggleSidebar = (isOpen: boolean) => {

@@ -10,17 +10,19 @@ import Image from 'next/image';
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [secretCode, setSecretCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, isAuthenticated, loading: authLoading } = useAuth();
+  const [step, setStep] = useState<'login' | 'verify'>('login');
+  const { login, verifySecretCode, isAuthenticated, isVerified, loading: authLoading } = useAuth();
   const router = useRouter();
 
-  // Redirect if already logged in
+  // Redirect if already logged in and verified
   useEffect(() => {
-    if (!authLoading && isAuthenticated) {
+    if (!authLoading && isAuthenticated && isVerified) {
       router.replace('/admin/chat');
     }
-  }, [isAuthenticated, authLoading, router]);
+  }, [isAuthenticated, isVerified, authLoading, router]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -28,10 +30,32 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      await login(email, password);
-      router.push('/admin/chat');
+      const result = await login(email, password);
+      if (result.requiresVerification) {
+        setStep('verify');
+      }
     } catch (err: any) {
       setError(err.message || 'Invalid email or password');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerify = async (e: FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const isValid = await verifySecretCode(secretCode);
+      
+      if (isValid) {
+        router.push('/admin/chat');
+      } else {
+        setError('Invalid secret code. Please try again.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Verification failed');
     } finally {
       setLoading(false);
     }
@@ -46,8 +70,8 @@ export default function AdminLogin() {
     );
   }
 
-  // Don't render login form if already authenticated
-  if (isAuthenticated) {
+  // Don't render login form if already authenticated and verified
+  if (isAuthenticated && isVerified) {
     return null;
   }
 
@@ -69,18 +93,25 @@ export default function AdminLogin() {
               className="h-20 w-auto"
             />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Login</h1>
-          <p className="text-gray-600">Access your chat dashboard</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {step === 'login' ? 'Admin Login' : 'Security Verification'}
+          </h1>
+          <p className="text-gray-600">
+            {step === 'login' 
+              ? 'Access your admin dashboard' 
+              : 'Enter your secret code to continue'}
+          </p>
         </div>
 
-        {/* Login Card */}
+        {/* Login/Verification Card */}
         <motion.div
+          key={step}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="bg-white rounded-2xl shadow-xl p-8"
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Error Message */}
+          {step === 'login' ? (
+            <form onSubmit={handleSubmit} className="space-y-6">{/* Error Message */}
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
@@ -143,16 +174,93 @@ export default function AdminLogin() {
               {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Logging in...
+                  Verifying...
                 </>
               ) : (
                 <>
                   <Lock className="w-5 h-5" />
-                  Sign In
+                  Continue
                 </>
               )}
             </button>
           </form>
+          ) : (
+            <form onSubmit={handleVerify} className="space-y-6">
+              {/* Error Message */}
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2"
+                >
+                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-sm">{error}</span>
+                </motion.div>
+              )}
+
+              {/* Info Message */}
+              <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg">
+                <p className="text-sm font-medium mb-1">🔐 Security Verification Required</p>
+                <p className="text-xs">Enter your 5-digit secret code to access the admin panel.</p>
+              </div>
+
+              {/* Secret Code Field */}
+              <div>
+                <label htmlFor="secretCode" className="block text-sm font-medium text-gray-700 mb-2">
+                  What is your secret code?
+                </label>
+                <input
+                  id="secretCode"
+                  type="text"
+                  value={secretCode}
+                  onChange={(e) => setSecretCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                  required
+                  maxLength={5}
+                  className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 text-center text-2xl tracking-widest font-mono"
+                  placeholder="00000"
+                  autoComplete="off"
+                  autoFocus
+                />
+                <p className="mt-2 text-xs text-gray-500 text-center">
+                  Enter the 5-digit code set in your account
+                </p>
+              </div>
+
+              {/* Verify Button */}
+              <button
+                type="submit"
+                disabled={loading || secretCode.length !== 5}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Verifying...
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-5 h-5" />
+                    Verify & Sign In
+                  </>
+                )}
+              </button>
+
+              {/* Back to Login */}
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep('login');
+                    setSecretCode('');
+                    setError('');
+                  }}
+                  className="text-sm text-gray-600 hover:text-gray-700"
+                >
+                  ← Back to login
+                </button>
+              </div>
+            </form>
+          )}
 
           {/* Info Box */}
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">

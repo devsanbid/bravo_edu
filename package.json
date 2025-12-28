@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "add-attributes": "node scripts/add-attributes.js",
-    "create-collections": "node scripts/create-collections.js"
+    "create-collections": "node scripts/create-collections.js",
+    "set-secret": "node scripts/set-secret-code.js"
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
