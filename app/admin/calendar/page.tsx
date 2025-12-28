@@ -308,7 +308,7 @@ export default function AdminCalendar() {
   return (
     <AdminLayout>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 p-3 sm:p-4 md:p-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto relative z-10">{/* Relative and z-10 to ensure content is above background */}
           {/* Header with Tabs */}
           <div className="mb-4 md:mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 md:mb-4 text-center">Academic Calendar</h1>
@@ -435,7 +435,17 @@ export default function AdminCalendar() {
 
               {/* Main Calendar */}
               <div className="flex-1">
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-3 sm:p-4 md:p-6">
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-3 sm:p-4 md:p-6 relative overflow-hidden">
+                  {/* Calendar background image */}
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                    <img 
+                      src="/calender.png" 
+                      alt="" 
+                      className="w-auto h-auto max-w-full max-h-full object-contain opacity-5"
+                    />
+                  </div>
+
+                  <div className="relative z-10">
                   {/* Calendar Header */}
                   <div className="flex items-center justify-between mb-4 md:mb-6">
                     <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">
@@ -557,6 +567,7 @@ export default function AdminCalendar() {
                         </motion.div>
                       );
                     })}
+                  </div>
                   </div>
                 </div>
               </div>
