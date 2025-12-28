@@ -54,7 +54,7 @@ export default function UKPage() {
   const benefits = [
     { icon: Clock, title: 'Shorter Duration', description: 'Most undergraduate degrees are 3 years, masters 1 year' },
     { icon: Briefcase, title: 'Work Rights', description: 'Work up to 20 hours/week during studies' },
-    { icon: Award, title: 'Graduate Route', description: '2-year post-study work visa for graduates' },
+    { icon: Award, title: 'Graduate Route', description: '2-year post-study PSW for graduates' },
     { icon: MapPin, title: 'Rich Culture', description: 'Historic cities and diverse cultural experiences' },
   ];
 
@@ -113,7 +113,7 @@ export default function UKPage() {
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
                   <div className="text-3xl font-bold mb-1">2 Years</div>
-                  <div className="text-white/80 text-sm">Work Visa</div>
+                  <div className="text-white/80 text-sm">PSW</div>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
                   <div className="text-3xl font-bold mb-1">Top 10</div>

@@ -54,7 +54,7 @@ export default function NewZealandPage() {
 
   const benefits = [
     { icon: Trees, title: 'Beautiful Nature', description: 'Stunning landscapes with high quality of life' },
-    { icon: Briefcase, title: '3-Year Work Visa', description: 'Post-study work visa for up to 3 years' },
+    { icon: Briefcase, title: '3-Year PSW', description: 'Post-study PSW for up to 3 years' },
     { icon: Award, title: 'Quality Education', description: 'All 8 universities in top 3% globally' },
     { icon: MapPin, title: 'Safe & Peaceful', description: 'One of the safest countries in the world' },
   ];
@@ -109,7 +109,7 @@ export default function NewZealandPage() {
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
                   <div className="text-3xl font-bold mb-1">3 Years</div>
-                  <div className="text-white/80 text-sm">Work Visa</div>
+                  <div className="text-white/80 text-sm">PSW</div>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
                   <div className="text-3xl font-bold mb-1">Top 3%</div>

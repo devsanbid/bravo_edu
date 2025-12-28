@@ -67,7 +67,7 @@ export default function DestinationHub() {
       slug: 'uk',
       flag: '🇬🇧',
       description: 'World-class education with rich history and diverse culture',
-      features: ['Top Universities', 'Post-Study Work Visa', 'Cultural Heritage'],
+      features: ['Top Universities', 'Post-Study PSW', 'Cultural Heritage'],
       color: 'from-blue-500 to-blue-700',
       stats: { universities: '150+', duration: '1-3 Years', workVisa: '2 Years' },
     },
@@ -206,7 +206,7 @@ export default function DestinationHub() {
                         </div>
                         <div className="text-center">
                           <div className="text-xl font-bold text-primary-purple">{dest.stats.workVisa}</div>
-                          <div className="text-xs text-text-light">Work Visa</div>
+                          <div className="text-xs text-text-light">PSW</div>
                         </div>
                       </div>
 

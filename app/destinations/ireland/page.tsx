@@ -54,7 +54,7 @@ export default function IrelandPage() {
 
   const benefits = [
     { icon: Briefcase, title: 'Tech Hub of Europe', description: 'Home to Google, Facebook, Apple European HQ' },
-    { icon: Users, title: '2-Year Stay Back', description: 'Post-study work visa for all graduates' },
+    { icon: Users, title: '2-Year Stay Back', description: 'Post-study PSW for all graduates' },
     { icon: Award, title: 'Quality Education', description: 'World-class universities with international recognition' },
     { icon: MapPin, title: 'Gateway to Europe', description: 'Easy travel access to all European countries' },
   ];
