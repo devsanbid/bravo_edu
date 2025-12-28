@@ -54,7 +54,7 @@ export default function TestPreparation() {
       name: 'IELTS',
       fullName: 'International English Language Testing System',
       icon: '🇬🇧',
-      color: 'from-blue-500 to-blue-600',
+      color: 'from-purple-400 to-orange-400',
       features: ['Speaking', 'Writing', 'Reading', 'Listening'],
       score: 'Band 0-9',
     },
@@ -62,7 +62,7 @@ export default function TestPreparation() {
       name: 'PTE',
       fullName: 'Pearson Test of English',
       icon: '🎓',
-      color: 'from-green-500 to-green-600',
+      color: 'from-purple-400 to-orange-400',
       features: ['Computer-based', 'Quick Results', 'Academic & General'],
       score: '10-90 Points',
     },
@@ -70,7 +70,7 @@ export default function TestPreparation() {
       name: 'TOEFL',
       fullName: 'Test of English as a Foreign Language',
       icon: '🇺🇸',
-      color: 'from-red-500 to-red-600',
+      color: 'from-purple-400 to-orange-400',
       features: ['Reading', 'Listening', 'Speaking', 'Writing'],
       score: '0-120 Points',
     },
@@ -78,7 +78,7 @@ export default function TestPreparation() {
       name: 'DUOLINGO',
       fullName: 'Duolingo English Test',
       icon: '🦜',
-      color: 'from-red-500 to-red-600',
+      color: 'from-purple-400 to-orange-400',
       features: ['Online Test', 'Convenient', 'Affordable'],
       score: '10-160 Points',
     },
@@ -110,7 +110,7 @@ export default function TestPreparation() {
           
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             {emojis.length > 0 && <span className="mr-3 inline-block">{emojis[0]}</span>}
-            <span className="bg-gradient-to-r from-primary-purple to-accent-orange bg-clip-text text-transparent">
+            <span className="bg-gradient-to-b from-primary-purple to-accent-orange bg-clip-text text-transparent">
               Test Preparation
             </span>
             {emojis.length > 0 && <span className="ml-3 inline-block">{emojis[1] || emojis[0]}</span>}
@@ -146,12 +146,12 @@ export default function TestPreparation() {
                     transition={{ delay: index * 0.1 }}
                     className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden h-full"
                   >
-                    <div className={`bg-gradient-to-r ${test.color} p-6 text-white`}>
+                    <div className={`bg-gradient-to-r ${test.color} p-6 text-gray-800`}>
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-2xl font-bold">{test.name}</h3>
                         <span className="text-4xl">{test.icon}</span>
                       </div>
-                      <p className="text-white/90 text-sm">{test.fullName}</p>
+                      <p className="text-gray-700 text-sm">{test.fullName}</p>
                     </div>
 
                     <div className="p-6 relative">

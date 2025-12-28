@@ -68,7 +68,7 @@ export default function DestinationHub() {
       flag: '🇬🇧',
       description: 'World-class education with rich history and diverse culture',
       features: ['Top Universities', 'Post-Study PSW', 'Cultural Heritage'],
-      color: 'from-blue-500 to-blue-700',
+      color: 'from-purple-400 to-orange-400',
       stats: { universities: '150+', duration: '1-3 Years', workVisa: '2 Years' },
     },
     {
@@ -77,7 +77,7 @@ export default function DestinationHub() {
       flag: '🇺🇸',
       description: 'Innovation hub with cutting-edge research and global opportunities',
       features: ['Ivy League', 'OPT/CPT Options', 'Research Excellence'],
-      color: 'from-red-500 to-red-700',
+      color: 'from-purple-400 to-orange-400',
       stats: { universities: '200+', duration: '2-4 Years', workVisa: '3 Years' },
     },
     {
@@ -86,7 +86,7 @@ export default function DestinationHub() {
       flag: '🇨🇦',
       description: 'Quality education with immigration pathways and affordable living',
       features: ['PR Pathway', 'Co-op Programs', 'Safe & Welcoming'],
-      color: 'from-red-600 to-red-800',
+      color: 'from-purple-400 to-orange-400',
       stats: { universities: '100+', duration: '1-4 Years', workVisa: '3 Years' },
     },
     {
@@ -95,7 +95,7 @@ export default function DestinationHub() {
       flag: '🇦🇺',
       description: 'World-renowned universities with excellent quality of life',
       features: ['Work While Study', 'Post-Study Work Rights', 'High Quality Education'],
-      color: 'from-yellow-500 to-yellow-700',
+      color: 'from-purple-400 to-orange-400',
       stats: { universities: '120+', duration: '1-4 Years', workVisa: '2-4 Years' },
     },
     {
@@ -104,7 +104,7 @@ export default function DestinationHub() {
       flag: '🇮🇪',
       description: 'Friendly culture with strong tech industry and post-study opportunities',
       features: ['Tech Hub', '2-Year Stay Back', 'English Speaking'],
-      color: 'from-green-500 to-green-700',
+      color: 'from-purple-400 to-orange-400',
       stats: { universities: '30+', duration: '1-4 Years', workVisa: '2 Years' },
     },
     {
@@ -113,7 +113,7 @@ export default function DestinationHub() {
       flag: '🇳🇿',
       description: 'Beautiful country with high-quality education and work opportunities',
       features: ['Work Rights', 'Safe Environment', 'Quality of Life'],
-      color: 'from-teal-500 to-teal-700',
+      color: 'from-purple-400 to-orange-400',
       stats: { universities: '40+', duration: '1-3 Years', workVisa: '3 Years' },
     },
   ];
@@ -169,14 +169,14 @@ export default function DestinationHub() {
                     whileHover={isMobile ? {} : { y: -10 }}
                     className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 h-full"
                   >
-                    <div className={`bg-gradient-to-r ${dest.color} p-6 text-white relative overflow-hidden`}>
+                    <div className={`bg-gradient-to-r ${dest.color} p-6 text-gray-800 relative overflow-hidden`}>
                       <div className="absolute top-0 right-0 text-9xl opacity-10 -mr-8 -mt-4">
                         {dest.flag}
                       </div>
                       <div className="relative z-10">
                         <div className="text-6xl mb-4">{dest.flag}</div>
                         <h3 className="text-2xl font-bold mb-2">{dest.country}</h3>
-                        <p className="text-white/90 text-sm">{dest.description}</p>
+                        <p className="text-gray-700 text-sm">{dest.description}</p>
                       </div>
                     </div>
 
