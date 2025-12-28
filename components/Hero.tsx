@@ -139,7 +139,7 @@ export default function Hero() {
               </div>
               <div className="text-center lg:text-left">
                 <div className="text-3xl font-bold text-accent-orange">8+</div>
-                <div className="text-sm text-text-light">Years Experience</div>
+                <div className="text-sm text-text-light">Years of Excellence</div>
               </div>
               <div className="text-center lg:text-left">
                 <div className="text-3xl font-bold text-primary-purple">98%</div>
