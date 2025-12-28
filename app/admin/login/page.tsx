@@ -3,7 +3,7 @@
 import { useState, FormEvent, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { Lock, Mail, AlertCircle, Loader2 } from 'lucide-react';
+import { Lock, Mail, AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -14,6 +14,8 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<'login' | 'verify'>('login');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showSecretCode, setShowSecretCode] = useState(false);
   const { login, verifySecretCode, isAuthenticated, isVerified, loading: authLoading } = useAuth();
   const router = useRouter();
 
@@ -155,13 +157,24 @@ export default function AdminLogin() {
                 </div>
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder:text-gray-400"
+                  className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder:text-gray-400"
                   placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -209,18 +222,31 @@ export default function AdminLogin() {
                 <label htmlFor="secretCode" className="block text-sm font-medium text-gray-700 mb-2">
                   What is your secret code?
                 </label>
-                <input
-                  id="secretCode"
-                  type="text"
-                  value={secretCode}
-                  onChange={(e) => setSecretCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
-                  required
-                  maxLength={5}
-                  className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 text-center text-2xl tracking-widest font-mono"
-                  placeholder="00000"
-                  autoComplete="off"
-                  autoFocus
-                />
+                <div className="relative">
+                  <input
+                    id="secretCode"
+                    type={showSecretCode ? "text" : "password"}
+                    value={secretCode}
+                    onChange={(e) => setSecretCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                    required
+                    maxLength={5}
+                    className="block w-full px-4 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 text-center text-2xl tracking-widest font-mono"
+                    placeholder="•••••"
+                    autoComplete="off"
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowSecretCode(!showSecretCode)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                  >
+                    {showSecretCode ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
                 <p className="mt-2 text-xs text-gray-500 text-center">
                   Enter the 5-digit code set in your account
                 </p>
