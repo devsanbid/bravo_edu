@@ -23,7 +23,8 @@ export const teamService = {
     try {
       const response = await databases.listDocuments(
         DATABASE_ID,
-        COLLECTION_ID
+        COLLECTION_ID,
+        [Query.orderAsc('order')]
       );
       return response.documents as unknown as TeamMember[];
     } catch (error) {
