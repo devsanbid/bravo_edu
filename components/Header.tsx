@@ -23,7 +23,8 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const copyToClipboard = async (text: string) => {
+  const copyToClipboard = async (text: string | undefined) => {
+    if (!text) return;
     try {
       await navigator.clipboard.writeText(text);
       setCopiedText(text);
