@@ -94,8 +94,8 @@ export default function DirectorMessage() {
                   <Quote className="absolute -bottom-2 -right-2 w-10 h-10 text-accent-orange bg-white rounded-full p-2 shadow-lg" />
                 </div>
                 <div className="text-center mt-4">
-                  <h3 className="text-xl font-bold text-gray-900">{settings?.directorName || 'Director'}</h3>
-                  <p className="text-gray-600">{settings?.directorTitle || 'Founder & CEO'}</p>
+                  <h3 className="text-xl font-bold text-gray-900">{settings?.directorName}</h3>
+                  <p className="text-gray-600">{settings?.directorTitle}</p>
                 </div>
               </div>
 
@@ -103,7 +103,7 @@ export default function DirectorMessage() {
               <div className="w-full">
                 <blockquote className="space-y-6 text-center">
                   <p className="text-lg text-text-dark leading-relaxed">
-                    {settings?.directorMessage || `"At Bravo International, we don't just guide students; we transform dreams into reality. Our commitment is unwavering - to ensure that every student who walks through our doors walks out with confidence and a clear path to their future. With over 15 years of experience in educational consultancy, we have mastered the art of personalized guidance."`}
+                    {settings?.directorMessage}
                   </p>
                 </blockquote>
 

@@ -55,11 +55,11 @@ export default function Footer() {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: settings?.facebookUrl || '#', color: 'hover:text-blue-600' },
-    { icon: Instagram, href: settings?.instagramUrl || '#', color: 'hover:text-pink-600' },
-    { icon: Linkedin, href: settings?.linkedinUrl || '#', color: 'hover:text-blue-700' },
-    { icon: Youtube, href: settings?.youtubeUrl || '#', color: 'hover:text-red-600' },
-  ];
+    { icon: Facebook, href: settings?.facebookUrl, color: 'hover:text-blue-600' },
+    { icon: Instagram, href: settings?.instagramUrl, color: 'hover:text-pink-600' },
+    { icon: Linkedin, href: settings?.linkedinUrl, color: 'hover:text-blue-700' },
+    { icon: Youtube, href: settings?.youtubeUrl, color: 'hover:text-red-600' },
+  ].filter(link => link.href); // Only show links that have URLs
 
   return (
     <footer id="contact" className="bg-gradient-to-br from-gray-900 to-gray-800 text-white pt-20 pb-6 relative overflow-hidden">
@@ -94,7 +94,7 @@ export default function Footer() {
               <p className="text-gray-400">International Educational Consultancy</p>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
-              {settings?.footerDescription || 'Your trusted partner for studying abroad. We make your dreams of international education a reality with expert guidance and personalized support.'}
+              {settings?.footerDescription}
             </p>
             
             {/* Social Links */}
@@ -200,15 +200,15 @@ export default function Footer() {
               
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-accent-orange flex-shrink-0" />
-                <a href={`tel:${settings?.footerPhone || '+9779851352807'}`} className="text-gray-400 hover:text-accent-orange transition-colors">
-                  {settings?.footerPhone || '+977 9851352807, 01-5908733'}
+                <a href={`tel:${settings?.footerPhone}`} className="text-gray-400 hover:text-accent-orange transition-colors">
+                  {settings?.footerPhone}
                 </a>
               </div>
               
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-accent-orange flex-shrink-0" />
-                <a href={`mailto:${settings?.footerEmail || 'info@bravointernational.edu.np'}`} className="text-gray-400 hover:text-accent-orange transition-colors">
-                  {settings?.footerEmail || 'info@bravointernational.edu.np'}
+                <a href={`mailto:${settings?.footerEmail}`} className="text-gray-400 hover:text-accent-orange transition-colors">
+                  {settings?.footerEmail}
                 </a>
               </div>
               
@@ -275,7 +275,7 @@ export default function Footer() {
         <div className="border-t border-gray-700 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-gray-400 text-sm">
-              {settings?.footerCopyright || '© 2024 Bravo International. All rights reserved.'}
+              {settings?.footerCopyright}
             </p>
             
             <div className="flex items-center space-x-6 text-sm text-gray-400">

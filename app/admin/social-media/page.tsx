@@ -1,6 +1,10 @@
 "use client"
 
 import { useState, useEffect } from 'react';
+
+// Disable caching for this page
+export const dynamic = 'force-dynamic';
+
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Loader2, ExternalLink, Instagram, Facebook, Twitter, Linkedin, Youtube, Globe } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -102,6 +106,18 @@ function AdminSocialMediaPanel() {
       setError(err.message || 'Failed to delete post');
     }
   };
+
+  // Show loading state while fetching initial data
+  if (loading) {
+    return (
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-600 text-lg">Loading social media posts...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 p-4 md:p-6 lg:p-8 overflow-auto">
@@ -218,12 +234,7 @@ function AdminSocialMediaPanel() {
         <div className="bg-white rounded-xl md:rounded-2xl shadow-xl p-4 md:p-6 lg:p-8">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Manage Posts</h2>
 
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-              <span className="ml-3 text-gray-600">Loading posts...</span>
-            </div>
-          ) : posts.length === 0 ? (
+          {posts.length === 0 ? (
             <div className="text-center py-12">
               <Instagram className="w-16 h-16 mx-auto mb-4 text-gray-300" />
               <p className="text-gray-500 text-lg">No posts added yet</p>

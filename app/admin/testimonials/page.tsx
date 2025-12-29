@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
+// Disable caching for this page
+export const dynamic = 'force-dynamic';
 import AdminLayout from '@/components/AdminLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { testimonialService, Testimonial } from '@/lib/testimonialService';

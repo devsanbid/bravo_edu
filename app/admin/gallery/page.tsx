@@ -1,6 +1,10 @@
 "use client"
 
 import { useState, useCallback, useEffect } from 'react';
+
+// Disable caching for this page
+export const dynamic = 'force-dynamic';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { Upload, X, Image as ImageIcon, Loader2, Check, AlertCircle, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -136,6 +140,18 @@ function AdminGalleryContent() {
       return prev.filter(img => img.status !== 'success');
     });
   };
+
+  // Show loading state while fetching initial data
+  if (loadingUploaded) {
+    return (
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-600 text-lg">Loading gallery...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-auto">

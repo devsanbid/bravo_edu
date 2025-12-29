@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
+// Disable caching for this page
+export const dynamic = 'force-dynamic';
 import AdminLayout from '@/components/AdminLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { popupService, Popup } from '@/lib/popupService';
-import { Plus, Edit2, Trash2, Eye, EyeOff, Calendar, Upload, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, Calendar, Upload, X, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AdminPopupsPage() {
@@ -134,6 +137,22 @@ export default function AdminPopupsPage() {
     setImageFile(null);
     setShowForm(true);
   };
+
+  // Show loading state while fetching initial data
+  if (loading) {
+    return (
+      <ProtectedRoute>
+        <AdminLayout>
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="text-center">
+              <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+              <p className="text-gray-600 text-lg">Loading popups...</p>
+            </div>
+          </div>
+        </AdminLayout>
+      </ProtectedRoute>
+    );
+  }
 
   return (
     <ProtectedRoute>

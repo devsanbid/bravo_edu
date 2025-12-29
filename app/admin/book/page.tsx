@@ -1,6 +1,10 @@
 "use client"
 
 import { useEffect, useState } from 'react';
+
+// Disable caching for this page
+export const dynamic = 'force-dynamic';
+
 import { motion } from 'framer-motion';
 import { BookOpen, Mail, Phone, Globe, GraduationCap, Calendar, Trash2, CheckCircle, Clock, XCircle } from 'lucide-react';
 import ProtectedRoute from '@/components/ProtectedRoute';

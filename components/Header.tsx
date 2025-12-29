@@ -83,13 +83,13 @@ export default function Header() {
                 <div className="space-y-0.5">
                   <div 
                     className="text-text-light text-xs flex items-center gap-1 cursor-pointer hover:text-primary-purple transition-colors group"
-                    onClick={() => copyToClipboard(settings?.headerEmail || 'info@bravointernational.edu.np')}
+                    onClick={() => copyToClipboard(settings?.headerEmail)}
                   >
-                    <a href={`mailto:${settings?.headerEmail || 'info@bravointernational.edu.np'}`} className="hover:underline">
-                      {settings?.headerEmail || 'info@bravointernational.edu.np'}
+                    <a href={`mailto:${settings?.headerEmail}`} className="hover:underline">
+                      {settings?.headerEmail}
                     </a>
                     <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    {copiedText === (settings?.headerEmail || 'info@bravointernational.edu.np') && (
+                    {copiedText === settings?.headerEmail && (
                       <span className="text-green-600 text-[10px]">✓</span>
                     )}
                   </div>
@@ -119,13 +119,13 @@ export default function Header() {
                 <div className="space-y-0.5">
                   <div 
                     className="text-text-light text-xs flex items-center gap-1 cursor-pointer hover:text-primary-purple transition-colors group"
-                    onClick={() => copyToClipboard(settings?.headerPhone || '01-5908733')}
+                    onClick={() => copyToClipboard(settings?.headerPhone)}
                   >
-                    <a href={`tel:${settings?.headerPhone || '01-5908733'}`} className="hover:underline">
-                      {settings?.headerPhone || '01-5908733'}
+                    <a href={`tel:${settings?.headerPhone}`} className="hover:underline">
+                      {settings?.headerPhone}
                     </a>
                     <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    {copiedText === (settings?.headerPhone || '01-5908733') && (
+                    {copiedText === settings?.headerPhone && (
                       <span className="text-green-600 text-[10px]">✓</span>
                     )}
                   </div>
@@ -153,10 +153,10 @@ export default function Header() {
               <div className="flex-1">
                 {/* <div className="font-semibold text-text-dark">Location</div> */}
                 <div className="space-y-0.5">
-                  <div className="text-text-light text-xs">{settings?.headerAddress || '28 Putalisadak, Kathmandu 44600'}</div>
+                  <div className="text-text-light text-xs">{settings?.headerAddress}</div>
                   <div className="text-text-light text-xs flex items-center gap-1">
                     <Clock className="w-3 h-3" />
-                    {settings?.headerWorkingHours || 'Sun - Fri, 8am - 5pm'}
+                    {settings?.headerWorkingHours}
                   </div>
                 </div>
               </div>
@@ -232,13 +232,13 @@ export default function Header() {
                     </div>
                     <div 
                       className="text-gray-600 flex items-center gap-2 cursor-pointer hover:text-primary-purple transition-colors group pl-6"
-                      onClick={() => copyToClipboard(settings?.headerPhone || '01-5908733')}
+                      onClick={() => copyToClipboard(settings?.headerPhone)}
                     >
-                      <a href={`tel:${settings?.headerPhone || '01-5908733'}`} className="hover:underline">
-                        {settings?.headerPhone || '01-5908733'}
+                      <a href={`tel:${settings?.headerPhone}`} className="hover:underline">
+                        {settings?.headerPhone}
                       </a>
                       <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      {copiedText === (settings?.headerPhone || '01-5908733') && (
+                      {copiedText === settings?.headerPhone && (
                         <span className="text-green-600 text-xs">✓</span>
                       )}
                     </div>
@@ -264,13 +264,13 @@ export default function Header() {
                     </div>
                     <div 
                       className="text-gray-600 flex items-center gap-2 cursor-pointer hover:text-primary-purple transition-colors group pl-6"
-                      onClick={() => copyToClipboard(settings?.headerEmail || 'info@bravointernational.edu.np')}
+                      onClick={() => copyToClipboard(settings?.headerEmail)}
                     >
-                      <a href={`mailto:${settings?.headerEmail || 'info@bravointernational.edu.np'}`} className="hover:underline text-xs">
-                        {settings?.headerEmail || 'info@bravointernational.edu.np'}
+                      <a href={`mailto:${settings?.headerEmail}`} className="hover:underline text-xs">
+                        {settings?.headerEmail}
                       </a>
                       <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      {copiedText === (settings?.headerEmail || 'info@bravointernational.edu.np') && (
+                      {copiedText === settings?.headerEmail && (
                         <span className="text-green-600 text-xs">✓</span>
                       )}
                     </div>

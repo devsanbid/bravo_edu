@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
+// Disable caching for this page
+export const dynamic = 'force-dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit2, Trash2, X, ChevronLeft, ChevronRight, Star, CheckCircle2 } from 'lucide-react';
 import { calendarService, CalendarEvent } from '@/lib/calendarService';

@@ -8,6 +8,9 @@ import { Image as ImageIcon, Save, Upload, X, Globe, FileText, Mail, Phone, MapP
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
+// Disable caching for this page
+export const dynamic = 'force-dynamic';
+
 export default function WebsiteSettingsPage() {
   return (
     <ProtectedRoute>

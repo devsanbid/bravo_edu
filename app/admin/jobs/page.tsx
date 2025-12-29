@@ -1,11 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
+// Disable caching for this page
+export const dynamic = 'force-dynamic';
 import AdminLayout from '@/components/AdminLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { jobService, Job, JobApplication } from '@/lib/jobService';
 import { branchService, Branch } from '@/lib/branchService';
-import { Plus, Edit2, Trash2, Eye, Download, Calendar, Briefcase, X, Users, CheckCircle, Clock, FileText, XCircle, Mail, Phone } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Download, Calendar, Briefcase, X, Users, CheckCircle, Clock, FileText, XCircle, Mail, Phone, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AdminJobsPage() {
@@ -215,6 +218,18 @@ function AdminJobsContent() {
     shortlisted: applications.filter(a => a.status === 'shortlisted').length,
     rejected: applications.filter(a => a.status === 'rejected').length
   };
+
+  // Show loading state while fetching initial data
+  if (loadingJobs) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-600 text-lg">Loading jobs...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">

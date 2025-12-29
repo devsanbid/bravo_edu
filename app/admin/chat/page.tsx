@@ -1,6 +1,10 @@
 "use client"
 
 import { useAdminChat } from '@/hooks/useAdminChat';
+
+// Disable caching for this page
+export const dynamic = 'force-dynamic';
+
 import { useState, useRef, useEffect } from 'react';
 import { MessageCircle, Send, X, User, Mail, Phone, Clock, ChevronLeft, Trash2, Bell, BellOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

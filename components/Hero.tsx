@@ -82,11 +82,11 @@ export default function Hero() {
               className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
             >
               <span className="bg-gradient-to-r from-primary-purple to-primary-purple-light bg-clip-text text-transparent">
-                {settings?.heroTitle || 'THINK ABROAD,'}
+                {settings?.heroTitle}
               </span>
               <br />
               <span className="bg-gradient-to-r from-accent-orange to-accent-gold bg-clip-text text-transparent">
-                {settings?.heroSubtitle || 'THINK BRAVO'}
+                {settings?.heroSubtitle}
               </span>
             </motion.h1>
 
@@ -96,7 +96,7 @@ export default function Hero() {
               transition={{ delay: 0.4 }}
               className="text-lg md:text-xl text-text-light mb-8 max-w-xl mx-auto lg:mx-0"
             >
-              {settings?.heroDescription || 'Your trusted partner for studying in UK, USA, and Canada. We turn your dreams of international education into reality with expert guidance and personalized support.'}
+              {settings?.heroDescription}
             </motion.p>
 
             {/* CTA Buttons */}
