@@ -31,8 +31,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const currentUser = await account.get();
       setUser(currentUser);
       
-      // Check if verification is stored in session storage
-      const verified = sessionStorage.getItem('secret_code_verified');
+      // Check if verification is stored in local storage
+      const verified = localStorage.getItem('secret_code_verified');
       setIsVerified(verified === 'true');
     } catch (error) {
       setUser(null);
@@ -84,8 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(currentUser);
         setIsVerified(true);
         
-        // Store verification status in session storage
-        sessionStorage.setItem('secret_code_verified', 'true');
+        // Store verification status in local storage
+        localStorage.setItem('secret_code_verified', 'true');
         
         return true;
       }
@@ -102,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await account.deleteSession('current');
       setUser(null);
       setIsVerified(false);
-      sessionStorage.removeItem('secret_code_verified');
+      localStorage.removeItem('secret_code_verified');
     } catch (error) {
       console.error('Logout error:', error);
       throw error;
