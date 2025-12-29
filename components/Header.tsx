@@ -167,7 +167,7 @@ export default function Header() {
       </div>
 
       {/* Main Navigation Bar */}
-      <div className={`transition-all duration-300 ${isScrolled ? 'py-2' : 'py-3'} bg-primary-purple`}>
+      <div className={`transition-all duration-300 ${isScrolled ? 'py-2' : 'py-3'} lg:bg-primary-purple bg-purple-100`}>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Mobile Logo */}
@@ -198,7 +198,7 @@ export default function Header() {
 
             {/* Mobile Menu Button */}
             <button
-              className="lg:hidden text-white"
+              className="lg:hidden text-primary-purple"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
